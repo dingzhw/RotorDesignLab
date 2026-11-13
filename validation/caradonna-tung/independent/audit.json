@@ -1,0 +1,41 @@
+{
+  "status": "independent_implementation_agrees",
+  "reference_type": "software/model intercomparison, not new experiment",
+  "stations": 480,
+  "source_node_max_abs_error": {
+    "cl": 0.0,
+    "cd": 0.0
+  },
+  "max_abs_element_difference": {
+    "r_m": 2.220446049250313e-16,
+    "induced_speed_m_s": 2.7127189383691075e-10,
+    "dthrust_n": 1.1782708142504816e-10,
+    "dtorque_nm": 6.67549349131491e-12,
+    "alpha_deg": 6.041058764338914e-10,
+    "mach": 8.820721930646869e-14,
+    "cl": 6.280473363595718e-11,
+    "cd": 9.180503579564459e-14,
+    "tip_loss_factor": 5.541900272021394e-12
+  },
+  "relative_total_difference": {
+    "thrust": 2.0371482278846997e-12,
+    "torque": 2.7133850721838826e-13
+  },
+  "independent_ct": 0.00593812573020341,
+  "ct_error_pct": 29.089689787030657,
+  "radial_mape_pct": 26.03773502926706,
+  "independent_thrust_n": 668.3401222689577,
+  "independent_torque_nm": 60.65826507502311,
+  "independent_power_w": 7940.148330799789,
+  "conclusion": "No implementation discrepancy at this case. Fixed-collective physical discrepancy remains.",
+  "input_sha256": {
+    "airfoils.json": "3f558833881536f5530d1ce6a3d67c1c343f7037feaa9954984fc776102cdd39",
+    "geometry.csv": "e9a41bfe613146eafbe1c3588e9446848502488cf89ffe6b55d4f22776aaf5fc",
+    "hover.json": "6535909d03e56bd99375c675353586e190f8dc74cc9c6e990ca6895647cdff9c",
+    "ladson-fixed.csv": "e5f08daa53488d08acc9d35a307f127143801a3187434d720926f82b068829dd",
+    "ladson-free.csv": "73adc585fd3ed88e64edf37d74f537b56419f7674e9bf436875bcb631b0f27a6",
+    "pressure-r080.csv": "fde29e5d3608cb967b0c1573f0e9bbf2c7834e33c36b6ec3603ffb8d1d9c8ad8",
+    "provenance.json": "93646d52cee0a028265760f236cfe2b3819ad3b100bf36a91bec28b616bc298d",
+    "reference.csv": "65876c7f58c7ddcc796fcb86600bd089cfdd392395b8db8d8f686c79caa70cc6"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "records": [
+    {
+      "file": "sources/XV15_2026_exp_data.csv",
+      "sha256": "bb4b5676560de01a918fda3102fd311cd310fc9bf9a666eee2e0e27f494d1b58",
+      "unchanged": true
+    },
+    {
+      "file": "sources/XV15_2026_fom_data.csv",
+      "sha256": "fa0980d47235572333bb69589119813a5ab4270c95c46ba2111d29c98088a145",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/geometry.csv",
+      "sha256": "dcb69c40ec75582e735177338ec9fad94e93c5bbdf0bb03a94be089cccc4535c",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cl_1.csv",
+      "sha256": "a5e3a0a18721a0f42ce2c235c88b1d4c14a8af1c97851880094a03f73c66b3b9",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cd_1.csv",
+      "sha256": "69002d189ff45adbad156643d8b6d7c2b277b0cf8a4f97df426df5a28da1a34a",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cl_2.csv",
+      "sha256": "822d4010066b780dcee8499022cd7e0e75d5dd91b152024f4d79425c08815d41",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cd_2.csv",
+      "sha256": "ee021b538c1da67433585f3329b6092782f88cf22ff80d34bf3066f572a64304",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cl_3.csv",
+      "sha256": "30c12cc6f96b52168f1e29f8dafb3a5981a302a8e6a6f7537e8992d7a0f5d64b",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cd_3.csv",
+      "sha256": "582252248201a392e95510c2d5f6ead9f93d3010138a1feba49f3f84965a5088",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cl_4.csv",
+      "sha256": "f8c65eac377df4058ac3eb235ddcb1fc8e5769b15fe273f3ab53c1ce3dd82469",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/inputs/cd_4.csv",
+      "sha256": "ff8cae98a2a9fa3b5cdf1f72662c59eef160fb03bf5e6d0dda5284c4f2dc3c79",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/bem/summary.csv",
+      "sha256": "6c611663e914d47ee7e423bd226c3157a77f451679960f43a06b544111a696b5",
+      "unchanged": true
+    },
+    {
+      "file": "XV15_VALIDATION/ccblade/summary.csv",
+      "sha256": "20a7ffc1b3b78bae6b0b2bd565a4b2cffb6b7c1fc8a1df6745f37f402386cd1e",
+      "unchanged": true
+    }
+  ],
+  "status": "13 public archived inputs/results unchanged; no legacy rerun"
+}
