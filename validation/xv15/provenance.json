@@ -1,0 +1,54 @@
+{
+  "sources": {
+    "XV15_TP2004_212262.pdf": "22ac1ffbb618c3070df22340b7392bf17a2c20b8dcdc4bde3853cd944833219c",
+    "XV15_Betzina_2002.pdf": "24c79ddd95a7dc9c98ca72fa0168d8e09a7cda55e4021e39f9210d2f88de9180"
+  },
+  "geometry_pdf_pages": [
+    29,
+    31
+  ],
+  "airfoil_pdf_pages": [
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "experiment_pdf_page": 6,
+  "experiment_figure": 15,
+  "experiment": "Runs 33 and 51; hub-tare corrected",
+  "plot_calibration": {
+    "x0": 371.812988,
+    "x1": 540.810974,
+    "y0": 412.243988,
+    "y1": 285.523987,
+    "xmin": 0.0,
+    "xmax": 0.14,
+    "ymin": 0.0,
+    "ymax": 0.014
+  },
+  "marker_center_bound_pt": 0.3,
+  "uncertainty_type": "digitization bound, not experimental confidence interval",
+  "test": {
+    "blades": 3,
+    "radius_m": 3.81,
+    "mach_tip": 0.691,
+    "solidity_reference": 0.089,
+    "precone_deg": 1.5,
+    "axial_speed_m_s": 0
+  },
+  "assumptions": {
+    "density_kg_m3": 1.225,
+    "speed_of_sound_m_s": 340.3,
+    "rigid_blade": true,
+    "sweep_deg": 0,
+    "reynolds_correction": false
+  },
+  "gaps": [
+    "Test density/temperature and pointwise collective not reported here.",
+    "Engineering blade geometry/polars are not as-built measurements for each test run.",
+    "Source airfoil tables have no Reynolds dimension; original labels retained.",
+    "Elastic twist, sweep, rotor/hub interaction and facility corrections are not modeled."
+  ]
+}

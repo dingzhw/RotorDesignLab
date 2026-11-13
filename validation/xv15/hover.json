@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "model": "axial_rotor",
+  "blade_count": 3,
+  "radius_m": 3.81,
+  "rpm": 589.3677976332732,
+  "axial_speed_m_s": 0,
+  "density_kg_m3": 1.225,
+  "collective_deg": 10,
+  "pitch_reference_r_over_R": 0.75,
+  "radial_stations": 240,
+  "geometry_csv": "geometry.csv",
+  "polar_json": "airfoils.json",
+  "precone_deg": 1.5,
+  "speed_of_sound_m_s": 340.3,
+  "inflow_model": "annular",
+  "tip_loss": "prandtl"
+}

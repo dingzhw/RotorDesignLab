@@ -59,16 +59,25 @@ def table(path, columns):
 
 
 def read_rotor(case, base):
+    if ('polar_csv' in case) == ('polar_json' in case):
+        raise ValueError('请提供 polar_csv 或 polar_json 中的一项。')
+    polar_key = 'polar_json' if 'polar_json' in case else 'polar_csv'
     try:
         geo_path = base / case["geometry_csv"]
-        polar_path = base / case["polar_csv"]
+        polar_path = base / case[polar_key]
     except (KeyError, TypeError) as error:
         raise ValueError("请提供 geometry_csv 和 polar_csv 两个文件路径。") from error
     geometry = table(geo_path, ("r_over_R", "chord_m", "twist_deg"))
-    polar = table(polar_path, ("alpha_deg", "cl", "cd"))
+    airfoil_grid = None
+    if polar_key == 'polar_json':
+        from .airfoils import AirfoilGrid
+        airfoil_grid = AirfoilGrid.read(polar_path)
+        polar = None
+    else:
+        polar = table(polar_path, ("alpha_deg", "cl", "cd"))
     if not (0 < geometry[0, 0] < 1 and geometry[-1, 0] == 1 and (geometry[:, 1] > 0).all()):
         raise ValueError("几何表需从正的根部半径比到 1.0，且各站弦长为正。")
-    if polar[0, 0] >= 0 or polar[-1, 0] <= 0 or (polar[:, 2] < 0).any():
+    if polar is not None and (polar[0, 0] >= 0 or polar[-1, 0] <= 0 or (polar[:, 2] < 0).any()):
         raise ValueError("翼型表需覆盖正负攻角，且阻力系数非负。")
     blades = numeric(case, "blade_count", 2, 12, integer=True)
     radius = numeric(case, "radius_m", 0.03, 30)
@@ -81,8 +90,13 @@ def read_rotor(case, base):
     stations = numeric(case, "radial_stations", 8, 2000, integer=True)
     if np.hypot(omega * radius, speed) > 250:
         raise ValueError("叶尖合速度超过当前低速翼型模型的 250 m/s 上限。")
+    cone = numeric(dict(precone_deg=case.get('precone_deg', 0)), 'precone_deg', 0, 15)
+    sound = numeric(dict(speed_of_sound_m_s=case.get('speed_of_sound_m_s', 340.3)), 'speed_of_sound_m_s', 250, 400)
+    inflow, tip = case.get('inflow_model', 'uniform'), case.get('tip_loss', 'none')
+    if inflow not in ('uniform', 'annular') or tip not in ('none', 'prandtl') or (inflow == 'uniform' and tip != 'none'):
+        raise ValueError('inflow_model 选 uniform/annular；Prandtl 尖损失仅用于 annular。')
     return Rotor(geometry, polar, blades, radius, omega, speed, density, collective, reference,
-                 stations), (geo_path, polar_path)
+                 stations, airfoil_grid, cone, sound, inflow, tip), (geo_path, polar_path)
 
 
 def run_case(case, base, output):
@@ -132,8 +146,9 @@ def run_case(case, base, output):
                 write_json(output / 'solved-case.json', solved_case)
             else:
                 rotor, sources = read_rotor(case, base)
-                for key, source, name in zip(("geometry_csv", "polar_csv"), sources,
-                                             ("geometry.csv", "polar.csv")):
+                polar_key = 'polar_json' if 'polar_json' in case else 'polar_csv'
+                for key, source, name in zip(("geometry_csv", polar_key), sources,
+                                             ("geometry.csv", "airfoils.json" if polar_key == 'polar_json' else "polar.csv")):
                     shutil.copyfile(source, output / name)
                     snapshot[key] = name
                 summary, headers, radial = solve(rotor)
@@ -142,6 +157,11 @@ def run_case(case, base, output):
             write_csv(output / "radial_loads.csv", headers, radial)
             result.update(summary=summary, backend="Python / Pitt–Peters axial steady limit")
             result["warnings"] = ["固定桨叶、均匀轴向入流，翼型系数仅随攻角变化。"]
+            if rotor.airfoil_grid is not None or rotor.precone_deg or rotor.inflow_model != 'uniform':
+                result['backend'] = 'Python / rigid axial blade elements / ' + rotor.inflow_model
+                result['warnings'] = [f'固定桨叶，{rotor.inflow_model} 入流，尖损失 {rotor.tip_loss}；未计算尾流旋转和弹性变形。']
+                if rotor.airfoil_grid is not None:
+                    result['warnings'].append('使用原始展向/攻角/Mach 气动表，当前无 Reynolds 修正。')
             if case['model'] == 'aircraft_rotor':
                 result['warnings'].append('当前为选定孤立旋翼分析，安装载荷已移算到重心；整机配平尚未计算。')
                 if not result['feasible']:

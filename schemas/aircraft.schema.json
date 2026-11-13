@@ -22,7 +22,8 @@
       "type": "array", "minItems": 1,
       "items": {
         "type":"object", "additionalProperties":false,
-        "required":["id","blade_count","radius_m","pitch_reference_r_over_R","geometry_csv","polar_csv","position_m","thrust_axis_body","rotation_sign","defaults","limits"],
+        "required":["id","blade_count","radius_m","pitch_reference_r_over_R","geometry_csv","position_m","thrust_axis_body","rotation_sign","defaults","limits"],
+        "oneOf":[{"required":["polar_csv"]},{"required":["polar_json"]}],
         "properties": {
           "id":{"type":"string","pattern":"^[a-zA-Z0-9_-]+$"},
           "description":{"type":"string"}, "provenance":{"type":"string"},
@@ -30,6 +31,10 @@
           "radius_m":{"type":"number","minimum":0.03,"maximum":30},
           "pitch_reference_r_over_R":{"type":"number","exclusiveMinimum":0,"maximum":1},
           "geometry_csv":{"type":"string","minLength":1}, "polar_csv":{"type":"string","minLength":1},
+          "polar_json":{"type":"string","minLength":1},
+          "precone_deg":{"type":"number","minimum":0,"maximum":15},
+          "speed_of_sound_m_s":{"type":"number","minimum":250,"maximum":400},
+          "inflow_model":{"enum":["uniform","annular"]}, "tip_loss":{"enum":["none","prandtl"]},
           "position_m":{"$ref":"#/$defs/vector"}, "thrust_axis_body":{"$ref":"#/$defs/vector"},
           "rotation_sign":{"enum":[-1,1]},
           "defaults":{

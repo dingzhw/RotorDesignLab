@@ -12,6 +12,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = json.loads((ROOT / 'schemas' / 'aircraft.schema.json').read_text(encoding='utf-8'))
 OPERATING_KEYS = ('rpm', 'collective_deg', 'radial_stations')
+AERO_KEYS = ('precone_deg', 'speed_of_sound_m_s', 'inflow_model', 'tip_loss')
 
 
 def read_aircraft(path):
@@ -56,9 +57,11 @@ def snapshot_aircraft(aircraft, source_dir, output):
     snapshot = deepcopy(aircraft)
     hashes = {}
     for index, rotor in enumerate(snapshot['rotors']):
-        for key, suffix in (('geometry_csv', 'geometry'), ('polar_csv', 'polar')):
+        polar_key = 'polar_json' if 'polar_json' in rotor else 'polar_csv'
+        for key, suffix in (('geometry_csv', 'geometry'), (polar_key, 'polar')):
             source = Path(source_dir) / rotor[key]
-            name = f'rotor-{index}-{suffix}.csv'
+            extension = 'json' if key == 'polar_json' else 'csv'
+            name = f'rotor-{index}-{suffix}.{extension}'
             shutil.copyfile(source, output / name)
             rotor[key] = name
             hashes[name] = hashlib.sha256((output / name).read_bytes()).hexdigest()
@@ -71,7 +74,7 @@ def snapshot_aircraft(aircraft, source_dir, output):
 def prepare(case, base, output):
     from .cases import read_rotor
     allowed = {'schema_version', 'model', 'aircraft_json', 'rotor_id', 'density_kg_m3',
-               'axial_speed_m_s', 'target', *OPERATING_KEYS}
+               'axial_speed_m_s', 'target', *OPERATING_KEYS, *AERO_KEYS}
     unknown = set(case) - allowed
     if unknown:
         raise ValueError(f'工况中未识别的字段：{sorted(unknown)}')
@@ -92,7 +95,8 @@ def prepare(case, base, output):
     copied = snapshot_aircraft(aircraft, source.parent, output)
     selected_copy = next(rotor for rotor in copied['rotors'] if rotor['id'] == selected['id'])
     resolved = {key: selected_copy[key] for key in ('blade_count', 'radius_m', 'pitch_reference_r_over_R',
-                                              'geometry_csv', 'polar_csv')}
+                                              'geometry_csv', 'polar_csv', 'polar_json', *AERO_KEYS) if key in selected_copy}
+    resolved.update({key: case[key] for key in AERO_KEYS if key in case})
     resolved.update(operating, density_kg_m3=case.get('density_kg_m3', 1.225),
                     axial_speed_m_s=case.get('axial_speed_m_s', 0.0))
     model, _ = read_rotor(resolved, output)

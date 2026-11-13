@@ -1,0 +1,33 @@
+{
+  "uniform": {
+    "mean_power_error_pct": -8.682708619296132,
+    "max_abs_power_error_pct": 9.497058849542528
+  },
+  "annular": {
+    "mean_power_error_pct": -5.44318742557917,
+    "max_abs_power_error_pct": 7.271826943426074
+  },
+  "solver_version": "0.2.0.dev2",
+  "points": 14,
+  "max_target_relative_error": 1.776245817097788e-12,
+  "grid_relative_change_480_960": {
+    "thrust_n": 2.7922460335672028e-05,
+    "torque_nm": 1.7743566664618626e-05,
+    "power_w": 1.7743566664396582e-05
+  },
+  "vector_marker_bound": {
+    "ct_sigma": 0.0002485236717554729,
+    "cq_sigma": 3.314393913238684e-05
+  },
+  "source_sha256": {
+    "airfoils.json": "9730b17083a878a161cd38113ae19e556fa943c284e10524320274ce6e653b38",
+    "betzina_fig15.csv": "ddbb4f4dd6564c5cbb4cf9f8bed7fcc0b604e4869a22bf3a85f515f3409dff0a",
+    "geometry.csv": "424000332ac24282c19477e8b2d9f425cbb88882f823a0eac7fa308440470370",
+    "hover.json": "246a2db7c1c8e4d6eee528c04055e88eab1b4980058603059be5fb6d35119a98",
+    "legacy_model_checks.csv": "5ee0a4796f1244a5c0badb3e8951e393001480547df9c9fbede0bd1b99d60bd8",
+    "legacy_reference_ct_cq.csv": "bb4b5676560de01a918fda3102fd311cd310fc9bf9a666eee2e0e27f494d1b58",
+    "legacy_reference_ct_fm.csv": "fa0980d47235572333bb69589119813a5ab4270c95c46ba2111d29c98088a145",
+    "provenance.json": "b556390d95cc6377bc4ca4510a927125e0d9b1e7990295a465aec35471f1f270",
+    "reuse-audit.json": "0d7693b07b579c7c6e555f7d72fe7ac9fcc09b34324526b431dee75f3094364d"
+  }
+}

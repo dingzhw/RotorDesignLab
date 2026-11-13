@@ -4,7 +4,7 @@
 
 [GitHub 仓库](https://github.com/dingzhw/RotorDesignLab) · [v0.1.0 发布](https://github.com/dingzhw/RotorDesignLab/releases/tag/v0.1.0) · [公开数据验证路线](docs/public-validation.md)
 
-当前开发分支为 `0.2.0.dev1`：新增统一机型文件、指定拉力反求总距/转速和批量性能图，网页入口为“工程旋翼”。稳定版本 `v0.1.0` 与 `main` 保留首版基准。[工程旋翼格式、用法与验证](docs/engineering-rotor.md)
+当前开发分支为 `0.2.0.dev2`：统一机型文件、指定拉力反求总距/转速和批量性能图，网页入口为“工程旋翼”；新增展向/Mach 气动表和径向入流，已完成 [XV-15 悬停定量对照](docs/xv15-validation.md)。稳定版本 `v0.1.0` 与 `main` 保留首版基准。[工程旋翼格式、用法与验证](docs/engineering-rotor.md)
 
 ## 在 Windows 上启动
 

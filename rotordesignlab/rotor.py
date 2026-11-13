@@ -23,6 +23,11 @@ class Rotor:
     collective_deg: float
     pitch_reference: float
     stations: int
+    airfoil_grid: object = None
+    precone_deg: float = 0.0
+    speed_of_sound: float = 340.3
+    inflow_model: str = 'uniform'
+    tip_loss: str = 'none'
 
     def grid(self):
         root = self.geometry[0, 0] * self.radius
@@ -53,6 +58,9 @@ def axial_loads(rotor, grid, induced_speed):
 
 
 def solve(rotor):
+    if rotor.airfoil_grid is not None or rotor.precone_deg or rotor.inflow_model != 'uniform':
+        from .axial import solve_axial
+        return solve_axial(rotor)
     grid = rotor.grid()
     radius, widths, chord, pitch = grid
     momentum_factor = 2 * rotor.density * pi * rotor.radius**2

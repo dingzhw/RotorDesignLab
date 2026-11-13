@@ -1,0 +1,2 @@
+# Preserve audited public input and result bytes, including source checksums.
+validation/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

@@ -36,11 +36,17 @@ def solve_target(rotor, target, limits):
 
     def residual(value):
         model = changed(value)
+        if model.airfoil_grid is not None or model.precone_deg or model.inflow_model != 'uniform':
+            try:
+                return solve(model)[0]['thrust_n'] - thrust
+            except (SolverError, ValueError):
+                return float('nan')
         loads, _, _ = axial_loads(model, model.grid(), induced)
         return float(loads.sum()) - thrust
 
     # Detect multiple sign-changing roots rather than silently choosing a stalled branch.
-    samples = np.linspace(low, high, 129)
+    advanced = rotor.airfoil_grid is not None or rotor.precone_deg or rotor.inflow_model != 'uniform'
+    samples = np.linspace(low, high, 65 if advanced else 129)
     values = [residual(value) for value in samples]
     roots = [float(x) for x, value in zip(samples, values) if abs(value) <= max(1e-8, thrust * 1e-10)]
     for left, right, fleft, fright in zip(samples[:-1], samples[1:], values[:-1], values[1:]):
