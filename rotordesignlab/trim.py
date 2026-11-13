@@ -61,7 +61,8 @@ class TrimSystem:
                              inflow=x[start:start+3].tolist(),flap_deg=np.rad2deg(x[start+3:start+6]).tolist())
             rotor_data[role]=loads
         induced=self.rotors['main'].rotor.omega*self.Rmain*x[6]*self.bases['main'][:,2]
-        extra=airframe_loads(self.aircraft,velocity,self.air['density_kg_m3'],induced,strict)
+        tail_induced=self.rotors['tail'].rotor.omega*self.selected['tail']['radius_m']*x[12]*self.bases['tail'][:,2]
+        extra=airframe_loads(self.aircraft,velocity,self.air['density_kg_m3'],induced,strict,tail_induced_velocity_body=tail_induced)
         for item in extra.values():F+=item['force_body_n'];M+=item['moment_cg_body_nm']
         items.update(extra)
         # Explicit residual download coefficient, separate from fuselage wake loads.

@@ -21,13 +21,21 @@ def validate_trim_inputs(aircraft):
     cfg=aircraft['trim']
     for key in ('roll_deg','pitch_deg'):
         if not -40<=cfg[key][0]<0<cfg[key][1]<=40:raise ValueError('姿态限制需包含0且位于±40°内。')
-    tables=[cfg['fuselage']['alpha_table'],cfg['fuselage']['beta_table']]
+    fus=cfg['fuselage']
+    tables=list(fus['wind_tables'].values()) if 'wind_tables' in fus else [fus['alpha_table'],fus['beta_table']]
     ids=[]
     for surface in cfg['surfaces']:
         ids.append(surface['id']);n=np.asarray(surface['normal_axis_body']);c=np.asarray(surface['chord_axis_body'])
         if not np.isclose(np.linalg.norm(n),1) or not np.isclose(np.linalg.norm(c),1) or abs(np.dot(c,n))>1e-8:
             raise ValueError('尾翼弦线与法向必须为正交单位向量。')
         tables.append(surface['polar'])
+        if surface.get('reverse_flow_symmetry',False):
+            polar=surface['polar']
+            if polar['angle_deg'][0]!=-90 or polar['angle_deg'][-1]!=90 or max(abs(polar['cl'][0]),abs(polar['cl'][-1]))>1e-8:
+                raise ValueError('反向流对称延拓要求±90°端点且端点CL=0。')
+        if 'incidence_schedule' in surface:
+            schedule=surface['incidence_schedule'];v=np.asarray(schedule['speed_m_s'])
+            if np.any(np.diff(v)<=0) or len(v)!=len(schedule['angle_deg']):raise ValueError('尾翼调度速度需递增、与安装角等长。')
     if len(ids)!=len(set(ids)):raise ValueError('尾翼id不得重复。')
     if set(ids)&{'main','tail','fuselage','download'}:raise ValueError('尾翼id不能占用main/tail/fuselage/download部件名称。')
     for table in tables:
@@ -57,25 +65,52 @@ def lookup(table,angle,strict):
     return {key:float(np.interp(angle,table['angle_deg'],values)) for key,values in table.items() if key!='angle_deg'}
 
 
-def airframe_loads(aircraft,velocity,density,induced_velocity_body,strict=False):
+def legacy_wind_loads(fus,v,density,strict=False):
+    """Original public dimensional wind-axis tables, converted to SI at import."""
+    u,y,w=v;plane=max(float(np.hypot(u,w)),1e-12)
+    alpha=np.rad2deg(np.arctan2(w,max(abs(u),1e-12)));beta=np.arctan2(y,plane)
+    t=fus['wind_tables'];ca=lookup(t['alpha'],alpha,strict)
+    cb=lookup(t['beta'],-np.rad2deg(beta),strict);cc=lookup(t['abs_beta'],abs(np.rad2deg(beta)),strict)
+    c,s=u/plane,w/plane;sb,cbeta=np.sin(beta),np.cos(beta)
+    T=np.array([[c*cbeta,c*sb,-s],[sb,-cbeta,0],[s*cbeta,s*sb,c]])
+    q=.5*density*np.dot(v,v)
+    F=T@(-q*np.array([ca['cd_m2']+cc['cd_m2'],cb['cy_m2'],ca['cl_m2']+cb['cl_m2']]))
+    M=T@(q*np.array([cb['roll_m3'],-ca['cm_m3']-cc['cm_m3'],cb['yaw_m3']]))
+    return F,M,float(alpha),float(np.rad2deg(beta))
+
+
+def airframe_loads(aircraft,velocity,density,induced_velocity_body,strict=False,body_rates=(0,0,0),tail_induced_velocity_body=(0,0,0)):
     cg=np.asarray(aircraft['mass_properties']['cg_m']);cfg=aircraft['trim'];items={}
-    fus=cfg['fuselage'];v=np.asarray(velocity)+fus['wake_fraction']*induced_velocity_body
+    fus=cfg['fuselage'];v=np.asarray(velocity)+fus['wake_fraction']*induced_velocity_body+np.cross(body_rates,np.asarray(fus['position_m'])-cg)
     speed=np.linalg.norm(v);alpha=np.rad2deg(np.arctan2(v[2],v[0])) if speed>1e-9 else 0.
     beta=np.rad2deg(np.arctan2(v[1],np.hypot(v[0],v[2]))) if speed>1e-9 else 0.
-    ca,cb=lookup(fus['alpha_table'],alpha,strict),lookup(fus['beta_table'],beta,strict)
-    scale=.5*density*speed**2*fus['area_m2']
-    force=scale*np.array([ca['cx'],cb['cy'],ca['cz']])
-    moment=scale*fus['length_m']*np.array([cb['cl'],ca['cm'],cb['cn']])+np.cross(np.asarray(fus['position_m'])-cg,force)
+    if 'wind_tables' in fus:force,moment,alpha,beta=legacy_wind_loads(fus,v,density,strict)
+    else:
+        ca,cb=lookup(fus['alpha_table'],alpha,strict),lookup(fus['beta_table'],beta,strict)
+        scale=.5*density*speed**2*fus['area_m2'];force=scale*np.array([ca['cx'],cb['cy'],ca['cz']])
+        moment=scale*fus['length_m']*np.array([cb['cl'],ca['cm'],cb['cn']])
+    moment=moment+np.cross(np.asarray(fus['position_m'])-cg,force)
     items['fuselage']=dict(force_body_n=force.tolist(),moment_cg_body_nm=moment.tolist(),power_w=0,
                            alpha_deg=float(alpha),beta_deg=float(beta))
     for surf in cfg['surfaces']:
-        v=np.asarray(velocity)+surf['wake_fraction']*induced_velocity_body
+        v=(np.asarray(velocity)+surf['wake_fraction']*induced_velocity_body+
+           surf.get('tail_wake_fraction',0)*np.asarray(tail_induced_velocity_body)+np.cross(body_rates,np.asarray(surf['position_m'])-cg))
         chord=np.asarray(surf['chord_axis_body']);normal=np.asarray(surf['normal_axis_body'])
         u,w=np.dot(v,chord),np.dot(v,normal);phi=np.arctan2(w,u)
-        alpha=(surf['incidence_deg']-np.rad2deg(phi)+180)%360-180
-        coeff=lookup(surf['polar'],alpha,strict);scale=.5*density*(u*u+w*w)*surf['area_m2']
+        incidence=surf['incidence_deg']
+        if 'incidence_schedule' in surf:
+            sched=surf['incidence_schedule'];speed=float(np.linalg.norm(velocity))
+            if strict and not sched['speed_m_s'][0]<=speed<=sched['speed_m_s'][-1]:raise ValueError('尾翼安装角调度速度越界。')
+            incidence+=np.interp(speed,sched['speed_m_s'],sched['angle_deg'])
+        alpha=(incidence-np.rad2deg(phi)+180)%360-180
+        query=alpha;reverse=surf.get('reverse_flow_symmetry',False) and abs(alpha)>90
+        if reverse:query=np.sign(alpha)*180-alpha
+        coeff=lookup(surf['polar'],query,strict)
+        if reverse:coeff['cl']=-coeff['cl']
+        scale=.5*density*(u*u+w*w)*surf['area_m2']*surf.get('pressure_ratio',1.)
         lift,drag=scale*coeff['cl'],scale*coeff['cd']
         force=(-lift*np.sin(phi)-drag*np.cos(phi))*chord+(lift*np.cos(phi)-drag*np.sin(phi))*normal
         moment=np.cross(np.asarray(surf['position_m'])-cg,force)
-        items[surf['id']]=dict(force_body_n=force.tolist(),moment_cg_body_nm=moment.tolist(),power_w=0,alpha_deg=float(alpha))
+        items[surf['id']]=dict(force_body_n=force.tolist(),moment_cg_body_nm=moment.tolist(),power_w=0,alpha_deg=float(alpha),incidence_deg=float(incidence),
+                              reverse_flow_estimate=bool(reverse))
     return items

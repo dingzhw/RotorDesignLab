@@ -1,0 +1,11 @@
+{
+  "schema_version": 3,
+  "model": "helicopter",
+  "analysis": "trim",
+  "aircraft_json": "synthetic.json",
+  "altitude_m": 0,
+  "speed_m_s": 0,
+  "climb_m_s": 0,
+  "requested_duration_s": 600,
+  "azimuth_stations": 36
+}

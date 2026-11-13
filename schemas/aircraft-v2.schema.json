@@ -64,6 +64,10 @@
           "items": {
             "$ref": "#/$defs/vector"
           }
+        },
+        "provenance": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },
@@ -281,6 +285,11 @@
                   "damper_nms_rad": {
                     "type": "number",
                     "minimum": 0
+                  },
+                  "delta3_deg": {
+                    "type": "number",
+                    "minimum": -60,
+                    "maximum": 60
                   }
                 },
                 "required": [
@@ -494,16 +503,177 @@
             "provenance": {
               "type": "string",
               "minLength": 1
+            },
+            "wind_tables": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "alpha",
+                "beta",
+                "abs_beta"
+              ],
+              "properties": {
+                "alpha": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "angle_deg",
+                    "cd_m2",
+                    "cl_m2",
+                    "cm_m3"
+                  ],
+                  "properties": {
+                    "angle_deg": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "cd_m2": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "cl_m2": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "cm_m3": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                },
+                "beta": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "angle_deg",
+                    "cy_m2",
+                    "cl_m2",
+                    "roll_m3",
+                    "yaw_m3"
+                  ],
+                  "properties": {
+                    "angle_deg": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "cy_m2": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "cl_m2": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "roll_m3": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "yaw_m3": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                },
+                "abs_beta": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "angle_deg",
+                    "cd_m2",
+                    "cm_m3"
+                  ],
+                  "properties": {
+                    "angle_deg": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "cd_m2": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "cm_m3": {
+                      "type": "array",
+                      "minItems": 2,
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
             }
           },
           "required": [
             "position_m",
             "area_m2",
             "length_m",
-            "alpha_table",
-            "beta_table",
             "wake_fraction",
             "provenance"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "alpha_table",
+                "beta_table"
+              ],
+              "not": {
+                "required": [
+                  "wind_tables"
+                ]
+              }
+            },
+            {
+              "required": [
+                "wind_tables"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "alpha_table"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "beta_table"
+                    ]
+                  }
+                ]
+              }
+            }
           ]
         },
         "surfaces": {
@@ -572,6 +742,43 @@
               "provenance": {
                 "type": "string",
                 "minLength": 1
+              },
+              "pressure_ratio": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 2
+              },
+              "tail_wake_fraction": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2
+              },
+              "incidence_schedule": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "speed_m_s",
+                  "angle_deg"
+                ],
+                "properties": {
+                  "speed_m_s": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "angle_deg": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                }
+              },
+              "reverse_flow_symmetry": {
+                "type": "boolean"
               }
             },
             "required": [

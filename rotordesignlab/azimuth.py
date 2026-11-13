@@ -15,6 +15,7 @@ class AzimuthRotor:
     azimuth_stations: int = 36
     rotation_sign: int = 1
     hinge_offset_m: float = 0.
+    pitch_flap_coupling: float = 0.
 
     def __post_init__(self):
         if type(self.azimuth_stations) is not int or not 12 <= self.azimuth_stations <= 720:
@@ -57,7 +58,7 @@ class AzimuthRotor:
         ut=np.einsum('ijk,ik->ij',relative,self.et)
         up=np.einsum('ijk,ik->ij',relative,normal)
         phi=np.arctan2(up,ut)
-        pitch=(self.harmonics@controls)[:,None]+self.twist
+        pitch=(self.harmonics@controls)[:,None]+self.twist-self.pitch_flap_coupling*beta[:,None]
         alpha=(np.rad2deg(pitch-phi)+180)%360-180
         speed=np.hypot(ut,up);mach=speed/model.speed_of_sound
         if model.airfoil_grid is not None:

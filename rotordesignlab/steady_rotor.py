@@ -34,7 +34,8 @@ def pitt_peters(inflow, velocity, thrust_coefficient, pressure_moments):
 class SteadyRotor:
     def __init__(self, rotor, config, rotation_sign=1, azimuth_stations=36):
         self.rotor=rotor;self.config=config
-        self.kernel=AzimuthRotor(rotor,azimuth_stations,rotation_sign,config['hinge_offset_m'])
+        self.kernel=AzimuthRotor(rotor,azimuth_stations,rotation_sign,config['hinge_offset_m'],
+                                 np.tan(np.deg2rad(config.get('delta3_deg',0))))
         self.scale=rotor.density*pi*rotor.radius**2*(rotor.omega*rotor.radius)**2
         self.fixed=config['mode']=='fixed'
 

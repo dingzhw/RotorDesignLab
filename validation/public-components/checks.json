@@ -1,0 +1,114 @@
+{
+  "julia_fuselage_max_abs_error": 9.094947017729282e-13,
+  "last_grid_relative_change": {
+    "required_power_w": 3.698786693440148e-05,
+    "accessory_power_w": 0.0,
+    "main_thrust_n": 5.449960688297395e-07,
+    "main_torque_nm": 3.7206942594680825e-05,
+    "main_power_w": 3.720694259445878e-05,
+    "tail_thrust_n": 3.5091148694599283e-05,
+    "tail_torque_nm": 4.895189513676179e-05,
+    "tail_power_w": 4.895189513676179e-05
+  },
+  "envelope": [
+    {
+      "speed_m_s": 0,
+      "status": "converged",
+      "error": "",
+      "summary": {
+        "speed_m_s": 0,
+        "climb_m_s": 0,
+        "altitude_m": 0,
+        "mass_kg": 7438.914868000001,
+        "required_power_w": 1352028.2092905378,
+        "transmission_loss_w": 56339.1296370236,
+        "accessory_power_w": 20000,
+        "continuous_margin_w": 1047971.7907094622,
+        "short_time_margin_w": 1447971.7907094622,
+        "duration_margin_w": 1047971.7907094622,
+        "max_scaled_residual": 1.8990824395041868e-10,
+        "max_internal_residual": 4.7836595795658354e-12,
+        "main_collective_deg": 7.404671235062534,
+        "main_cos_deg": -1.2536403414341786,
+        "main_sin_deg": 2.3036255205909613,
+        "tail_collective_deg": 10.213879564301726,
+        "roll_deg": -2.327271736115404,
+        "pitch_deg": 5.81911122077712,
+        "main_thrust_n": 73584.87136376688,
+        "main_torque_nm": 43736.70520096488,
+        "main_power_w": 1180891.040426052,
+        "tail_thrust_n": 5101.274242561627,
+        "tail_torque_nm": 760.6968321895541,
+        "tail_power_w": 94798.03922746224
+      }
+    },
+    {
+      "speed_m_s": 20,
+      "status": "converged",
+      "error": "",
+      "summary": {
+        "speed_m_s": 20,
+        "climb_m_s": 0,
+        "altitude_m": 0,
+        "mass_kg": 7438.914868000001,
+        "required_power_w": 917315.9305517913,
+        "transmission_loss_w": 37279.874806712585,
+        "accessory_power_w": 20000,
+        "continuous_margin_w": 1482684.0694482087,
+        "short_time_margin_w": 1882684.0694482087,
+        "duration_margin_w": 1482684.0694482087,
+        "max_scaled_residual": 1.0597143979347842e-16,
+        "max_internal_residual": 2.0816681711721685e-17,
+        "main_collective_deg": 5.64668870154797,
+        "main_cos_deg": -2.316734272012755,
+        "main_sin_deg": 3.5615086616611267,
+        "tail_collective_deg": 5.880327317250239,
+        "roll_deg": -1.0353810821524383,
+        "pitch_deg": 4.470507165152794,
+        "main_thrust_n": 73299.80425075565,
+        "main_torque_nm": 30260.432985970794,
+        "main_power_w": 817031.6906212115,
+        "tail_thrust_n": 3811.0136794829564,
+        "tail_torque_nm": 345.08397627882516,
+        "tail_power_w": 43004.365123867196
+      }
+    },
+    {
+      "speed_m_s": 40,
+      "status": "failed",
+      "error": "tail: Element outside Reynolds table domain.",
+      "summary": null
+    },
+    {
+      "speed_m_s": 50,
+      "status": "failed",
+      "error": "tail: Element outside Reynolds table domain.",
+      "summary": null
+    }
+  ],
+  "tm85890_table4": [
+    {
+      "eas_kt": 1.0,
+      "pitch_deg_difference_deg": 0.7449349819258364,
+      "roll_deg_difference_deg": 0.02483276007477464
+    },
+    {
+      "eas_kt": 20.0,
+      "pitch_deg_difference_deg": -0.07147625592260809,
+      "roll_deg_difference_deg": -0.39623875264321184
+    },
+    {
+      "eas_kt": 40.0,
+      "pitch_deg_difference_deg": 0.06230616031949321,
+      "roll_deg_difference_deg": -0.0068168575719465
+    }
+  ],
+  "physical_accuracy_accepted": false,
+  "remaining_gaps": [
+    "Tail Re table excludes some 40/50 m/s elements",
+    "Tail teeter/blockage/swirl absent",
+    "HT frozen collective schedule; not original stabilator feedback",
+    "Legacy aero table measurement provenance incomplete",
+    "Download and power availability remain estimates"
+  ]
+}
