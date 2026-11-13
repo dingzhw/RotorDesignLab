@@ -1,0 +1,67 @@
+{
+  "public_hover": {
+    "xv15": {
+      "thrust_n": 28611.005640737632,
+      "power_w": 549667.9354484765,
+      "ct": 0.009262265319488493,
+      "relative_to_uniform_axial": {
+        "thrust": 0.00020913372395070517,
+        "power": 3.370283076353786e-05
+      },
+      "inflow": [
+        0.0680524258182227,
+        1.0086506098997597e-19,
+        -2.4448167245201643e-18
+      ],
+      "diagnostics": {
+        "momentum_induced": 0.06805242581821598,
+        "total_axial_ratio": 0.06805242581821598,
+        "mu": 0.0,
+        "mass_flow_mean": 0.06805242581821598,
+        "mass_flow_harmonic": 0.13610485163643196,
+        "wake_skew_rad": 0.0,
+        "internal_max_residual": 1.3877787807814457e-17,
+        "omitted_flap_harmonics_rms": 0.0,
+        "alpha_min_deg": 0.3189699043107055,
+        "alpha_max_deg": 15.946347682702367,
+        "mach_max": 0.6910686852589839,
+        "flap_peak_deg": 1.5000000000000002,
+        "reverse_flow_fraction": 0.0
+      },
+      "scope": "fixed prescribed precone / uniform PP hover; annular performance validation remains separate"
+    },
+    "caradonna-tung": {
+      "thrust_n": 722.2341039290166,
+      "power_w": 7639.905485116314,
+      "ct": 0.006416967608066786,
+      "relative_to_uniform_axial": {
+        "thrust": 3.126598930114355e-05,
+        "power": 8.335039902052088e-06
+      },
+      "inflow": [
+        0.05664347980442768,
+        -2.991638734249343e-17,
+        1.245105908907013e-16
+      ],
+      "diagnostics": {
+        "momentum_induced": 0.05664347980159228,
+        "total_axial_ratio": 0.05664347980159228,
+        "mu": 0.0,
+        "mass_flow_mean": 0.05664347980159228,
+        "mass_flow_harmonic": 0.11328695960318455,
+        "wake_skew_rad": 0.0,
+        "internal_max_residual": 2.8353916436962834e-12,
+        "omitted_flap_harmonics_rms": 0.0,
+        "alpha_min_deg": -10.590734292503441,
+        "alpha_max_deg": 4.752405828643816,
+        "mach_max": 0.438926053681915,
+        "flap_peak_deg": 0.4999999999998895,
+        "reverse_flow_fraction": 0.0
+      },
+      "scope": "fixed prescribed precone / uniform PP hover; annular performance validation remains separate",
+      "ct_error_pct": 39.49929582753884
+    }
+  },
+  "julia_operator_max_abs_difference": 4.579669976578771e-14,
+  "note": "Software/model checks. No new forward-flight experiment; no parameter fitting."
+}
