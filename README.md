@@ -2,6 +2,8 @@
 
 本机旋翼计算工作台。当前提供 UH‑60 80 kt 平飞配平、全阶频响和短时开环分析，以及通用三片叶旋翼的悬停和轴向推进计算。
 
+[GitHub 仓库](https://github.com/dingzhw/RotorDesignLab) · [v0.1.0 发布](https://github.com/dingzhw/RotorDesignLab/releases/tag/v0.1.0) · [公开数据验证路线](docs/public-validation.md)
+
 ## 在 Windows 上启动
 
 需要 64 位 Python 3.14 和 Julia 1.12.4。首次准备依赖后，计算和界面可以离线运行。使用 PowerShell 从仓库根目录执行。

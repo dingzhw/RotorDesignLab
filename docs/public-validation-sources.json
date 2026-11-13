@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-11-13",
+  "sources": [
+    {
+      "id": "S01",
+      "title": "Rotor Performance of an Isolated Full-Scale XV-15 Tiltrotor in Helicopter Mode",
+      "publisher": "NASA / Mark D. Betzina",
+      "date": "2002",
+      "source_type": "original experiment / PDF",
+      "url": "https://rotorcraft.arc.nasa.gov/Publications/files/Betzina_AHS02.pdf",
+      "filename": "XV15_Betzina_2002.pdf",
+      "access": "public PDF downloaded and SHA-256 recorded",
+      "claims_supported": "Isolated rotor hover and low-speed helicopter-mode performance; Mtip=0.691, first-harmonic flapping trimmed near zero",
+      "reliability_notes": "Read thrust/torque normalization, hub tare and shaft angle; digitized plots are not original samples",
+      "use_in_report": "Priority 1 hover power validation",
+      "local_verification": {
+        "sha256": "24c79ddd95a7dc9c98ca72fa0168d8e09a7cda55e4021e39f9210d2f88de9180",
+        "bytes": 2706667,
+        "downloaded_at": "2026-11-13T05:32:10.290013+00:00"
+      }
+    },
+    {
+      "id": "S02",
+      "title": "Rotor Design Options for Improving XV-15 Whirl-Flutter Stability Margins",
+      "publisher": "NASA / Acree, Peyran, Johnson",
+      "date": "2004",
+      "source_type": "engineering model / PDF",
+      "url": "https://rotorcraft.arc.nasa.gov/Publications/files/Acree_TP2004-212262.pdf",
+      "filename": "XV15_TP2004_212262.pdf",
+      "access": "public PDF downloaded and SHA-256 recorded",
+      "claims_supported": "Appendix A provides CAMRAD II model inputs for geometry and aerodynamic tables",
+      "reliability_notes": "Engineering model includes modifications to aircraft; check original metal blade versus ATB and spanwise airfoil/Mach tables before using",
+      "use_in_report": "Inputs paired with S01",
+      "local_verification": {
+        "sha256": "22ac1ffbb618c3070df22340b7392bf17a2c20b8dcdc4bde3853cd944833219c",
+        "bytes": 614907,
+        "downloaded_at": "2026-11-13T05:32:15.453613+00:00"
+      }
+    },
+    {
+      "id": "S03",
+      "title": "Experimental and analytical studies of a model helicopter rotor in hover",
+      "publisher": "NASA / Caradonna and Tung",
+      "date": "1981",
+      "source_type": "original experiment / PDF",
+      "url": "https://ntrs.nasa.gov/citations/19820004169",
+      "download_url": "https://ntrs.nasa.gov/api/citations/19820004169/downloads/19820004169.pdf",
+      "filename": "Caradonna_Tung_TM81232.pdf",
+      "access": "public PDF downloaded and SHA-256 recorded",
+      "claims_supported": "Blade pressure and tip-vortex surveys across tip Mach numbers",
+      "reliability_notes": "Blade-element model can compare integrated sectional loads, not chordwise pressure or vortex position; start at subsonic conditions",
+      "use_in_report": "Priority 2 radial loading and inflow",
+      "local_verification": {
+        "sha256": "16c14789a5f65892b4ffb4e3628872723195c930f96680068ead7375e57208d2",
+        "bytes": 2334139,
+        "downloaded_at": "2026-11-13T05:32:23.722098+00:00"
+      }
+    },
+    {
+      "id": "S04",
+      "title": "UIUC Propeller Database Volume 1",
+      "publisher": "UIUC Applied Aerodynamics Group",
+      "date": "2015-02-03 (page version)",
+      "source_type": "original experimental text data and approximate geometry",
+      "url": "https://m-selig.ae.illinois.edu/props/volume-1/propDB-volume-1.html",
+      "access": "public page and data links verified",
+      "claims_supported": "Static RPM sweeps and axial advance-ratio sweeps; some propeller geometries available",
+      "reliability_notes": "Use corrected online data rather than older thesis tables; confirm section airfoils and Reynolds dependence separately; these are propellers, not full helicopter rotors",
+      "use_in_report": "Axial-flow supplementary validation"
+    },
+    {
+      "id": "S05",
+      "title": "A mathematical model of the UH-60 helicopter",
+      "publisher": "NASA / Kathryn B. Hilbert",
+      "date": "1984-04-01",
+      "source_type": "engineering mathematical model / PDF",
+      "url": "https://ntrs.nasa.gov/citations/19840015585",
+      "download_url": "https://ntrs.nasa.gov/api/citations/19840015585/downloads/19840015585.pdf",
+      "filename": "UH60_TM85890.pdf",
+      "access": "public PDF downloaded and SHA-256 recorded",
+      "claims_supported": "Configuration parameters, fuselage, canted tail rotor and stabilator equations; trim and derivatives",
+      "reliability_notes": "Report validation described as comparison with another mathematical model; do not label these outputs flight measurements",
+      "use_in_report": "Whole-aircraft configuration and trim regression",
+      "local_verification": {
+        "sha256": "2bc58d43a399c4ef09c96eb704f01d384c43f70583d586826368358fcf88fc0c",
+        "bytes": 1081501,
+        "downloaded_at": "2026-11-13T05:32:27.993395+00:00"
+      }
+    },
+    {
+      "id": "S06",
+      "title": "UH-60 Airloads Flight Project and Wind Tunnel Test Summary",
+      "publisher": "NASA Ames",
+      "date": "n.d.",
+      "source_type": "original test program and report index",
+      "url": "https://rotorcraft.arc.nasa.gov/Research/Programs/uh_60_program.html",
+      "related_url": "https://rotorcraft.arc.nasa.gov/Research/Programs/uh_60_test_summary.html",
+      "access": "public program pages verified; complete raw database access unconfirmed",
+      "claims_supported": "Blade airloads, structural loads, controls, aircraft states; flight and wind-tunnel conditions",
+      "reliability_notes": "Reports are open; do not assume TRENDSClient time-history database is anonymous public download; match counter, calibration and corrections",
+      "use_in_report": "Forward flight and later aircraft validation"
+    },
+    {
+      "id": "S07",
+      "title": "Rotor/wing aerodynamic interactions in hover",
+      "publisher": "NASA / Felker and Light",
+      "date": "1986-05-01",
+      "source_type": "original experiment and semi-empirical method / PDF",
+      "url": "https://ntrs.nasa.gov/citations/19860018588",
+      "download_url": "https://ntrs.nasa.gov/api/citations/19860018588/downloads/19860018588.pdf",
+      "filename": "Rotor_Wing_TM88255.pdf",
+      "access": "public PDF downloaded and SHA-256 recorded",
+      "claims_supported": "Wing download, surface pressures, rotor performance and downwash; geometry variations",
+      "reliability_notes": "Future interference-module validation; citing a download formula does not reproduce the experiment",
+      "use_in_report": "Rotor-wing interference roadmap",
+      "local_verification": {
+        "sha256": "cc3d227d4b4dc9388beaa095694605a36d6acce56d8939e807e1f60749782150",
+        "bytes": 1333550,
+        "downloaded_at": "2026-11-13T05:32:32.807854+00:00"
+      }
+    },
+    {
+      "id": "S08",
+      "title": "Aerodynamics of Wings in Tandem at Low Reynolds Numbers",
+      "publisher": "Auburn University / Syed Hassan Raza Shah",
+      "date": "2023-12-07",
+      "source_type": "doctoral dissertation / original experiment",
+      "url": "https://etd.auburn.edu/handle/10415/9101",
+      "access": "public thesis page and PDF link verified",
+      "claims_supported": "NACA0012 isolated and tandem-wing forces/moments at Re=20000 and 100000",
+      "reliability_notes": "Match chapter-specific geometry, axes, Reynolds number and angles; unpowered wing data do not validate powered rotor-wing coupling",
+      "use_in_report": "Reference workflow and future wing interference"
+    },
+    {
+      "id": "S09",
+      "title": "Time and frequency-domain identification and verification of BO-105 dynamic models",
+      "publisher": "NASA index / Kaletka et al.",
+      "date": "1989",
+      "source_type": "flight-identification paper index",
+      "url": "https://ntrs.nasa.gov/citations/19910060770",
+      "access": "indexed; NTRS has no downloadable full text",
+      "claims_supported": "Candidate independent flight-dynamics identification benchmark",
+      "reliability_notes": "Not a ready-to-run dataset; full paper, matrices and condition definitions still needed",
+      "use_in_report": "Deferred independent aircraft benchmark"
+    }
+  ]
+}
