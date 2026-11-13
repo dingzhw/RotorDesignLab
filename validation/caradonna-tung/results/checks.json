@@ -1,0 +1,98 @@
+{
+  "solver_version": "0.2.0.dev2",
+  "status": "comparison_completed",
+  "engineering_accuracy_qualified": false,
+  "reference_ct": 0.0046,
+  "models": {
+    "uniform": {
+      "ct": 0.0064167873035205335,
+      "ct_error_pct": 39.49537616348986,
+      "collective_deg": 8,
+      "radial_rmse": 0.16111501600657105,
+      "radial_mape_pct": 51.81938408144424,
+      "max_abs_radial_error_pct": 96.22650272632328,
+      "max_projection_difference_pct": 1.1446909626741775,
+      "reynolds_at_stations": [
+        981818.5358857918,
+        1331381.3712150685,
+        1564832.6365957232,
+        1740042.3171379962,
+        1876367.4891506422
+      ]
+    },
+    "annular": {
+      "ct": 0.005938125730215506,
+      "ct_error_pct": 29.089689787293604,
+      "collective_deg": 8,
+      "radial_rmse": 0.0723038546242581,
+      "radial_mape_pct": 26.037735030058663,
+      "max_abs_radial_error_pct": 30.94613573170615,
+      "max_projection_difference_pct": 0.5977891245345646,
+      "reynolds_at_stations": [
+        979512.0984892818,
+        1331359.9557756959,
+        1565947.716544061,
+        1742223.6788962546,
+        1880607.8570294746
+      ]
+    },
+    "annular_same_CT": {
+      "ct": 0.004600000000002343,
+      "ct_error_pct": 5.093703236980218e-11,
+      "collective_deg": 6.670717351062278,
+      "radial_rmse": 0.009910407325876353,
+      "radial_mape_pct": 2.937686237009853,
+      "max_abs_radial_error_pct": 5.501950448661674,
+      "max_projection_difference_pct": 0.5550307514912811,
+      "reynolds_at_stations": [
+        978577.5510720059,
+        1330304.2637413305,
+        1564782.9919096008,
+        1740843.950888495,
+        1878652.7563278442
+      ]
+    }
+  },
+  "grid_relative_change_480_960": {
+    "thrust_n": 7.554525392838851e-05,
+    "torque_nm": 0.00011629610376306942,
+    "power_w": 0.00011629610376306942,
+    "cl_0.50": 4.2416596390815187e-07,
+    "cl_0.68": 2.6709449207906744e-08,
+    "cl_0.80": 1.2701077907184555e-06,
+    "cl_0.89": 2.44246696978756e-06,
+    "cl_0.96": 4.793716707718332e-05
+  },
+  "same_CT_relative_error": 5.093703236980218e-13,
+  "pressure_check": {
+    "chord_normal_coefficient": 0.2868366,
+    "reported_cl": 0.2886,
+    "difference_pct": -0.6110187110187182,
+    "method": "Linear trapezoidal Cp integration; shared LE Cp; both TE Cp=0. Sign/scale diagnostic only."
+  },
+  "inputs": {
+    "airfoils.json": "3f558833881536f5530d1ce6a3d67c1c343f7037feaa9954984fc776102cdd39",
+    "geometry.csv": "e9a41bfe613146eafbe1c3588e9446848502488cf89ffe6b55d4f22776aaf5fc",
+    "hover.json": "6535909d03e56bd99375c675353586e190f8dc74cc9c6e990ca6895647cdff9c",
+    "ladson-fixed.csv": "e5f08daa53488d08acc9d35a307f127143801a3187434d720926f82b068829dd",
+    "ladson-free.csv": "73adc585fd3ed88e64edf37d74f537b56419f7674e9bf436875bcb631b0f27a6",
+    "pressure-r080.csv": "fde29e5d3608cb967b0c1573f0e9bbf2c7834e33c36b6ec3603ffb8d1d9c8ad8",
+    "provenance.json": "93646d52cee0a028265760f236cfe2b3819ad3b100bf36a91bec28b616bc298d",
+    "reference.csv": "65876c7f58c7ddcc796fcb86600bd089cfdd392395b8db8d8f686c79caa70cc6"
+  },
+  "code": {
+    "tools/validate_caradonna.py": "f0f314f8c9451372cb06607d5554f315e8e3a410423a08adfca8c42ae0b0fe9e",
+    "tools/prepare_caradonna.py": "85cd668554b0be23244f4988941ad7c47b4a05de0e6531b69c7c6c05d7df4ed6",
+    "rotordesignlab/aircraft.py": "b10dbe7a9ffd6d60489dae93daabc1070f1b9f947d1958bbd013472f5a5743d5",
+    "rotordesignlab/airfoils.py": "bb162d2522c0a862ab17bf65c91f7a075d08a76fde15a7eef3e46693cc9ee4a6",
+    "rotordesignlab/axial.py": "9686e05365b8767e00567b8c1e2a4b4454513f7830a7b378b541d883a5b7d218",
+    "rotordesignlab/batch.py": "90f70c6cd1d801df3f4b21691897a6f220caad971a496237d339e0f2f714ec89",
+    "rotordesignlab/cases.py": "8b70311c1cc154dd33ae83727bd629fa46d7839b5a61dd15c414da7dd3dbbbe7",
+    "rotordesignlab/inverse.py": "2ec14bdabab613560fb8a4d21e9cce9e9b0bed015701036bbb3ee6e7bb762677",
+    "rotordesignlab/legacy_check.py": "13881fbbf6a5c22e0dc92cc88f2fc2b33982c0034ef1b604e1006af51cbcc902",
+    "rotordesignlab/rotor.py": "bf58f6f92bf5e8385e4fe7de6a1e0ad8e495a8f984e06bd59a44517e74427124",
+    "rotordesignlab/uh60.py": "c92dbbd44017e6fe8e965b09926efb72cd917aa894b81f282fffd3465d3a0e41",
+    "rotordesignlab/__init__.py": "dec75a466eb5e686109e50fa12217f51cfbfeeba3981ce9b366465c4840845ec",
+    "rotordesignlab/__main__.py": "0cf4dd07ed7df5c9eb27dbc82d2205d1191a9ef09b9f6d4245d6f808634b6fd6"
+  }
+}

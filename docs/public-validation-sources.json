@@ -143,6 +143,23 @@
       "claims_supported": "Candidate independent flight-dynamics identification benchmark",
       "reliability_notes": "Not a ready-to-run dataset; full paper, matrices and condition definitions still needed",
       "use_in_report": "Deferred independent aircraft benchmark"
+    },
+    {
+      "id": "S10",
+      "title": "Effects of Independent Variation of Mach and Reynolds Numbers on the Low-Speed Aerodynamic Characteristics of the NACA 0012 Airfoil Section",
+      "publisher": "NASA / Charles L. Ladson",
+      "date": "1988",
+      "source_type": "original airfoil experiment / NASA TM-4074",
+      "url": "https://ntrs.nasa.gov/citations/19880019495",
+      "download_url": "https://ntrs.nasa.gov/api/citations/19880019495/downloads/19880019495.pdf",
+      "filename": "NACA0012_TM4074.pdf",
+      "access": "public PDF downloaded; Tables I and VII visually checked",
+      "claims_supported": "NACA0012 measured CL/CD, Re=2e6 and M=0.15, free/fixed transition subsets",
+      "reliability_notes": "Use table-specific Re/M, not the broad web abstract range. PG-generated Mach nodes and reflected negative-alpha extensions are model assumptions.",
+      "use_in_report": "Caradonna–Tung airfoil input and transition sensitivity",
+      "local_verification": {
+        "sha256": "8e466706cbdf54b3c778ea2b089c4f52d87686bf7f6b1bd10d224b42c2d06902"
+      }
     }
   ]
 }

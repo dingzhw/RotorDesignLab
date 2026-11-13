@@ -1,0 +1,52 @@
+{
+  "sources": [
+    {
+      "id": "CT",
+      "url": "https://ntrs.nasa.gov/api/citations/19820004169/downloads/19820004169.pdf",
+      "sha256": "16c14789a5f65892b4ffb4e3628872723195c930f96680068ead7375e57208d2",
+      "used": "experiment pp.2–3; Figure 1; Table 17; Figure 6"
+    },
+    {
+      "id": "LADSON",
+      "url": "https://ntrs.nasa.gov/api/citations/19880019495/downloads/19880019495.pdf",
+      "sha256": "8e466706cbdf54b3c778ea2b089c4f52d87686bf7f6b1bd10d224b42c2d06902",
+      "used": "Table I Re=2e6 subset; Table VII Re=2e6 sensitivity"
+    },
+    {
+      "id": "FERLISI",
+      "url": "https://publications.polymtl.ca/3059/1/208_CarloFerlisi.pdf",
+      "used": "Table 4.1: numerical root-cutout convention 0.1905 m; not a new experimental measurement"
+    }
+  ],
+  "transcription": "Manual, checked against rendered original tables and independent OCR where legible.",
+  "reference": {
+    "rpm": 1250,
+    "collective_deg": 8,
+    "mach_tip": 0.439,
+    "ct": 0.0046,
+    "ct_source": "Figure 6, 1250 rpm filled circles",
+    "load_source": "Table 17, five sectional CL values",
+    "precision": "0.00005 is table rounding only; experimental error bars unavailable"
+  },
+  "assumptions": {
+    "root_cutout_r_R": 0.16666666666666666,
+    "root_sensitivity_r_R": [
+      0.1,
+      0.243
+    ],
+    "density_kg_m3": 1.225,
+    "dynamic_viscosity_pa_s": 1.7894e-05,
+    "airfoil_reynolds": 2000000,
+    "transition": "free; fixed-transition sensitivity is a separate run",
+    "pg": "weak-compressibility lift estimate; not a measured Mach/Re airfoil map",
+    "comparison": "rotor-normal force per blade/chord normalized by 0.5*rho*(Omega*r)^2",
+    "projection_gap": "Original report does not fully specify the CL integration/projection algorithm; alternative chord-normal and relative-flow lift definitions are exported."
+  },
+  "missing": [
+    "Mach/Re-resolved NACA0012 data over the full radial domain",
+    "experimental root-cutout drawing and exact ambient state",
+    "experimental transition/roughness and load uncertainty",
+    "pressure-integration endpoint/quadrature/projection convention",
+    "nonlocal wake contraction, tip-vortex interaction, root loss and elastic blade response"
+  ]
+}
