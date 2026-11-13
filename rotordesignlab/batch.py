@@ -57,6 +57,9 @@ def plot_performance(rows, axes, output):
 
 
 def run_batch(spec, base, output):
+    if isinstance(spec,dict) and spec.get('kind')=='helicopter_trim_sweep':
+        from .trim_batch import run_trim_batch
+        return run_trim_batch(spec,Path(base),Path(output))
     if isinstance(spec, dict) and spec.get('kind') in ('helicopter_sweep', 'helicopter_comparison'):
         from .hover_batch import run_hover_batch
         return run_hover_batch(spec, base, output)

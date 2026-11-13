@@ -75,24 +75,30 @@ class TrimSystem:
         return np.r_[outer,10*np.array(internal)],dict(components=items,force=F,moment=M,velocity=velocity,rotor_data=rotor_data)
 
 
-def run_trim(case,base,output,initial=None):
+def run_trim(case,base,output):
     started=perf_counter()
     allowed={'schema_version','model','analysis','aircraft_json','speed_m_s','climb_m_s','requested_duration_s',
-             'radial_stations','azimuth_stations','cg_x_m',*VARIABLES}
+             'radial_stations','azimuth_stations','cg_x_m','initial_state',*VARIABLES}
     if set(case)-allowed:raise ValueError(f'配平工况未识别字段：{sorted(set(case)-allowed)}')
     if not isinstance(case.get('aircraft_json'),str):raise ValueError('需要aircraft_json。')
     for key,bounds in [('speed_m_s',(0,150)),('climb_m_s',(0,15)),('altitude_m',(0,11000)),('requested_duration_s',(.001,1e9))]:numeric(case,key,*bounds)
     case=dict(case,azimuth_stations=case.get('azimuth_stations',36))
     numeric(case,'azimuth_stations',12,720,integer=True)
     path=(base/case['aircraft_json']).resolve();aircraft=read_aircraft(path);require_analysis(aircraft,'trim')
-    apply_design(aircraft,case)
     if 'cg_x_m' in case:aircraft['mass_properties']['cg_m'][0]=numeric(case,'cg_x_m',-100,100)
+    apply_design(aircraft,case)
     saved=snapshot_aircraft(aircraft,path.parent,output);snapshot=dict(case,aircraft_json='aircraft.json')
     write_json(output/'case.json',snapshot)
     plant=aircraft['powerplant'];altitude=case['altitude_m']
     if not plant['altitude_m'][0]<=altitude<=plant['altitude_m'][-1]:raise ValueError('高度超出可用功率曲线范围。')
     system=TrimSystem(saved,output,case);low,high=system.bounds()
-    seed=system.initial() if initial is None else np.asarray(initial)
+    seed=system.initial()
+    if 'initial_state' in case:
+        values=case['initial_state']
+        if (not isinstance(values,list) or len(values)!=18 or
+            any(type(v) not in (int,float) or not np.isfinite(v) for v in values)):
+            raise ValueError('initial_state需要18个有限数值：6个弧度操纵/姿态及两桨各6个稳态参数。')
+        seed=np.asarray(values,dtype=float)
     initial_seed=np.clip(seed,low+1e-8,high-1e-8)
     fit=least_squares(lambda x:system.evaluate(x)[0],initial_seed,bounds=(low,high),x_scale='jac',
                       ftol=1e-10,xtol=1e-10,gtol=1e-10,max_nfev=120)
@@ -102,15 +108,17 @@ def run_trim(case,base,output,initial=None):
     diagnostic=dict(nfev=fit.nfev,message=str(fit.message),initial_state=initial_seed.tolist(),
         solved_state=fit.x.tolist(),scaled_force_moment_residual=residual[:6].tolist(),
         rotor_internal_residual=(residual[6:]/10).tolist(),near_limits=near_limits,elapsed_s=perf_counter()-started)
+    diagnostic['rotors']={role:data['components'][role]['diagnostics'] for role in ('main','tail')}
     write_json(output/'trim-diagnostics.json',diagnostic)
     write_csv(output/'residuals.csv',['component','scaled_residual'],zip(['Fx','Fy','Fz','Mx','My','Mz'],residual[:6]))
     try:system.evaluate(fit.x,strict=True)
     except ValueError as error:
         numerical=np.max(abs(residual[:6]))>1e-4 or np.max(abs(residual[6:]/10))>1e-6
-        return dict(status='failed',solver_status='failed',analysis='trim',support_status='not_established',
+        return dict(status='failed',solver_status='not_converged' if numerical else 'converged',analysis='trim',
+            support_status='not_established' if numerical else 'outside_implemented_domain',
             design_limits_status='not_evaluated',evidence_status='model_estimate',diagnostics=diagnostic,
             failure_kind=('control_limited' if near_limits else 'residual_not_converged') if numerical else 'outside_supported_domain',
-            error=str(error)),snapshot
+            error=('配平方程未收敛；最终试探状态检查：' if numerical else '')+str(error)),snapshot
     controls=dict(zip(CONTROL_NAMES,np.rad2deg(fit.x[:6]).tolist()))
     margins={name:dict(to_lower=float(np.rad2deg(value-lo)),to_upper=float(np.rad2deg(hi-value)))
              for name,value,lo,hi in zip(CONTROL_NAMES,fit.x[:6],low[:6],high[:6])}

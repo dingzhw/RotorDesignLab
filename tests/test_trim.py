@@ -61,3 +61,11 @@ class TrimTest(unittest.TestCase):
             np.testing.assert_allclose(after[key]['moment_cg_body_nm'],expected)
         a['trim']['surfaces'][0]['id']='main'
         with self.assertRaisesRegex(ValueError,'部件名称'):require_analysis(a,'trim')
+
+    def test_combined_cg_tail_arm_override_replay(self):
+        r,out=self.run_point(speed_m_s=20,cg_x_m=.05,tail_arm_m=2.)
+        self.assertEqual(r['status'],'converged',r)
+        saved=read_case(out/'aircraft.json');tail=next(x for x in saved['rotors'] if x['role']=='tail')
+        self.assertAlmostEqual(saved['mass_properties']['cg_m'][0]-tail['position_m'][0],2.)
+        replay=run_case(read_case(out/'case.json'),out,self.base/'combined-replay')
+        self.assertEqual(r['summary'],replay['summary'])

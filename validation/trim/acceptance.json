@@ -1,0 +1,101 @@
+{
+  "synthetic": {
+    "last_grid_relative_changes": {
+      "required_power_w": 5.891869321317245e-07,
+      "accessory_power_w": 0.0,
+      "main_thrust_n": 1.738182930921539e-10,
+      "main_torque_nm": 5.633648232361566e-07,
+      "main_power_w": 5.63364823014112e-07,
+      "tail_thrust_n": 6.535312593314302e-07,
+      "tail_torque_nm": 1.4050820074107406e-06,
+      "tail_power_w": 1.4050820074107406e-06
+    },
+    "zero_speed_power_relative_change": 2.5469304443248575e-09
+  },
+  "uh60-public": {
+    "last_grid_relative_changes": {
+      "required_power_w": 3.549054000062668e-05,
+      "accessory_power_w": 0.0,
+      "main_thrust_n": 4.882602780975631e-07,
+      "main_torque_nm": 3.589016871030637e-05,
+      "main_power_w": 3.589016871030637e-05,
+      "tail_thrust_n": 3.541721450028845e-05,
+      "tail_torque_nm": 4.309349655606809e-05,
+      "tail_power_w": 4.3093496556290134e-05
+    },
+    "zero_speed_power_relative_change": 7.24158053522217e-08
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+    "logical_cpus": 24,
+    "platform": "Windows-11-10.0.26320-SP0",
+    "python": "3.14.3",
+    "numpy": "2.4.3"
+  },
+  "timing": {
+    "radial": 80,
+    "azimuth": 36,
+    "points": 100,
+    "elapsed_s": 32.23133809998399,
+    "target_600s_pass": true,
+    "grid_single_point_max_s": 0.5488550000009127
+  },
+  "public_comparison": {
+    "source": "https://ntrs.nasa.gov/citations/19840015585",
+    "table": "Table 4, printed page 15 / PDF page 21",
+    "kind": "mathematical_model_comparison_with_configuration_differences",
+    "reference_control_units": "inches with PBA/crossfeed; not compared to blade pitch",
+    "environment_assumption": "Sea-level ISA for EAS=TAS; reference table does not specify altitude",
+    "high_speed_exclusion": "At 60/100/140 kt reference roll=0 with nonzero body lateral speed; current trim prescribes body v=0",
+    "pitch_max_absolute_difference_deg": 0.579613149950915,
+    "roll_max_absolute_difference_deg": 0.5688018435133821,
+    "physical_accuracy_accepted": false
+  },
+  "input_code_sha256": {
+    "rotordesignlab/__init__.py": "03e30ad0112ada7341d4537fb47cab87ab8baef0d6415e5cd66bc3e32e64e502",
+    "rotordesignlab/__main__.py": "0cf4dd07ed7df5c9eb27dbc82d2205d1191a9ef09b9f6d4245d6f808634b6fd6",
+    "rotordesignlab/aircraft.py": "d0b63f2fdc457f7ac7c982f4be7f62f091e2657b17c7e70e51f3dd2aabf67b2c",
+    "rotordesignlab/airfoils.py": "bb162d2522c0a862ab17bf65c91f7a075d08a76fde15a7eef3e46693cc9ee4a6",
+    "rotordesignlab/airframe.py": "1b868ceac648443da8eee0671428ac75aacdd6ebd2b48137f45f1b24e9ea5015",
+    "rotordesignlab/axial.py": "9686e05365b8767e00567b8c1e2a4b4454513f7830a7b378b541d883a5b7d218",
+    "rotordesignlab/azimuth.py": "aae396057d7fcbbc134c6cb950e533ba12a5a2d97ed73eff5b9e1b64e7a9045c",
+    "rotordesignlab/batch.py": "189022b671fe05959e33f8e695074b9bbe89cfb43cfa6f4725a4c6f59051f6d0",
+    "rotordesignlab/cases.py": "0e425e028742e33f9686cba432fed54ab2afc3640c6b0ce7e60991c2907c0fd4",
+    "rotordesignlab/hover.py": "66e5954018711765adf0a08f62b6787d62100ef20021d3c2f08e4a4b95b58884",
+    "rotordesignlab/hover_batch.py": "84ce46fc77a383160fd01accf93e75f9f7aff3fb0db16d0990b71a3e9ba8f382",
+    "rotordesignlab/hover_ui.py": "e0eebf0887dfa0fbc7b5c97e8d36013c0cf841ed9648b53d52ab8c105087ff5c",
+    "rotordesignlab/inverse.py": "2ec14bdabab613560fb8a4d21e9cce9e9b0bed015701036bbb3ee6e7bb762677",
+    "rotordesignlab/legacy_check.py": "13881fbbf6a5c22e0dc92cc88f2fc2b33982c0034ef1b604e1006af51cbcc902",
+    "rotordesignlab/rotor.py": "bf58f6f92bf5e8385e4fe7de6a1e0ad8e495a8f984e06bd59a44517e74427124",
+    "rotordesignlab/steady_rotor.py": "7673ecbc4555eb76c5b51cbd02a08ceae6716965cdaa56da1e22a5d45bbb54e1",
+    "rotordesignlab/trim.py": "103bb50c7e0475f9f7e00b7f6b06572c64be0b6eb400d66124eb1ceb0f1a8566",
+    "rotordesignlab/trim_batch.py": "4b5e1326533455c08bdaa9357a4c3c0c137040312b4698b5a8915c1f21339cf3",
+    "rotordesignlab/trim_ui.py": "c2fc541d4bf935272e57e9b106059efbb4f840d44e67479d1284f1afa6a28c26",
+    "rotordesignlab/uh60.py": "c92dbbd44017e6fe8e965b09926efb72cd917aa894b81f282fffd3465d3a0e41",
+    "examples/trim/cg-sweep.json": "26e44c7eca2b9a329b21962ccef0b708be12f53cf961eea2eea3d83b6eda25ce",
+    "examples/trim/mass-sweep.json": "1eb1ee08a2d261fec53b01c21d331a0eaae73f2f3d50bfbe80d7cf342a9e600d",
+    "examples/trim/speed-sweep.json": "153614265be6a87354f96e6ae8103b4cb4e92175bcab5720022df031fa59e5cf",
+    "examples/trim/synthetic-case.json": "33de894764e564a140e23d0ebcd8fa6c20a0a988831e0a38eb1416e2974e9175",
+    "examples/trim/synthetic-geometry.csv": "9791f289674e9522a0ee80f8d6b9be2abcdb7e22f23e826c835c5ed6cb879a7c",
+    "examples/trim/synthetic-polar.csv": "01a90f4633c502661b3cc0acd6a92f530d2fc9eef07605d5f3917b2708b5f3c2",
+    "examples/trim/synthetic-tail-geometry.csv": "bfd6f78e9d67df6d3c8d647454b1fba8476498fc9afad13bf87f4158454558cb",
+    "examples/trim/synthetic.json": "020e6716af902bddb7cdbb564c5b435488562678f92a794bb92a0a9ea15c12d2",
+    "examples/trim/uh60-main-airfoils.json": "2dd070945ef2097ea105fb1301ca6342b756507598143a5a8535777cc5f9cc30",
+    "examples/trim/uh60-main-estimated-polar.csv": "e352ec64e97a2e0c5d325138ffa11c798d38b0ee866e38b5f39230b0241461b4",
+    "examples/trim/uh60-main-geometry.csv": "3515491ccc8540f62daa40231996d1ee773a7b3d82305d951c8cdd01fffd33cb",
+    "examples/trim/uh60-public-case.json": "e174493722e2e684e2bfa40726a25513a05305eca202d53eebd287fd591baa6e",
+    "examples/trim/uh60-public.json": "18bd4f36713ee825f00aa666b853191e4665f40fae55372afa69a2f6512cd899",
+    "examples/trim/uh60-tail-estimated-polar.csv": "be97a1a2dce3e333ab15d4da2520ab2e080334df39cb24c8c8e74f812aed1edf",
+    "examples/trim/uh60-tail-geometry.csv": "b24f7f0e22057c6ba64076703d38c06c03756ef55170a37ae8fddb35c062b8d0",
+    "schemas/aircraft-v2.schema.json": "a053149bfd66b55b64d58a0ff06d428b8ab0af97e0ae576fda5e5a6a88b87d7f",
+    "tools/validate_trim.py": "751307c3d25af94d2d625f9eccde98a41a7ccfdeb9e1a5bf511b59a6aadef65f",
+    "validation/trim/tm85890-table4.csv": "afcc8a8a9dc93d23e8204d06c836a486b9215854bc9b416b473195c578656655"
+  },
+  "post_campaign_verification": {
+    "change": "Apply cg_x_m before tail_arm_m; existing separate scans unchanged",
+    "test": "test_combined_cg_tail_arm_override_replay plus full 38-test regression",
+    "full_suite_passed": true,
+    "trim_sha256": "a29f12740ba0aa6056b8f770a00d33045d81a24df782c017e914d220833c2b07",
+    "full_suite_elapsed_s": 29.565
+  }
+}

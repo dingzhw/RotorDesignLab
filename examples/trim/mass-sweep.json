@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "kind": "helicopter_trim_sweep",
+  "case_json": "synthetic-case.json",
+  "continuation": true,
+  "axes": {"speed_m_s": [0,5,10,15,20], "mass_kg": [180,200,220]}
+}

@@ -18,14 +18,14 @@ def finite_values(values):
             all(type(v) in (int,float) and isfinite(v) for v in values))
 
 
-def design_points(spec):
+def design_points(spec,allowed=VARIABLES):
     kind = spec.get('kind')
     expected = {'schema_version','kind','case_json', 'axes' if kind=='helicopter_sweep' else 'variants'}
     if set(spec) != expected or type(spec.get('schema_version')) is not int or spec['schema_version']!=1:
         raise ValueError('整机批量需要版本1、kind、case_json及 axes 或 variants，且不接受其它字段。')
     if kind == 'helicopter_sweep':
         axes=spec['axes']
-        if not isinstance(axes,dict) or not 1<=len(axes)<=2 or set(axes)-VARIABLES:
+        if not isinstance(axes,dict) or not 1<=len(axes)<=2 or set(axes)-allowed:
             raise ValueError('整机扫描需要1–2个支持的设计变量。')
         for key,values in axes.items():
             if not finite_values(values) or len(set(values))!=len(values):
@@ -43,7 +43,7 @@ def design_points(spec):
         if not isinstance(item,dict) or set(item)!={'name','overrides'} or not isinstance(item['name'],str) or not item['name'].strip():
             raise ValueError('方案需要非空 name 和 overrides。')
         changes=item['overrides']
-        if not isinstance(changes,dict) or set(changes)-VARIABLES or (changes and not finite_values(list(changes.values()))):
+        if not isinstance(changes,dict) or set(changes)-allowed or (changes and not finite_values(list(changes.values()))):
             raise ValueError('方案 overrides 含不支持的变量或数值。')
         points.append((item['name'],changes))
     if len({name for name,_ in points})!=len(points):raise ValueError('方案名称不得重复。')
