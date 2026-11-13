@@ -1,0 +1,16 @@
+{
+  "schema_version": 3,
+  "model": "helicopter",
+  "analysis": "response",
+  "aircraft_json": "../public-helicopter/uh60-public.json",
+  "speed_m_s": 20,
+  "climb_m_s": 0,
+  "altitude_m": 0,
+  "requested_duration_s": 600,
+  "radial_stations": 80,
+  "azimuth_stations": 36,
+  "control": "main_cos",
+  "amplitude_deg": 0.05,
+  "duration_s": 0.5,
+  "time_step_s": 0.01
+}

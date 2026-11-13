@@ -1,0 +1,12 @@
+{
+  "schema_version": 3,
+  "model": "helicopter",
+  "analysis": "linearize",
+  "aircraft_json": "../public-helicopter/synthetic.json",
+  "speed_m_s": 20,
+  "climb_m_s": 0,
+  "altitude_m": 0,
+  "requested_duration_s": 600,
+  "radial_stations": 80,
+  "azimuth_stations": 36
+}

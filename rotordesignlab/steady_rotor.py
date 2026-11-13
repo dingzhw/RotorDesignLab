@@ -1,6 +1,6 @@
 """Coupled steady Pitt-Peters inflow and three-harmonic rigid-blade flapping.
 
-Only steady, non-turning hub conditions. Time-domain dynamics are not exposed.
+Steady inflow and quasi-steady flapping, with optional hub angular rates.
 Mean and harmonic mass-flow speeds are distinct to recover axial momentum.
 """
 from math import pi
@@ -10,7 +10,7 @@ from scipy.optimize import brentq,least_squares
 from .azimuth import AzimuthRotor
 
 
-def pitt_peters(inflow, velocity, thrust_coefficient, pressure_moments):
+def pitt_peters(inflow, velocity, thrust_coefficient, pressure_moments, *, dynamic=False, omega=1.):
     """Rotor x is upstream for positive vx. Pressure moments are [x*T,y*T]."""
     mu=float(np.linalg.norm(velocity[:2]));uz=float(velocity[2])
     wind=np.array([1.,0.]) if mu<1e-12 else np.asarray(velocity[:2])/mu
@@ -27,7 +27,13 @@ def pitt_peters(inflow, velocity, thrust_coefficient, pressure_moments):
     forcing=np.r_[thrust_coefficient,transform@pressure_moments]
     target=(L@forcing)/np.array([vt,ve,ve])
     current=np.r_[inflow[0],transform@inflow[1:]]
-    return current-target,dict(momentum_induced=induced,total_axial_ratio=total,mu=mu,
+    residual=current-target
+    if dynamic:
+        # Original GenHel pressure-moment normalization, reordered [0,c,s].
+        # Fixed shaft states: rotate the frozen-flow operator, no wake-curvature term.
+        rate=omega*np.array([75*pi/128,45*pi/16,45*pi/16])*(forcing-np.linalg.solve(L,np.array([vt,ve,ve])*current))
+        residual=np.r_[rate[0],transform.T@rate[1:]]
+    return residual,dict(momentum_induced=induced,total_axial_ratio=total,mu=mu,
                                mass_flow_mean=vt,mass_flow_harmonic=ve,wake_skew_rad=float(chi))
 
 
@@ -48,9 +54,9 @@ class SteadyRotor:
         limit=np.deg2rad(self.config['max_flap_deg'])
         return np.r_[1e-6,-.5,-.5,-limit,-limit,-limit],np.r_[.5,.5,.5,limit,limit,limit]
 
-    def evaluate(self, state, controls, velocity, gravity=(0,0,-9.80665), strict=False):
+    def evaluate(self, state, controls, velocity, gravity=(0,0,-9.80665), strict=False, *, body_rates=(0,0,0), require_equilibrium=True):
         state=np.asarray(state,dtype=float);inflow,flap=state[:3],state[3:]
-        data=self.kernel.elements(controls,inflow,flap,velocity,strict=strict)
+        data=self.kernel.elements(controls,inflow,flap,velocity,strict=strict,body_rates=body_rates)
         thrust=data['force'][2];ct=thrust/self.scale
         ir,diagnostic=pitt_peters(inflow,np.asarray(velocity)/(self.rotor.omega*self.rotor.radius),
                                   ct,data['pressure_moments']/(self.scale*self.rotor.radius))
@@ -65,7 +71,15 @@ class SteadyRotor:
             spring=cfg['spring_nm_rad']*(beta-np.deg2rad(cfg['precone_deg']))
             damping=cfg['damper_nms_rad']*data['beta_dot']
             gravity_moment=m1*(data['normal']@np.asarray(gravity))
-            defect=(inertia*data['beta_ddot']+centrifugal+spring+damping-data['flap_moment']-gravity_moment)/(inertia*omega**2)
+            # Constant body-rate Coriolis/centripetal terms projected at the hinge.
+            # Hub/shaft acceleration coupling is omitted in the reduced model.
+            n=data['normal'];er=self.kernel.er;et=self.kernel.et
+            b=np.cos(beta)[:,None]*er;b[:,2]=np.sin(beta)
+            weighted_position=cfg['hinge_offset_m']*m1*er+inertia*b
+            weighted_velocity=omega*(cfg['hinge_offset_m']*m1+inertia*np.cos(beta))[:,None]*et+inertia*data['beta_dot'][:,None]*n
+            rate_accel=2*np.cross(body_rates,weighted_velocity)+np.cross(body_rates,np.cross(body_rates,weighted_position))
+            rate_moment=np.einsum('ij,ij->i',n,rate_accel)
+            defect=(inertia*data['beta_ddot']+centrifugal+spring+damping+rate_moment-data['flap_moment']-gravity_moment)/(inertia*omega**2)
             residual_flap=np.array([1,2,2])*np.mean(defect[:,None]*self.kernel.harmonics,axis=0)
             harmonic_defect=float(np.sqrt(np.mean(defect**2)))
         residual=np.r_[ir,residual_flap]
@@ -76,7 +90,8 @@ class SteadyRotor:
                 raise ValueError('实际挥舞角超出机型限制。')
             if np.max(data['mach'])>1 and self.rotor.airfoil_grid is None:
                 raise ValueError('无Mach维度的极曲线不支持超声速叶素。')
-            if np.max(abs(residual))>1e-6:raise ValueError('旋翼内部入流/挥舞残差未收敛。')
+            checked=residual if require_equilibrium else residual_flap
+            if np.max(abs(checked))>1e-6:raise ValueError('旋翼内部入流/挥舞残差未收敛。')
         diagnostic.update(internal_max_residual=float(np.max(abs(residual))),
             omitted_flap_harmonics_rms=harmonic_defect,alpha_min_deg=float(data['alpha_deg'].min()),
             alpha_max_deg=float(data['alpha_deg'].max()),mach_max=float(data['mach'].max()),

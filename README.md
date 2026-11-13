@@ -1,12 +1,12 @@
 # RotorDesignLab｜旋翼设计台
 
-面向无人直升机概念与初步方案设计的本机计算工作台。提供孤立旋翼性能、主尾桨悬停预算、整机六分量配平及速度/质量/重心比较；保留 Julia UH‑60 80 kt 配平、频响与短时响应基准。
+面向无人直升机概念与初步方案设计的本机计算工作台。提供孤立旋翼性能、主尾桨悬停预算、整机六分量配平、速度/质量/重心比较及通用低频开环分析；保留 Julia UH‑60 80 kt 配平、频响与短时响应基准。
 
 [GitHub 仓库](https://github.com/dingzhw/RotorDesignLab) · [v0.1.0 发布](https://github.com/dingzhw/RotorDesignLab/releases/tag/v0.1.0) · [公开数据验证路线](docs/public-validation.md)
 
-v0.3.0 新增“整机配平”入口：方位角叶素、周期变距、锥度/一阶挥舞、三状态稳态入流，联立主尾桨、机身、尾翼与重力，输出姿态、操纵双向余量和动力裕度。覆盖有效气动数据域内的悬停、正爬升、无侧滑直线前飞；通用机型的动态操稳安排在 v0.4。[配平用法与验证](docs/trim.md) · [悬停预算](docs/hover-budget.md) · [工程旋翼](docs/engineering-rotor.md) · [开发路线](docs/roadmap.md)
+已发布v0.3.0整机配平。当前开发版 `0.4.0.dev1` 新增“通用开环操稳”：6自由度机体、动态入流与准定常挥舞，导出A/B、模态、频响和小扰动响应。补齐原公开主桨BT/UT高攻角、Re插值、机身/尾翼表和尾桨δ3。完整动态挥舞与桨叶惯性耦合仍待完成，尚未发布正式v0.4。[开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md) · [工程旋翼](docs/engineering-rotor.md) · [开发路线](docs/roadmap.md)
 
-旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：原环带模型 XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.1%；新均匀入流核 C–T 偏差39.5%，精度改进继续推进。UH‑60 与 NASA TM‑85890 低速姿态作带配置差异的数学模型对照，所有通用整机结果标记为模型估算。公开参数和工程估计分别注明；`v0.1.0`、`v0.2.0` 标签保持可复算。
+旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：原环带模型 XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.09%；接入旧表局部Re后仍为28.87%，真实Re气动与非局部尾迹继续排查。均匀入流核 C–T 偏差39.5%。UH‑60 与 NASA TM‑85890 姿态及部分导数作带配置差异的数学模型对照，所有通用整机结果标记为模型估算。公开参数和工程估计分别注明；已发布标签保持可复算。
 
 ## 在 Windows 上启动
 
@@ -42,11 +42,13 @@ $env:ROTOR_DESIGN_JULIA = Join-Path $env:USERPROFILE '.julia\juliaup\julia-1.12.
 .\.venv\Scripts\python.exe -m rotordesignlab batch examples/hover/three-candidates.json --out runs/design-compare
 .\.venv\Scripts\python.exe -m rotordesignlab run examples/trim/synthetic-case.json --out runs/trim
 .\.venv\Scripts\python.exe -m rotordesignlab batch examples/trim/mass-sweep.json --out runs/trim-compare
+.\.venv\Scripts\python.exe -m rotordesignlab run examples/open-loop/synthetic-linearize.json --out runs/linearize
+.\.venv\Scripts\python.exe -m rotordesignlab run examples/open-loop/uh60-response.json --out runs/response
 ```
 
 解压网页导出的 ZIP 后，可将其中的 `case.json` 作为同一命令的输入。每次指定新的空目录。程序生成 `result.json` 和相应的数值 CSV。求解失败时记录原因并返回退出码 2，Julia 诊断见 `solver.log`。
 
-批量结果使用 `batch batch.json` 复算。部分失败返回退出码 2，并保留所有点的诊断和可绘图数据；求解收敛但功率或扭矩超限时单独标记。版本1机型供孤立旋翼；版本2按用途要求主尾桨、动力、挥舞、操纵和气动部件，预算与定常配平均可省略机体惯量，动态分析将要求惯量。
+批量结果使用 `batch batch.json` 复算。部分失败返回退出码 2，并保留所有点的诊断和可绘图数据；求解收敛但功率或扭矩超限时单独标记。版本1机型供孤立旋翼；版本2按用途要求主尾桨、动力、挥舞、操纵和气动部件，预算与定常配平均可省略机体惯量，动态分析要求重心惯量张量。开环工况仍用版本3，analysis取linearize或response。
 
 - 单旋翼以 SI 为准。几何 CSV 使用 `r_over_R,chord_m,twist_deg`，从有效根部到 `r/R=1`。极曲线使用 `alpha_deg,cl,cd`。总距定义在工况的参考站，输入扭转相对该站的差值加到总距上。正轴向来流指沿推进流向，正扭矩指轴输入的驱动扭矩。
 - 单旋翼采用三状态 Pitt–Peters 的轴向稳态极限，轴对称工况下两个一阶谐波为零。使用叶素力和盘面动量方程求均匀诱导速度。内置几何和极曲线是合成样例。首版覆盖固定桨叶、正推力、正轴功率和低速轴向工况。

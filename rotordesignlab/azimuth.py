@@ -32,7 +32,7 @@ class AzimuthRotor:
         self.er=np.column_stack((np.cos(self.psi),np.sin(self.psi),np.zeros_like(self.psi)))
         self.et=self.rotation_sign*np.column_stack((-np.sin(self.psi),np.cos(self.psi),np.zeros_like(self.psi)))
 
-    def elements(self, controls, inflow, flap, velocity, *, strict=True):
+    def elements(self, controls, inflow, flap, velocity, *, strict=True, body_rates=(0,0,0)):
         """Return revolution-mean loads plus per-blade element diagnostics.
 
         No spanwise aerodynamic force, swirl, elastic twist or tip correction.
@@ -52,6 +52,7 @@ class AzimuthRotor:
         position[:,:,2]=sb[:,None]*(self.r-h)
         induced=omega*model.radius*(inflow[0]+inflow[1]*position[:,:,0]/model.radius+inflow[2]*position[:,:,1]/model.radius)
         relative=np.broadcast_to(velocity,position.shape).copy()
+        relative+=np.cross(np.asarray(body_rates),position)
         relative+=omega*arm[:,:,None]*self.et[:,None,:]
         relative+=beta_dot[:,None,None]*(self.r-h)[None,:,None]*normal[:,None,:]
         relative[:,:,2]+=induced

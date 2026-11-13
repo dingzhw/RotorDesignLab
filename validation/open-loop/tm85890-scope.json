@@ -1,0 +1,9 @@
+{
+  "source": "https://ntrs.nasa.gov/citations/19840015585",
+  "reference": "TM-85890 Tables 5,6,8 printed pp16,17,19; derivative definition printed p8; visually checked source pages",
+  "reference_configuration": "level flight; PBA ON, active stabilator; governor OFF; perturbations 1 ft/s and 5 deg/s",
+  "current_configuration": "raw blade-pitch controls, no PBA; collective-reference-frozen stabilator schedule; quasi-steady flap; small local derivatives",
+  "conventions": "Xu,Zw: per-mass load derivatives, Mq: per Iyy moment derivative. No inch-to-blade-control conversion. Frozen and zero-frequency inflow-eliminated columns kept separate.",
+  "assumptions": "Sea-level ISA and EAS=TAS; reference table altitude unspecified. No tuning to these derivatives.",
+  "physical_accuracy_accepted": false
+}

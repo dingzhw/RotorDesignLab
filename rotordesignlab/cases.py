@@ -134,6 +134,9 @@ def run_case(case, base, output):
             if case.get('analysis') == 'trim':
                 from .trim import run_trim
                 payload, snapshot = run_trim(case, base, output)
+            elif case.get('analysis') in ('linearize','response'):
+                from .open_loop import run_open_loop
+                payload, snapshot = run_open_loop(case, base, output)
             else:
                 from .hover import run_budget
                 payload, snapshot = run_budget(case, base, output)
@@ -171,7 +174,7 @@ def run_case(case, base, output):
                 result['backend'] = 'Python / rigid axial blade elements / ' + rotor.inflow_model
                 result['warnings'] = [f'固定桨叶，{rotor.inflow_model} 入流，尖损失 {rotor.tip_loss}；未计算尾流旋转和弹性变形。']
                 if rotor.airfoil_grid is not None:
-                    result['warnings'].append('使用原始展向/攻角/Mach 气动表，当前无 Reynolds 修正。')
+                    result['warnings'].append('使用展向/攻角/Mach表；版本2含Re切片，按log(Re)插值。具体来源和数据维度见翼型文件。')
             if case['model'] == 'aircraft_rotor':
                 result['warnings'].append('当前为选定孤立旋翼分析，安装载荷已移算到重心；整机配平尚未计算。')
                 if not result['feasible']:

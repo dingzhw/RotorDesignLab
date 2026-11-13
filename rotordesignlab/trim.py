@@ -46,12 +46,22 @@ class TrimSystem:
         x=np.asarray(x,dtype=float)
         roll,pitch=x[4:6];R=body_to_ned(roll,pitch)
         velocity,velocity_valid=flight_velocity(self.case['speed_m_s'],self.case['climb_m_s'],roll,pitch)
-        gravity=R.T@np.array([0,0,G]);F=self.weight/G*gravity;M=np.zeros(3)
+        residual,data=self.loads(x,velocity,strict=strict)
+        if strict:
+            if not velocity_valid:raise ValueError('给定姿态无法满足无侧滑直线爬升运动学。')
+            if np.max(abs(residual[:6]))>1e-4:raise ValueError('六分量配平残差未收敛。')
+        return residual,data
+
+    def loads(self,x,velocity,body_rates=(0,0,0),strict=False,require_equilibrium=True):
+        """Common component loads for trim and the reduced dynamic model."""
+        R=body_to_ned(*x[4:6]);gravity=R.T@np.array([0,0,G]);F=self.weight/G*gravity;M=np.zeros(3)
         internal=[];items={};rotor_data={};cg=np.asarray(self.aircraft['mass_properties']['cg_m'])
         for role,start,controls in [('main',6,x[:3]),('tail',12,np.array([x[3],0,0]))]:
             basis=self.bases[role];model=self.rotors[role];data=self.selected[role]
             try:
-                residual,loads,diag=model.evaluate(x[start:start+6],controls,basis.T@velocity,basis.T@gravity,strict)
+                hub_velocity=velocity+np.cross(body_rates,np.asarray(data['position_m'])-cg)
+                residual,loads,diag=model.evaluate(x[start:start+6],controls,basis.T@hub_velocity,basis.T@gravity,strict,
+                    body_rates=basis.T@np.asarray(body_rates),require_equilibrium=require_equilibrium)
             except ValueError as error:
                 raise ValueError(role+': '+str(error)) from error
             internal.extend(residual);f=basis@loads['force'];m=basis@loads['moment']+np.cross(np.asarray(data['position_m'])-cg,f)
@@ -62,7 +72,7 @@ class TrimSystem:
             rotor_data[role]=loads
         induced=self.rotors['main'].rotor.omega*self.Rmain*x[6]*self.bases['main'][:,2]
         tail_induced=self.rotors['tail'].rotor.omega*self.selected['tail']['radius_m']*x[12]*self.bases['tail'][:,2]
-        extra=airframe_loads(self.aircraft,velocity,self.air['density_kg_m3'],induced,strict,tail_induced_velocity_body=tail_induced)
+        extra=airframe_loads(self.aircraft,velocity,self.air['density_kg_m3'],induced,strict,body_rates=body_rates,tail_induced_velocity_body=tail_induced)
         for item in extra.values():F+=item['force_body_n'];M+=item['moment_cg_body_nm']
         items.update(extra)
         # Explicit residual download coefficient, separate from fuselage wake loads.
@@ -71,9 +81,7 @@ class TrimSystem:
         items['download']=dict(force_body_n=df.tolist(),moment_cg_body_nm=[0,0,0],power_w=0)
         outer=np.r_[F/self.weight,M/(self.weight*self.Rmain)]
         if strict:
-            if not velocity_valid:raise ValueError('给定姿态无法满足无侧滑直线爬升运动学。')
             if items['main']['diagnostics']['mu']>.25+1e-9:raise ValueError('主桨推进比超出μ≤0.25范围。')
-            if np.max(abs(outer))>1e-4:raise ValueError('六分量配平残差未收敛。')
         return np.r_[outer,10*np.array(internal)],dict(components=items,force=F,moment=M,velocity=velocity,rotor_data=rotor_data)
 
 

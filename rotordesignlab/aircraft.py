@@ -74,13 +74,18 @@ def read_aircraft(path):
 
 def require_analysis(aircraft, analysis):
     """Capability gate; future analyses must never silently reuse a budget."""
-    if analysis not in ('hover_budget', 'trim'):
-        raise ValueError(f'整机分析 {analysis!r} 尚未实现；当前支持 hover_budget / trim。')
+    if analysis not in ('hover_budget', 'trim','linearize','response'):
+        raise ValueError(f'整机分析 {analysis!r} 尚未实现；当前支持 hover_budget / trim / linearize / response。')
     if aircraft['schema_version'] != 2:
         raise ValueError('整机悬停预算需要机型版本 2；版本 1 继续用于孤立旋翼。')
-    if analysis == 'trim':
+    if analysis in ('trim','linearize','response'):
         from .airframe import validate_trim_inputs
-        validate_trim_inputs(aircraft)
+        missing=[]
+        try:validate_trim_inputs(aircraft)
+        except ValueError as error:missing.append(str(error))
+        if analysis in ('linearize','response') and 'inertia_cg_kg_m2' not in aircraft['mass_properties']:
+            missing.append('开环分析缺少：mass_properties/inertia_cg_kg_m2（重心惯量张量）')
+        if missing:raise ValueError('; '.join(missing))
 
 
 def snapshot_aircraft(aircraft, source_dir, output):

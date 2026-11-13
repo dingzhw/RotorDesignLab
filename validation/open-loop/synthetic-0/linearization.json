@@ -1,0 +1,417 @@
+{
+  "state_names": [
+    "u",
+    "v",
+    "w",
+    "p",
+    "q",
+    "r",
+    "phi",
+    "theta",
+    "psi",
+    "main_lambda0",
+    "main_lambdac",
+    "main_lambdas",
+    "tail_lambda0",
+    "tail_lambdac",
+    "tail_lambdas"
+  ],
+  "state_units": [
+    "m/s",
+    "m/s",
+    "m/s",
+    "rad/s",
+    "rad/s",
+    "rad/s",
+    "rad",
+    "rad",
+    "rad",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+  ],
+  "control_names": [
+    "main_collective",
+    "main_cos",
+    "main_sin",
+    "tail_collective"
+  ],
+  "control_units": [
+    "rad",
+    "rad",
+    "rad",
+    "rad"
+  ],
+  "state_equilibrium": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.05765484611514665,
+    -0.0015072983938282363,
+    0.0,
+    0.07519750688758582,
+    -2.261315748671661e-05,
+    -0.0008688176320793985,
+    0.08797179495282345,
+    5.945595102852348e-17,
+    -9.624804751930332e-18
+  ],
+  "control_equilibrium_rad": [
+    0.22776391485265998,
+    -0.004111157229850142,
+    -0.00311445683412185,
+    0.26900256375858117
+  ],
+  "equilibrium_derivative": [
+    -7.912267307072947e-14,
+    -1.2079226507921704e-15,
+    1.3594103620562236e-12,
+    3.3667883296099412e-12,
+    -7.394085344003543e-13,
+    3.741765416028405e-11,
+    0.0,
+    0.0,
+    0.0,
+    5.303842333238055e-13,
+    -3.1693549006765867e-13,
+    6.100271390994381e-13,
+    -6.600961330188463e-12,
+    -4.680372140107344e-14,
+    7.823170195415562e-15
+  ],
+  "derivative_check": {
+    "A": {
+      "max_major_relative_change": 0.007147494757844335,
+      "max_scaled_absolute_change": 0.004134788322100347,
+      "major_entries": 114,
+      "row_scaled_peak": [
+        0.0980675057706919,
+        0.09790457867962488,
+        0.4795423698694634,
+        47.496719699685976,
+        31.690195869940528,
+        16.544567678773785,
+        1.0,
+        0.9983384197052242,
+        0.9983395537930095,
+        66.87314450370387,
+        129.20612827977467,
+        129.18193663052634,
+        355.4515533878556,
+        850.7375354361191,
+        850.7375354364951
+      ],
+      "column_scaled_peak": [
+        238.47111005682015,
+        242.19876841296744,
+        238.47111005700134,
+        13.267333291250788,
+        17.13434890004587,
+        4.117379063070605,
+        0.09790457867962488,
+        0.0980675057706919,
+        0.0,
+        66.87314450370387,
+        129.20612827977467,
+        129.18193663052634,
+        355.4515533878556,
+        850.7375354361191,
+        850.7375354364951
+      ],
+      "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+    },
+    "B": {
+      "max_major_relative_change": 0.01973295624389521,
+      "max_scaled_absolute_change": 0.0010870053072459251,
+      "major_entries": 30,
+      "row_scaled_peak": [
+        0.016329200907247966,
+        0.016328193328633733,
+        0.11404386405507808,
+        20.687481587475123,
+        13.79930816060096,
+        4.133298702211777,
+        0.0,
+        0.0,
+        0.0,
+        4.315161688618501,
+        6.617832940849515,
+        6.6127261766242835,
+        24.46428023747803,
+        3.545029543307986e-11,
+        7.968392766516869e-13
+      ],
+      "column_scaled_peak": [
+        4.315161688618501,
+        20.687481587475123,
+        13.79930816060096,
+        24.46428023747803
+      ],
+      "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+    },
+    "passed": true
+  },
+  "state_difference_steps": [
+    0.0005,
+    0.0005,
+    0.0005,
+    5e-05,
+    5e-05,
+    5e-05,
+    5e-05,
+    5e-05,
+    5e-05,
+    5e-06,
+    5e-06,
+    5e-06,
+    5e-06,
+    5e-06,
+    5e-06
+  ],
+  "control_difference_steps": [
+    5e-05,
+    5e-05,
+    5e-05,
+    5e-05
+  ],
+  "mass_matrix_definition": "E*delta_x_dot = F*delta_x + G*delta_u; E=diag(m*I3,I_cg,I3,Mpp/Omega_main,Mpp/Omega_tail), Mpp=diag(128/(75pi),16/(45pi),16/(45pi)). F=E*A, G=E*B. No hidden acceleration coupling in this reduced model.",
+  "modes": [
+    {
+      "real": 0.13009460669094353,
+      "imag": 0.42836886731393525,
+      "damping_ratio": -0.2905921615558797,
+      "period_s": 14.667698300714461,
+      "e_folding_time_s": 7.686713734225959,
+      "behavior": "unstable",
+      "participation": {
+        "theta": 0.2398336822663609,
+        "u": 0.22787783381790802,
+        "phi": 0.22675372285077117,
+        "v": 0.21503725568465915
+      },
+      "within_low_frequency_band": true
+    },
+    {
+      "real": 0.13009460669094353,
+      "imag": -0.42836886731393525,
+      "damping_ratio": -0.2905921615558797,
+      "period_s": 14.667698300714461,
+      "e_folding_time_s": 7.686713734225959,
+      "behavior": "unstable",
+      "participation": {
+        "theta": 0.23983368226636087,
+        "u": 0.2278778338179079,
+        "phi": 0.2267537228507713,
+        "v": 0.21503725568465926
+      },
+      "within_low_frequency_band": true
+    },
+    {
+      "real": 0.0,
+      "imag": 0.0,
+      "damping_ratio": null,
+      "period_s": null,
+      "e_folding_time_s": null,
+      "behavior": "kinematic_neutral",
+      "participation": {
+        "psi": 1.0,
+        "tail_lambdac": 0.0,
+        "tail_lambdas": 0.0,
+        "tail_lambda0": 0.0
+      },
+      "within_low_frequency_band": true
+    },
+    {
+      "real": -0.023466698920148084,
+      "imag": 0.0,
+      "damping_ratio": 1.0,
+      "period_s": null,
+      "e_folding_time_s": 42.613577793910245,
+      "behavior": "stable",
+      "participation": {
+        "r": 0.9337670683982947,
+        "w": 0.03842936146166496,
+        "u": 0.009480131058147236,
+        "phi": 0.008671855124050616
+      },
+      "within_low_frequency_band": true
+    },
+    {
+      "real": -0.1727497920405049,
+      "imag": 0.0,
+      "damping_ratio": 1.0,
+      "period_s": null,
+      "e_folding_time_s": 5.788718980139372,
+      "behavior": "stable",
+      "participation": {
+        "w": 0.948911427563059,
+        "r": 0.041144753398793935,
+        "main_lambda0": 0.004157164783869551,
+        "v": 0.002732236409958396
+      },
+      "within_low_frequency_band": true
+    },
+    {
+      "real": -0.22176037839309057,
+      "imag": 0.3876462313998619,
+      "damping_ratio": 0.49655791647002034,
+      "period_s": 16.2085551160651,
+      "e_folding_time_s": 4.5093718149569915,
+      "behavior": "stable",
+      "participation": {
+        "v": 0.23188646850578562,
+        "u": 0.22190601216547678,
+        "phi": 0.21618834769338205,
+        "theta": 0.21084277922364766
+      },
+      "within_low_frequency_band": true
+    },
+    {
+      "real": -0.22176037839309057,
+      "imag": -0.3876462313998619,
+      "damping_ratio": 0.49655791647002034,
+      "period_s": 16.2085551160651,
+      "e_folding_time_s": 4.5093718149569915,
+      "behavior": "stable",
+      "participation": {
+        "v": 0.23188646850578581,
+        "u": 0.22190601216547665,
+        "phi": 0.21618834769338205,
+        "theta": 0.2108427792236476
+      },
+      "within_low_frequency_band": true
+    },
+    {
+      "real": -12.870531184831961,
+      "imag": 10.332311462162693,
+      "damping_ratio": 0.7798070436995597,
+      "period_s": 0.6081103275088874,
+      "e_folding_time_s": 0.07769687090914391,
+      "behavior": "stable",
+      "participation": {
+        "p": 0.48673300909678263,
+        "q": 0.47888741501487886,
+        "main_lambdac": 0.020191333158616334,
+        "main_lambdas": 0.011764332907702995
+      },
+      "within_low_frequency_band": false
+    },
+    {
+      "real": -12.870531184831961,
+      "imag": -10.332311462162693,
+      "damping_ratio": 0.7798070436995597,
+      "period_s": 0.6081103275088874,
+      "e_folding_time_s": 0.07769687090914391,
+      "behavior": "stable",
+      "participation": {
+        "p": 0.4867330090967826,
+        "q": 0.47888741501487897,
+        "main_lambdac": 0.020191333158616334,
+        "main_lambdas": 0.011764332907703004
+      },
+      "within_low_frequency_band": false
+    },
+    {
+      "real": -67.17210862052036,
+      "imag": 0.0,
+      "damping_ratio": 1.0,
+      "period_s": null,
+      "e_folding_time_s": 0.014887131289109342,
+      "behavior": "stable",
+      "participation": {
+        "main_lambda0": 0.9954637644338951,
+        "w": 0.004491826408930836,
+        "r": 1.931607556684878e-05,
+        "main_lambdas": 1.361035186246128e-05
+      },
+      "within_low_frequency_band": false
+    },
+    {
+      "real": -127.41441588991876,
+      "imag": 21.941574410766297,
+      "damping_ratio": 0.985494321689395,
+      "period_s": 0.28635982038265,
+      "e_folding_time_s": 0.007848405480773559,
+      "behavior": "stable",
+      "participation": {
+        "main_lambdac": 0.4871719720865314,
+        "main_lambdas": 0.4807917511216052,
+        "p": 0.019171794795388625,
+        "q": 0.012802531818755564
+      },
+      "within_low_frequency_band": false
+    },
+    {
+      "real": -127.41441588991876,
+      "imag": -21.941574410766297,
+      "damping_ratio": 0.985494321689395,
+      "period_s": 0.28635982038265,
+      "e_folding_time_s": 0.007848405480773559,
+      "behavior": "stable",
+      "participation": {
+        "main_lambdac": 0.4871719720865313,
+        "main_lambdas": 0.4807917511216052,
+        "p": 0.019171794795388608,
+        "q": 0.012802531818755706
+      },
+      "within_low_frequency_band": false
+    },
+    {
+      "real": -355.6540952018614,
+      "imag": 0.0,
+      "damping_ratio": 1.0,
+      "period_s": null,
+      "e_folding_time_s": 0.0028117207519638486,
+      "behavior": "stable",
+      "participation": {
+        "tail_lambda0": 0.9994297399618326,
+        "r": 0.000508593761325449,
+        "v": 5.2889426337478445e-05,
+        "p": 8.604427066963783e-06
+      },
+      "within_low_frequency_band": false
+    },
+    {
+      "real": -850.7380464572744,
+      "imag": 0.0,
+      "damping_ratio": 1.0,
+      "period_s": null,
+      "e_folding_time_s": 0.001175449956851344,
+      "behavior": "stable",
+      "participation": {
+        "tail_lambdac": 0.9412031839895277,
+        "tail_lambdas": 0.05879623921958378,
+        "r": 4.3411905274402953e-07,
+        "q": 8.875179033352282e-08
+      },
+      "within_low_frequency_band": false
+    },
+    {
+      "real": -850.7384674606049,
+      "imag": 0.0,
+      "damping_ratio": 1.0,
+      "period_s": null,
+      "e_folding_time_s": 0.0011754493751586553,
+      "behavior": "stable",
+      "participation": {
+        "tail_lambdas": 0.9412025828486519,
+        "tail_lambdac": 0.058796182943235825,
+        "p": 1.0138035085349786e-06,
+        "q": 1.8604459914870987e-07
+      },
+      "within_low_frequency_band": false
+    }
+  ],
+  "model_scope": [
+    "低频降阶模型：6自由度机体、动态PP入流、准定常一阶挥舞；转速固定。",
+    "暂未计动态挥舞、旋翼角动量反作用、桨毂加速度耦合、尾迹曲率和发动机/传动动态。",
+    "模态和响应为模型估算；未据此自动评定飞行品质等级。"
+  ],
+  "maximum_frequency_rad_s": 3.0
+}

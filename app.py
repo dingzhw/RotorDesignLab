@@ -111,7 +111,11 @@ def show_uh60(result, files):
 
 st.set_page_config(page_title="RotorDesignLab｜旋翼设计台", layout="wide")
 st.title("RotorDesignLab｜旋翼设计台")
-choice = st.radio("选择算例", [DEMO, HELICOPTER, ENGINEERING, '整机悬停预算', '整机配平'], horizontal=True)
+choice = st.radio("选择算例", [DEMO, HELICOPTER, ENGINEERING, '整机悬停预算', '整机配平', '通用开环操稳'], horizontal=True)
+if choice == '通用开环操稳':
+    from rotordesignlab.open_loop_ui import render
+    render()
+    st.stop()
 if choice == '整机配平':
     from rotordesignlab.trim_ui import render
     render()

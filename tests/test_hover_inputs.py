@@ -18,7 +18,7 @@ class HoverInputsTest(unittest.TestCase):
         old = read_aircraft(ROOT/'examples/synthetic-aircraft.json')
         with self.assertRaisesRegex(ValueError,'版本 2'): require_analysis(old,'hover_budget')
         with self.assertRaisesRegex(ValueError,'缺少'): require_analysis(aircraft,'trim')
-        with self.assertRaisesRegex(ValueError,'尚未实现'): require_analysis(aircraft,'linearize')
+        with self.assertRaisesRegex(ValueError,'缺少'): require_analysis(aircraft,'linearize')
 
     def test_missing_fields_and_power_curves(self):
         data=read_aircraft(ROOT/'examples/hover/synthetic.json')

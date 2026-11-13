@@ -1,0 +1,449 @@
+{
+  "julia_frozen_flow_max_abs_difference": 2.276234756237727e-13,
+  "synthetic": {
+    "points": [
+      {
+        "speed_m_s": 0,
+        "states": 15,
+        "controls": 4,
+        "unstable_modes": 2,
+        "neutral_modes": 1,
+        "max_equilibrium_derivative": 3.741765416028405e-11,
+        "derivative_check_pass": true,
+        "elapsed_s": 1.4855586999910884,
+        "difference_check": {
+          "A": {
+            "max_major_relative_change": 0.007147494757844335,
+            "max_scaled_absolute_change": 0.004134788322100347,
+            "major_entries": 114,
+            "row_scaled_peak": [
+              0.0980675057706919,
+              0.09790457867962488,
+              0.4795423698694634,
+              47.496719699685976,
+              31.690195869940528,
+              16.544567678773785,
+              1.0,
+              0.9983384197052242,
+              0.9983395537930095,
+              66.87314450370387,
+              129.20612827977467,
+              129.18193663052634,
+              355.4515533878556,
+              850.7375354361191,
+              850.7375354364951
+            ],
+            "column_scaled_peak": [
+              238.47111005682015,
+              242.19876841296744,
+              238.47111005700134,
+              13.267333291250788,
+              17.13434890004587,
+              4.117379063070605,
+              0.09790457867962488,
+              0.0980675057706919,
+              0.0,
+              66.87314450370387,
+              129.20612827977467,
+              129.18193663052634,
+              355.4515533878556,
+              850.7375354361191,
+              850.7375354364951
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "B": {
+            "max_major_relative_change": 0.01973295624389521,
+            "max_scaled_absolute_change": 0.0010870053072459251,
+            "major_entries": 30,
+            "row_scaled_peak": [
+              0.016329200907247966,
+              0.016328193328633733,
+              0.11404386405507808,
+              20.687481587475123,
+              13.79930816060096,
+              4.133298702211777,
+              0.0,
+              0.0,
+              0.0,
+              4.315161688618501,
+              6.617832940849515,
+              6.6127261766242835,
+              24.46428023747803,
+              3.545029543307986e-11,
+              7.968392766516869e-13
+            ],
+            "column_scaled_peak": [
+              4.315161688618501,
+              20.687481587475123,
+              13.79930816060096,
+              24.46428023747803
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "passed": true
+        }
+      },
+      {
+        "speed_m_s": 20,
+        "states": 15,
+        "controls": 4,
+        "unstable_modes": 0,
+        "neutral_modes": 1,
+        "max_equilibrium_derivative": 5.914645316727906e-12,
+        "derivative_check_pass": true,
+        "elapsed_s": 1.4673602000111714,
+        "difference_check": {
+          "A": {
+            "max_major_relative_change": 0.002284152593928139,
+            "max_scaled_absolute_change": 0.008590487552396553,
+            "major_entries": 139,
+            "row_scaled_peak": [
+              0.09802733290617026,
+              0.19889059448229315,
+              0.4082497370437821,
+              43.56884805710355,
+              30.11334781791595,
+              34.972427843280244,
+              1.0,
+              0.9994967623201173,
+              0.9999121286810561,
+              76.15156588146405,
+              141.22402557709128,
+              90.03461026453814,
+              398.785005914295,
+              861.1153618906093,
+              625.9978873230866
+            ],
+            "column_scaled_peak": [
+              348.9390974634339,
+              269.35792919439035,
+              186.9469296911568,
+              13.88913530258262,
+              15.676094706687255,
+              4.584667876453604,
+              0.09797802552401436,
+              0.09802733290617026,
+              0.0,
+              126.14654495904335,
+              141.22402557709128,
+              90.03461026453814,
+              604.4054369029357,
+              861.1153618906093,
+              625.9978873230866
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "B": {
+            "max_major_relative_change": 0.0003209353034326812,
+            "max_scaled_absolute_change": 0.001377719861164195,
+            "major_entries": 35,
+            "row_scaled_peak": [
+              0.015574123999416777,
+              0.015212222902392578,
+              0.09815911568339745,
+              19.343337999094743,
+              13.431237986425991,
+              4.197173360108744,
+              0.0,
+              0.0,
+              0.0,
+              5.184789350829808,
+              8.231690403417938,
+              6.208977623594268,
+              35.00519335916267,
+              35.57728360248427,
+              16.86696550251636
+            ],
+            "column_scaled_peak": [
+              8.231690403417938,
+              19.343337999094743,
+              13.431237986425991,
+              35.57728360248427
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "passed": true
+        }
+      }
+    ],
+    "responses": [
+      {
+        "control": "main_collective",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.001,
+        "time_step_relative_error": 1.8550791193066196e-07,
+        "nonlinear_linear_error": [
+          7.529079175189631e-05,
+          2.0617962552406378e-05
+        ],
+        "half_amplitude_error_ratio": 0.2738444114168461,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      },
+      {
+        "control": "main_cos",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.001,
+        "time_step_relative_error": 2.6935418246132998e-08,
+        "nonlinear_linear_error": [
+          1.7135908301378278e-05,
+          4.4722964785339065e-06
+        ],
+        "half_amplitude_error_ratio": 0.26098975320579826,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      },
+      {
+        "control": "main_sin",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.001,
+        "time_step_relative_error": 3.9689982100148465e-08,
+        "nonlinear_linear_error": [
+          1.8907969712979105e-05,
+          5.174231101400183e-06
+        ],
+        "half_amplitude_error_ratio": 0.27365344772307343,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      },
+      {
+        "control": "tail_collective",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.001,
+        "time_step_relative_error": 9.178111892806428e-06,
+        "nonlinear_linear_error": [
+          8.500957461395131e-06,
+          2.743662665057332e-06
+        ],
+        "half_amplitude_error_ratio": 0.32274748785850965,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    ]
+  },
+  "uh60-public": {
+    "points": [
+      {
+        "speed_m_s": 0,
+        "states": 15,
+        "controls": 4,
+        "unstable_modes": 2,
+        "neutral_modes": 1,
+        "max_equilibrium_derivative": 2.200910120562372e-09,
+        "derivative_check_pass": true,
+        "elapsed_s": 4.51234580000164,
+        "difference_check": {
+          "A": {
+            "max_major_relative_change": 3.922221391032963e-05,
+            "max_scaled_absolute_change": 7.112658120256299e-05,
+            "major_entries": 141,
+            "row_scaled_peak": [
+              0.09918848101269442,
+              0.09744342090503513,
+              1.1167782159753705,
+              35.08961452611259,
+              4.978033733558828,
+              9.150844408419676,
+              1.0,
+              0.9991751799328548,
+              1.0043506533045978,
+              8.762330945725832,
+              12.94182718591339,
+              12.955615671349928,
+              58.66760681125493,
+              80.76830645316052,
+              80.76829964649282
+            ],
+            "column_scaled_peak": [
+              28.599628546057158,
+              37.606346251239174,
+              26.86817412186568,
+              5.833678405604011,
+              35.08961452611259,
+              6.40660565532184,
+              0.09744342090503513,
+              0.0975555302601928,
+              0.0,
+              8.762330945725832,
+              18.748364920321002,
+              12.955615671349928,
+              58.66760681125493,
+              80.76830645316052,
+              80.76829964649282
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "B": {
+            "max_major_relative_change": 3.209152175265759e-05,
+            "max_scaled_absolute_change": 4.076559566135174e-06,
+            "major_entries": 32,
+            "row_scaled_peak": [
+              0.027224272217843494,
+              0.01868733919737991,
+              0.2744289750839538,
+              8.453618735828984,
+              1.3205569904929815,
+              2.0354044299912557,
+              0.0,
+              0.0,
+              0.0,
+              0.8368220919191808,
+              0.14553940082929703,
+              0.15052939039805263,
+              5.9732097277008345,
+              0.0005320164904586222,
+              0.006064283552835696
+            ],
+            "column_scaled_peak": [
+              1.939585791057892,
+              8.453618735828984,
+              1.1558626821154174,
+              5.9732097277008345
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "passed": true
+        }
+      },
+      {
+        "speed_m_s": 20,
+        "states": 15,
+        "controls": 4,
+        "unstable_modes": 1,
+        "neutral_modes": 1,
+        "max_equilibrium_derivative": 8.738814876490761e-15,
+        "derivative_check_pass": true,
+        "elapsed_s": 5.147941300005186,
+        "difference_check": {
+          "A": {
+            "max_major_relative_change": 9.84249794770399e-06,
+            "max_scaled_absolute_change": 1.533336271064556e-05,
+            "major_entries": 151,
+            "row_scaled_peak": [
+              0.09776376039655636,
+              0.19352732761278374,
+              1.1412093458409311,
+              35.00179941393613,
+              4.98372144486565,
+              9.27477673008932,
+              1.0,
+              0.9998367273760995,
+              1.0028879253868246,
+              10.877773724949916,
+              21.819002376519524,
+              8.100137920210852,
+              67.2900590462208,
+              113.36472959790339,
+              43.83777243753761
+            ],
+            "column_scaled_peak": [
+              28.21973373148107,
+              42.976877173154556,
+              14.91390192947427,
+              5.494748041018915,
+              35.00179941393613,
+              6.084272163414182,
+              0.09771621400305217,
+              0.09776376039655636,
+              0.0,
+              21.819002376519524,
+              18.833365685738958,
+              8.100137920210852,
+              113.36472959790339,
+              83.21673056354814,
+              43.83777243753761
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "B": {
+            "max_major_relative_change": 3.1706465699829656e-05,
+            "max_scaled_absolute_change": 2.7287993752400652e-05,
+            "major_entries": 36,
+            "row_scaled_peak": [
+              0.022000840674799935,
+              0.018257589393076878,
+              0.2789805612439158,
+              8.435508216415348,
+              1.6797616323933857,
+              2.0344396784561756,
+              0.0,
+              0.0,
+              0.0,
+              1.2660556512186922,
+              1.407252683945794,
+              0.15740848388593529,
+              8.43880618678023,
+              9.645284449392761,
+              0.7406261852113408
+            ],
+            "column_scaled_peak": [
+              1.6797616323933857,
+              8.435508216415348,
+              1.3512499234545674,
+              9.645284449392761
+            ],
+            "threshold_rule": "max(0.001*min(row_peak,column_peak),1e-7) in scaled coordinates"
+          },
+          "passed": true
+        }
+      }
+    ],
+    "responses": [
+      {
+        "control": "main_collective",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.01,
+        "time_step_relative_error": 5.756385134647213e-06,
+        "nonlinear_linear_error": [
+          5.819949600833909e-05,
+          1.5032198744659557e-05
+        ],
+        "half_amplitude_error_ratio": 0.25828743847722796,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      },
+      {
+        "control": "main_cos",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.01,
+        "time_step_relative_error": 2.3980708243140138e-05,
+        "nonlinear_linear_error": [
+          1.1638197680001697e-05,
+          3.0076057472784354e-06
+        ],
+        "half_amplitude_error_ratio": 0.25842538767377227,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      },
+      {
+        "control": "main_sin",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.01,
+        "time_step_relative_error": 4.992779505666383e-06,
+        "nonlinear_linear_error": [
+          1.387989124620941e-05,
+          3.5560034333597188e-06
+        ],
+        "half_amplitude_error_ratio": 0.2561982201647913,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      },
+      {
+        "control": "tail_collective",
+        "duration_s": 0.2,
+        "coarse_step_s": 0.01,
+        "time_step_relative_error": 0.0001661267281436789,
+        "nonlinear_linear_error": [
+          1.8221608997165634e-05,
+          4.575930899676337e-06
+        ],
+        "half_amplitude_error_ratio": 0.2511266101905777,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    ]
+  },
+  "relocation_python_offline_replay": true,
+  "major_derivative_check": "Enhanced row/column threshold; matrix bytes unchanged from response campaign."
+}
