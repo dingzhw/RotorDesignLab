@@ -11,6 +11,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = json.loads((ROOT / 'schemas' / 'aircraft.schema.json').read_text(encoding='utf-8'))
+SCHEMA_V2 = json.loads((ROOT / 'schemas' / 'aircraft-v2.schema.json').read_text(encoding='utf-8'))
 OPERATING_KEYS = ('rpm', 'collective_deg', 'radial_stations')
 AERO_KEYS = ('precone_deg', 'speed_of_sound_m_s', 'inflow_model', 'tip_loss')
 
@@ -21,19 +22,24 @@ def read_aircraft(path):
     try:
         # JSON permits non-finite constants in Python; reject them explicitly.
         json.dumps(aircraft, allow_nan=False)
-        jsonschema.Draft202012Validator(SCHEMA).validate(aircraft)
+        schema = SCHEMA_V2 if aircraft.get('schema_version') == 2 else SCHEMA
+        errors = sorted(jsonschema.Draft202012Validator(schema).iter_errors(aircraft),
+                        key=lambda item: str(list(item.absolute_path)))
+        if errors:
+            raise ValueError('; '.join(f'{"/".join(map(str, e.absolute_path))}: {e.message}' for e in errors))
     except (ValueError, jsonschema.ValidationError) as error:
         location = '/'.join(map(str, getattr(error, 'absolute_path', [])))
         raise ValueError(f'机型文件无效 {location}: {getattr(error, "message", str(error))}') from error
     if type(aircraft['schema_version']) is not int:
         raise ValueError('机型 schema_version 必须为整数。')
     mass = aircraft['mass_properties']
-    inertia = np.asarray(mass['inertia_cg_kg_m2'], dtype=float)
-    if not np.allclose(inertia, inertia.T, rtol=0, atol=1e-10):
-        raise ValueError('重心惯量矩阵必须对称，非对角项填写惯量张量元素。')
-    eigenvalues = np.linalg.eigvalsh(inertia)
-    if eigenvalues[0] <= 0 or eigenvalues[-1] > eigenvalues[:2].sum() + 1e-10:
-        raise ValueError('惯量矩阵必须正定，主惯量满足三角关系。')
+    if 'inertia_cg_kg_m2' in mass:
+        inertia = np.asarray(mass['inertia_cg_kg_m2'], dtype=float)
+        if not np.allclose(inertia, inertia.T, rtol=0, atol=1e-10):
+            raise ValueError('重心惯量矩阵必须对称，非对角项填写惯量张量元素。')
+        eigenvalues = np.linalg.eigvalsh(inertia)
+        if eigenvalues[0] <= 0 or eigenvalues[-1] > eigenvalues[:2].sum() + 1e-10:
+            raise ValueError('惯量矩阵必须正定，主惯量满足三角关系。')
     ids = [rotor['id'] for rotor in aircraft['rotors']]
     if len(ids) != len(set(ids)):
         raise ValueError('各旋翼 id 必须唯一。')
@@ -48,7 +54,30 @@ def read_aircraft(path):
                 raise ValueError(f"{rotor['id']} 的 {key} 限制区间无效。")
             if not low <= rotor['defaults'][key] <= high:
                 raise ValueError(f"{rotor['id']} 的默认 {key} 超出机型限制。")
+    if aircraft['schema_version'] == 2:
+        if sorted(rotor['role'] for rotor in aircraft['rotors']) != ['main', 'tail']:
+            raise ValueError('版本 2 悬停预算需要一个 main 和一个 tail 旋翼。')
+        missing = [r['id'] + '/transmission_efficiency' for r in aircraft['rotors']
+                   if 'transmission_efficiency' not in r]
+        if missing:
+            raise ValueError('悬停预算缺少参数：' + ', '.join(missing))
+        plant = aircraft['powerplant']
+        altitude = np.asarray(plant['altitude_m'])
+        if np.any(np.diff(altitude) <= 0):
+            raise ValueError('动力高度节点必须严格递增。')
+        if any(len(plant[key]) != len(altitude) for key in ('continuous_power_w', 'short_time_power_w')):
+            raise ValueError('动力曲线各列长度必须一致。')
+        if np.any(np.asarray(plant['short_time_power_w']) < plant['continuous_power_w']):
+            raise ValueError('短时功率不得低于连续功率。')
     return aircraft
+
+
+def require_analysis(aircraft, analysis):
+    """Capability gate; future analyses must never silently reuse a budget."""
+    if analysis != 'hover_budget':
+        raise ValueError(f'整机分析 {analysis!r} 尚未实现；当前支持 hover_budget。')
+    if aircraft['schema_version'] != 2:
+        raise ValueError('整机悬停预算需要机型版本 2；版本 1 继续用于孤立旋翼。')
 
 
 def snapshot_aircraft(aircraft, source_dir, output):
