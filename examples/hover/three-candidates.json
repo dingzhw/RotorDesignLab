@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "helicopter_comparison",
+  "case_json": "synthetic-case.json",
+  "variants": [
+    {
+      "name": "A baseline",
+      "overrides": {}
+    },
+    {
+      "name": "B larger main",
+      "overrides": {
+        "main_radius_m": 1.2,
+        "main_rpm": 1558.3333333333333
+      }
+    },
+    {
+      "name": "C larger tail and arm",
+      "overrides": {
+        "tail_radius_m": 0.26,
+        "tail_arm_m": 1.9
+      }
+    }
+  ]
+}

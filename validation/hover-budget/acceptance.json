@@ -1,0 +1,197 @@
+{
+  "platform": "Windows-11-10.0.26320-SP0",
+  "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+  "python": "3.14.3",
+  "grid": "240 radial panels per rotor unless specified",
+  "points": {
+    "synthetic": {
+      "summary": {
+        "mass_kg": 200,
+        "altitude_m": 0,
+        "weight_n": 1961.33,
+        "download_n": 60.659690721649255,
+        "main_power_w": 36952.88669657592,
+        "tail_power_w": 2509.1091643848995,
+        "transmission_loss_w": 1728.5612913970563,
+        "accessory_power_w": 700,
+        "required_power_w": 41890.55715235788,
+        "continuous_available_w": 45000.0,
+        "short_time_available_w": 55000.0,
+        "continuous_margin_w": 3109.4428476421235,
+        "short_time_margin_w": 13109.442847642124,
+        "duration_margin_w": 3109.4428476421235,
+        "tail_side_force_n": 122.10175597107141,
+        "disk_loading_n_m2": 531.916783734218,
+        "max_scaled_balance_residual": 2.4950934343339926e-14,
+        "main_thrust_n": 2021.9896907216419,
+        "main_torque_nm": 207.57298515087524,
+        "main_collective_deg": 13.061749497057447,
+        "main_rpm": 1699.9999999999998,
+        "main_tip_speed_m_s": 195.82594207376377,
+        "tail_thrust_n": 122.10175597107141,
+        "tail_torque_nm": 3.194697010152254,
+        "tail_collective_deg": 15.432997010959914,
+        "tail_rpm": 7500.0,
+        "tail_tip_speed_m_s": 188.4955592153876
+      },
+      "elapsed_s": 0.04892209998797625
+    },
+    "uh60-public": {
+      "summary": {
+        "mass_kg": 7257.47792,
+        "altitude_m": 0,
+        "weight_n": 71171.545844168,
+        "download_n": 2156.6655181270658,
+        "main_power_w": 1078881.510664005,
+        "tail_power_w": 85555.7222196584,
+        "transmission_loss_w": 51393.07429420038,
+        "accessory_power_w": 20000,
+        "required_power_w": 1235830.3071778638,
+        "continuous_available_w": 2400000.0,
+        "short_time_available_w": 2800000.0,
+        "continuous_margin_w": 1164169.6928221362,
+        "short_time_margin_w": 1564169.6928221362,
+        "duration_margin_w": 1164169.6928221362,
+        "tail_side_force_n": 4225.295874666168,
+        "disk_loading_n_m2": 342.1687920132839,
+        "max_scaled_balance_residual": 1.309838163917921e-16,
+        "main_thrust_n": 71888.85060423553,
+        "main_torque_nm": 39958.57446903722,
+        "main_collective_deg": 5.919523852188083,
+        "main_rpm": 257.8310078088705,
+        "main_tip_speed_m_s": 220.800168,
+        "tail_thrust_n": 4496.465951953904,
+        "tail_torque_nm": 686.5328375835211,
+        "tail_collective_deg": 8.854333470946164,
+        "tail_rpm": 1190.03334048672,
+        "tail_tip_speed_m_s": 208.91296800000003
+      },
+      "elapsed_s": 0.06277570000384003
+    }
+  },
+  "batches": {
+    "mass-altitude": {
+      "schema_version": 1,
+      "solver_version": "0.2.0.dev2",
+      "model": "helicopter_batch",
+      "status": "partial",
+      "summary": {
+        "total": 15,
+        "converged": 10,
+        "failed": 5,
+        "limit_violations": 4
+      },
+      "warnings": [
+        "无地效悬停功率与载荷预算；尚未进行整机六分量配平。"
+      ],
+      "evidence_status": "model_estimate",
+      "error": "5 个工况未求得有效预算；逐点诊断已保留。",
+      "elapsed_s": 6.186584100010805
+    },
+    "main-design": {
+      "schema_version": 1,
+      "solver_version": "0.2.0.dev2",
+      "model": "helicopter_batch",
+      "status": "converged",
+      "summary": {
+        "total": 9,
+        "converged": 9,
+        "failed": 0,
+        "limit_violations": 1
+      },
+      "warnings": [
+        "无地效悬停功率与载荷预算；尚未进行整机六分量配平。"
+      ],
+      "evidence_status": "model_estimate",
+      "elapsed_s": 1.1092067999998108
+    },
+    "tail-design": {
+      "schema_version": 1,
+      "solver_version": "0.2.0.dev2",
+      "model": "helicopter_batch",
+      "status": "partial",
+      "summary": {
+        "total": 9,
+        "converged": 8,
+        "failed": 1,
+        "limit_violations": 0
+      },
+      "warnings": [
+        "无地效悬停功率与载荷预算；尚未进行整机六分量配平。"
+      ],
+      "evidence_status": "model_estimate",
+      "error": "1 个工况未求得有效预算；逐点诊断已保留。",
+      "elapsed_s": 1.6158197000040673
+    },
+    "three-candidates": {
+      "schema_version": 1,
+      "solver_version": "0.2.0.dev2",
+      "model": "helicopter_batch",
+      "status": "converged",
+      "summary": {
+        "total": 3,
+        "converged": 3,
+        "failed": 0,
+        "limit_violations": 0
+      },
+      "warnings": [
+        "无地效悬停功率与载荷预算；尚未进行整机六分量配平。"
+      ],
+      "evidence_status": "model_estimate",
+      "elapsed_s": 0.6078478000126779
+    },
+    "hundred-points": {
+      "schema_version": 1,
+      "solver_version": "0.2.0.dev2",
+      "model": "helicopter_batch",
+      "status": "partial",
+      "summary": {
+        "total": 100,
+        "converged": 61,
+        "failed": 39,
+        "limit_violations": 27
+      },
+      "warnings": [
+        "无地效悬停功率与载荷预算；尚未进行整机六分量配平。"
+      ],
+      "evidence_status": "model_estimate",
+      "error": "39 个工况未求得有效预算；逐点诊断已保留。",
+      "elapsed_s": 36.60255660000257
+    }
+  },
+  "grid_checks": {
+    "synthetic": {
+      "main_thrust_n": 1.3322676295501878e-15,
+      "main_torque_nm": 7.335399598851211e-08,
+      "tail_thrust_n": 7.335411034148365e-08,
+      "tail_torque_nm": 1.5312740520023738e-07,
+      "required_power_w": 5.7541670872574e-08
+    },
+    "uh60-public": {
+      "main_thrust_n": 2.2109455155572277e-08,
+      "main_torque_nm": 9.940422769361135e-07,
+      "tail_thrust_n": 1.0010927087300558e-06,
+      "tail_torque_nm": 2.199259128365938e-06,
+      "required_power_w": 1.0676717716595618e-06
+    }
+  },
+  "hardware": "AMD Ryzen 9 5900X 12-Core Processor; Windows registry ProcessorNameString",
+  "input_sha256": {
+    "hundred-points.json": "16bbdc69c71ca2b84affddea91da09783adcaedd65e62b6eb6a3c91a54c11b8d",
+    "main-design.json": "610dbb9fcaa184e943fc6dfaf652b8545e4262174489daf1360d0b9b4213215e",
+    "mass-altitude.json": "7f1a941ca79e9085b75280d4ed0fcb61d7ae55283b67c335dc50baad3cae0de7",
+    "synthetic-case.json": "0352a72832046255aca134ba36399b12cb8fa6ea8daa81ed4290ad2e4772b843",
+    "synthetic-geometry.csv": "9791f289674e9522a0ee80f8d6b9be2abcdb7e22f23e826c835c5ed6cb879a7c",
+    "synthetic-polar.csv": "01a90f4633c502661b3cc0acd6a92f530d2fc9eef07605d5f3917b2708b5f3c2",
+    "synthetic-tail-geometry.csv": "bfd6f78e9d67df6d3c8d647454b1fba8476498fc9afad13bf87f4158454558cb",
+    "synthetic.json": "49920ad8503faff47edd312294749fbf7bc10170fff1713bffc8c8f085c7fe03",
+    "tail-design.json": "9f65f9d7e9e6452ee2201eb4b51a5a09e7829bf7f24df92176636f07118987d9",
+    "three-candidates.json": "680542c4dd9a7f592870fc6576bd7bfdfeea47251aa5e0349208970bf007572c",
+    "uh60-main-estimated-polar.csv": "e352ec64e97a2e0c5d325138ffa11c798d38b0ee866e38b5f39230b0241461b4",
+    "uh60-main-geometry.csv": "3515491ccc8540f62daa40231996d1ee773a7b3d82305d951c8cdd01fffd33cb",
+    "uh60-public-case.json": "d3e11f4dfcdca3fcd7e150880bee4f459547772dd76a6543cded6f5e1b98eff4",
+    "uh60-public.json": "f1f0b7099448f99fdc0a4941ad21a9f00ff20e248cc23da8ad11f82b40f4edb7",
+    "uh60-tail-estimated-polar.csv": "be97a1a2dce3e333ab15d4da2520ab2e080334df39cb24c8c8e74f812aed1edf",
+    "uh60-tail-geometry.csv": "b24f7f0e22057c6ba64076703d38c06c03756ef55170a37ae8fddb35c062b8d0"
+  }
+}

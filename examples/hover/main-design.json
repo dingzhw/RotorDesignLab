@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "helicopter_sweep",
+  "case_json": "synthetic-case.json",
+  "axes": {
+    "main_radius_m": [
+      1.05,
+      1.1,
+      1.2
+    ],
+    "main_rpm": [
+      1550,
+      1700,
+      1800
+    ]
+  }
+}

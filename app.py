@@ -111,7 +111,11 @@ def show_uh60(result, files):
 
 st.set_page_config(page_title="RotorDesignLab｜旋翼设计台", layout="wide")
 st.title("RotorDesignLab｜旋翼设计台")
-choice = st.radio("选择算例", [DEMO, HELICOPTER, ENGINEERING], horizontal=True)
+choice = st.radio("选择算例", [DEMO, HELICOPTER, ENGINEERING, '整机悬停预算'], horizontal=True)
+if choice == '整机悬停预算':
+    from rotordesignlab.hover_ui import render
+    render()
+    st.stop()
 preset = THREE_BLADE if choice == DEMO else (UH60 if choice == HELICOPTER else THREE_BLADE.parent / 'engineering-rotor.json')
 case = read_case(preset)
 uploads = {}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "helicopter_sweep",
+  "case_json": "synthetic-case.json",
+  "axes": {
+    "mass_kg": [
+      160,
+      180,
+      200,
+      220,
+      240
+    ],
+    "altitude_m": [
+      0,
+      1500,
+      3000
+    ]
+  }
+}

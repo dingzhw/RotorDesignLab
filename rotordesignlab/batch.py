@@ -57,6 +57,9 @@ def plot_performance(rows, axes, output):
 
 
 def run_batch(spec, base, output):
+    if isinstance(spec, dict) and spec.get('kind') in ('helicopter_sweep', 'helicopter_comparison'):
+        from .hover_batch import run_hover_batch
+        return run_hover_batch(spec, base, output)
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()):

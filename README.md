@@ -1,10 +1,12 @@
 # RotorDesignLab｜旋翼设计台
 
-本机旋翼计算工作台。当前提供 UH‑60 80 kt 平飞配平、全阶频响和短时开环分析，以及通用三片叶旋翼的悬停和轴向推进计算。
+面向无人直升机概念与初步方案设计的本机计算工作台。现有孤立旋翼性能、UH‑60 80 kt 基准配平/频响/短时响应；新增单主旋翼＋尾桨悬停功率与载荷预算、动力裕度及方案比较。
 
 [GitHub 仓库](https://github.com/dingzhw/RotorDesignLab) · [v0.1.0 发布](https://github.com/dingzhw/RotorDesignLab/releases/tag/v0.1.0) · [公开数据验证路线](docs/public-validation.md)
 
-当前开发分支为 `0.2.0.dev2`：统一机型文件、指定拉力反求总距/转速和批量性能图，网页入口为“工程旋翼”；新增展向/Mach 气动表和径向入流，已完成 [XV-15 悬停定量对照](docs/xv15-validation.md) 和 [Caradonna–Tung 径向载荷对照](docs/caradonna-tung-validation.md)。后者同总距拉力高估 29.1%，同拉力分布误差明显减小，模型改进目标与数据缺项已记录。稳定版本 `v0.1.0` 与 `main` 保留首版基准。[工程旋翼格式、用法与验证](docs/engineering-rotor.md)
+开发分支新增“整机悬停预算”入口：统一版本2机型、主尾桨反扭矩与功率分解、连续/短时动力限制、质量/高度及尺寸/转速扫描、三方案比较。预算闭合垂向力与偏航力矩，完整配平/开环操稳按后续里程碑实现。[整机格式与验收](docs/hover-budget.md) · [工程旋翼用法](docs/engineering-rotor.md) · [开发路线](docs/roadmap.md)
+
+旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.1%；整机预算标记为模型估算。公开 UH-60 模板的工程极曲线与动力假设均明示，Julia 原模型作为独立基准保留。`v0.1.0` 标签可复算。
 
 ## 在 Windows 上启动
 
@@ -36,11 +38,13 @@ $env:ROTOR_DESIGN_JULIA = Join-Path $env:USERPROFILE '.julia\juliaup\julia-1.12.
 .\.venv\Scripts\python.exe -m rotordesignlab run examples/uh60-80kt.json --out runs/uh60
 .\.venv\Scripts\python.exe -m rotordesignlab run examples/target-thrust.json --out runs/target
 .\.venv\Scripts\python.exe -m rotordesignlab batch examples/performance-sweep.json --out runs/performance
+.\.venv\Scripts\python.exe -m rotordesignlab run examples/hover/synthetic-case.json --out runs/aircraft-budget
+.\.venv\Scripts\python.exe -m rotordesignlab batch examples/hover/three-candidates.json --out runs/design-compare
 ```
 
 解压网页导出的 ZIP 后，可将其中的 `case.json` 作为同一命令的输入。每次指定新的空目录。程序生成 `result.json` 和相应的数值 CSV。求解失败时记录原因并返回退出码 2，Julia 诊断见 `solver.log`。
 
-批量结果使用 `batch batch.json` 复算。部分失败返回退出码 2，并保留所有点的诊断和可绘图数据；求解收敛但功率或扭矩超限时单独标记。机型文件定义单位、坐标、惯量、旋翼几何和安装参数，当前工程入口计算选定孤立旋翼。
+批量结果使用 `batch batch.json` 复算。部分失败返回退出码 2，并保留所有点的诊断和可绘图数据；求解收敛但功率或扭矩超限时单独标记。版本1机型供孤立旋翼，版本2增加主尾桨角色、下载及通用轴功率输入，缺少惯量仍可执行预算。
 
 - 单旋翼以 SI 为准。几何 CSV 使用 `r_over_R,chord_m,twist_deg`，从有效根部到 `r/R=1`。极曲线使用 `alpha_deg,cl,cd`。总距定义在工况的参考站，输入扭转相对该站的差值加到总距上。正轴向来流指沿推进流向，正扭矩指轴输入的驱动扭矩。
 - 单旋翼采用三状态 Pitt–Peters 的轴向稳态极限，轴对称工况下两个一阶谐波为零。使用叶素力和盘面动量方程求均匀诱导速度。内置几何和极曲线是合成样例。首版覆盖固定桨叶、正推力、正轴功率和低速轴向工况。

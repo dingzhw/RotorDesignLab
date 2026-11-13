@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "helicopter_sweep",
+  "case_json": "synthetic-case.json",
+  "axes": {
+    "tail_radius_m": [
+      0.22,
+      0.24,
+      0.26
+    ],
+    "tail_arm_m": [
+      1.5,
+      1.7,
+      1.9
+    ]
+  }
+}
