@@ -74,10 +74,13 @@ def read_aircraft(path):
 
 def require_analysis(aircraft, analysis):
     """Capability gate; future analyses must never silently reuse a budget."""
-    if analysis != 'hover_budget':
-        raise ValueError(f'整机分析 {analysis!r} 尚未实现；当前支持 hover_budget。')
+    if analysis not in ('hover_budget', 'trim'):
+        raise ValueError(f'整机分析 {analysis!r} 尚未实现；当前支持 hover_budget / trim。')
     if aircraft['schema_version'] != 2:
         raise ValueError('整机悬停预算需要机型版本 2；版本 1 继续用于孤立旋翼。')
+    if analysis == 'trim':
+        from .airframe import validate_trim_inputs
+        validate_trim_inputs(aircraft)
 
 
 def snapshot_aircraft(aircraft, source_dir, output):

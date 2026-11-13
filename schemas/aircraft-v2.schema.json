@@ -230,6 +230,78 @@
             "type": "number",
             "exclusiveMinimum": 0,
             "maximum": 1
+          },
+          "flight": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "x_reference_body": {
+                "$ref": "#/$defs/vector"
+              },
+              "cyclic_cos_deg": {
+                "$ref": "#/$defs/range"
+              },
+              "cyclic_sin_deg": {
+                "$ref": "#/$defs/range"
+              },
+              "flapping": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "mode": {
+                    "enum": [
+                      "fixed",
+                      "hinged"
+                    ]
+                  },
+                  "hinge_offset_m": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "precone_deg": {
+                    "type": "number"
+                  },
+                  "max_flap_deg": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 20
+                  },
+                  "inertia_kg_m2": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "first_mass_moment_kg_m": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "spring_nm_rad": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "damper_nms_rad": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "mode",
+                  "hinge_offset_m",
+                  "precone_deg",
+                  "max_flap_deg"
+                ]
+              },
+              "provenance": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "x_reference_body",
+              "cyclic_cos_deg",
+              "cyclic_sin_deg",
+              "flapping",
+              "provenance"
+            ]
           }
         }
       }
@@ -303,6 +375,225 @@
           "minLength": 1
         }
       }
+    },
+    "trim": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "roll_deg": {
+          "$ref": "#/$defs/range"
+        },
+        "pitch_deg": {
+          "$ref": "#/$defs/range"
+        },
+        "fuselage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "position_m": {
+              "$ref": "#/$defs/vector"
+            },
+            "area_m2": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "length_m": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "alpha_table": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "angle_deg": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "cx": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "cz": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "cm": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              },
+              "required": [
+                "angle_deg",
+                "cx",
+                "cz",
+                "cm"
+              ]
+            },
+            "beta_table": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "angle_deg": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "cy": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "cl": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "cn": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              },
+              "required": [
+                "angle_deg",
+                "cy",
+                "cl",
+                "cn"
+              ]
+            },
+            "wake_fraction": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "provenance": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "position_m",
+            "area_m2",
+            "length_m",
+            "alpha_table",
+            "beta_table",
+            "wake_fraction",
+            "provenance"
+          ]
+        },
+        "surfaces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "position_m": {
+                "$ref": "#/$defs/vector"
+              },
+              "chord_axis_body": {
+                "$ref": "#/$defs/vector"
+              },
+              "normal_axis_body": {
+                "$ref": "#/$defs/vector"
+              },
+              "area_m2": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "incidence_deg": {
+                "type": "number"
+              },
+              "polar": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "angle_deg": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "cl": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "cd": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "required": [
+                  "angle_deg",
+                  "cl",
+                  "cd"
+                ]
+              },
+              "wake_fraction": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 2
+              },
+              "provenance": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "position_m",
+              "chord_axis_body",
+              "normal_axis_body",
+              "area_m2",
+              "incidence_deg",
+              "polar",
+              "wake_fraction",
+              "provenance"
+            ]
+          }
+        },
+        "provenance": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "roll_deg",
+        "pitch_deg",
+        "fuselage",
+        "surfaces",
+        "provenance"
+      ]
     }
   },
   "$defs": {
