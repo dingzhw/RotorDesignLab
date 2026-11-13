@@ -1,0 +1,123 @@
+{
+  "schema_version": 2,
+  "kind": "aircraft",
+  "id": "uh60-hover-public",
+  "name": "UH-60 公开参数预算模板",
+  "description": "J-GenHel 公开几何/安装参数 + 明示工程估计；非 Julia UH-60 动力学复现。",
+  "provenance": "src/H60_constants.jl at baseline 05f3872; see docs/hover-budget.md for conversions and estimated fields",
+  "units": "SI",
+  "axes": "x_forward_y_right_z_down",
+  "mass_properties": {
+    "mass_kg": 7257.47792,
+    "cg_m": [
+      0,
+      0,
+      0
+    ]
+  },
+  "rotors": [
+    {
+      "id": "main",
+      "description": "公开主桨几何；简化气动",
+      "provenance": "H60_constants: R, NB, chord, twist, OMEGA, ITHSH, FS/WL; limits and efficiency estimated",
+      "blade_count": 4,
+      "radius_m": 8.177783999999999,
+      "pitch_reference_r_over_R": 0.75,
+      "geometry_csv": "uh60-main-geometry.csv",
+      "polar_csv": "uh60-main-estimated-polar.csv",
+      "position_m": [
+        0.42545,
+        0,
+        -1.6967200000000002
+      ],
+      "thrust_axis_body": [
+        0.052335956242943835,
+        0,
+        -0.9986295347545738
+      ],
+      "rotation_sign": 1,
+      "defaults": {
+        "rpm": 257.8310078088705,
+        "collective_deg": 10,
+        "radial_stations": 240
+      },
+      "limits": {
+        "rpm": [
+          200,
+          300
+        ],
+        "collective_deg": [
+          2,
+          24
+        ]
+      },
+      "role": "main",
+      "transmission_efficiency": 0.96
+    },
+    {
+      "id": "tail",
+      "description": "公开尾桨尺寸/安装；根切与转向为显式假设",
+      "provenance": "H60_constants / GenHel: RTR, CHRDTR, twistTR, OmegaTR, CantTR, BLDSTR=4; root=0.2R, rotation_sign=1, limits and efficiency estimated",
+      "blade_count": 4,
+      "radius_m": 1.6764000000000001,
+      "pitch_reference_r_over_R": 0.75,
+      "geometry_csv": "uh60-tail-geometry.csv",
+      "polar_csv": "uh60-tail-estimated-polar.csv",
+      "position_m": [
+        -9.4996,
+        -0.35559999999999997,
+        -1.9430999999999998
+      ],
+      "thrust_axis_body": [
+        0,
+        0.9396926207859084,
+        -0.3420201433256687
+      ],
+      "rotation_sign": 1,
+      "defaults": {
+        "rpm": 1190.03334048672,
+        "collective_deg": 12,
+        "radial_stations": 240
+      },
+      "limits": {
+        "rpm": [
+          1000,
+          1300
+        ],
+        "collective_deg": [
+          2,
+          24
+        ]
+      },
+      "role": "tail",
+      "transmission_efficiency": 0.93
+    }
+  ],
+  "hover": {
+    "download_fraction": 0.03,
+    "provenance": "Engineering assumption, not a UH-60 measured download"
+  },
+  "powerplant": {
+    "altitude_m": [
+      0,
+      3000,
+      6000,
+      11000
+    ],
+    "continuous_power_w": [
+      2400000,
+      1800000,
+      1200000,
+      600000
+    ],
+    "short_time_power_w": [
+      2800000,
+      2100000,
+      1400000,
+      700000
+    ],
+    "short_time_duration_s": 120,
+    "accessory_power_w": 20000,
+    "provenance": "Illustrative available shaft power only; NOT T700 ratings. Transmission efficiencies .96/.93 estimated"
+  }
+}

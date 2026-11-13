@@ -1,0 +1,144 @@
+{
+  "schema_version": 2,
+  "kind": "aircraft",
+  "id": "synthetic-hover",
+  "name": "200 kg 合成无人直升机",
+  "description": "无地效悬停功率与载荷预算；全部参数为合成功能样例。",
+  "provenance": "Synthetic example; no measured aircraft data",
+  "units": "SI",
+  "axes": "x_forward_y_right_z_down",
+  "mass_properties": {
+    "mass_kg": 200,
+    "cg_m": [
+      0,
+      0,
+      0
+    ],
+    "inertia_cg_kg_m2": [
+      [
+        65,
+        0,
+        0
+      ],
+      [
+        0,
+        120,
+        0
+      ],
+      [
+        0,
+        0,
+        140
+      ]
+    ]
+  },
+  "rotors": [
+    {
+      "id": "main",
+      "description": "三片叶主旋翼",
+      "provenance": "Same synthetic geometry and polar as v0.1.0",
+      "blade_count": 3,
+      "radius_m": 1.1,
+      "pitch_reference_r_over_R": 0.75,
+      "geometry_csv": "synthetic-geometry.csv",
+      "polar_csv": "synthetic-polar.csv",
+      "position_m": [
+        0,
+        0,
+        -0.6
+      ],
+      "thrust_axis_body": [
+        0,
+        0,
+        -1
+      ],
+      "rotation_sign": 1,
+      "defaults": {
+        "rpm": 1700,
+        "collective_deg": 17,
+        "radial_stations": 240
+      },
+      "limits": {
+        "rpm": [
+          800,
+          2100
+        ],
+        "collective_deg": [
+          2,
+          24
+        ],
+        "power_w": 80000,
+        "torque_nm": 450
+      },
+      "role": "main",
+      "transmission_efficiency": 0.96
+    },
+    {
+      "id": "tail",
+      "description": "合成双叶尾桨",
+      "provenance": "Synthetic: all dimensions, rpm, limits and installation estimated",
+      "blade_count": 2,
+      "radius_m": 0.24,
+      "pitch_reference_r_over_R": 0.75,
+      "geometry_csv": "synthetic-tail-geometry.csv",
+      "polar_csv": "synthetic-polar.csv",
+      "position_m": [
+        -1.7,
+        0,
+        -0.15
+      ],
+      "thrust_axis_body": [
+        0,
+        1,
+        0
+      ],
+      "rotation_sign": 1,
+      "defaults": {
+        "rpm": 7500,
+        "collective_deg": 12,
+        "radial_stations": 240
+      },
+      "limits": {
+        "rpm": [
+          4000,
+          9000
+        ],
+        "collective_deg": [
+          2,
+          24
+        ],
+        "power_w": 8000,
+        "torque_nm": 12
+      },
+      "role": "tail",
+      "transmission_efficiency": 0.93
+    }
+  ],
+  "hover": {
+    "download_fraction": 0.03,
+    "provenance": "Synthetic download = 0.03 * main thrust; applied at CG"
+  },
+  "powerplant": {
+    "altitude_m": [
+      0,
+      3000,
+      6000,
+      11000
+    ],
+    "continuous_power_w": [
+      45000,
+      36000,
+      24000,
+      12000
+    ],
+    "short_time_power_w": [
+      55000,
+      44000,
+      30000,
+      15000
+    ],
+    "short_time_duration_s": 120,
+    "accessory_power_w": 700,
+    "provenance": "Synthetic shaft-power curves, losses and 120 s rating; not a specific engine"
+  }
+}

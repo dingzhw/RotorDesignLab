@@ -1,0 +1,8 @@
+{
+  "schema_version": 3,
+  "model": "helicopter",
+  "analysis": "hover_budget",
+  "aircraft_json": "uh60-public.json",
+  "altitude_m": 0,
+  "requested_duration_s": 600
+}
