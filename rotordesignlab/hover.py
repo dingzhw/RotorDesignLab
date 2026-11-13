@@ -18,7 +18,8 @@ def atmosphere(altitude):
     temperature = 288.15 - .0065 * altitude
     pressure = 101325 * (temperature / 288.15)**(G/(287.05287*.0065))
     return dict(temperature_k=temperature, density_kg_m3=pressure/(287.05287*temperature),
-                speed_of_sound_m_s=sqrt(1.4*287.05287*temperature))
+                speed_of_sound_m_s=sqrt(1.4*287.05287*temperature),
+                dynamic_viscosity_pa_s=1.716e-5*(temperature/273.15)**1.5*(273.15+110.4)/(temperature+110.4))
 
 
 def apply_design(aircraft, case):
@@ -85,7 +86,7 @@ def run_budget(case, base, output):
         spec = {key:data[key] for key in ('blade_count','radius_m','pitch_reference_r_over_R',
                    'geometry_csv','polar_csv','polar_json',*AERO_KEYS) if key in data}
         spec.update(data['defaults'], axial_speed_m_s=0., density_kg_m3=air['density_kg_m3'],
-                    speed_of_sound_m_s=air['speed_of_sound_m_s'])
+                    speed_of_sound_m_s=air['speed_of_sound_m_s'],dynamic_viscosity_pa_s=air['dynamic_viscosity_pa_s'])
         rotors[role], _ = read_rotor(spec, output)
     weight = aircraft['mass_properties']['mass_kg']*G
     scale = np.array([weight, weight*main['radius_m']])

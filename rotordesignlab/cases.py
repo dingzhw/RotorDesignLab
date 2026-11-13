@@ -92,11 +92,12 @@ def read_rotor(case, base):
         raise ValueError("叶尖合速度超过当前低速翼型模型的 250 m/s 上限。")
     cone = numeric(dict(precone_deg=case.get('precone_deg', 0)), 'precone_deg', 0, 15)
     sound = numeric(dict(speed_of_sound_m_s=case.get('speed_of_sound_m_s', 340.3)), 'speed_of_sound_m_s', 250, 400)
+    viscosity=numeric(dict(dynamic_viscosity_pa_s=case.get('dynamic_viscosity_pa_s',1.7894e-5)),'dynamic_viscosity_pa_s',1e-6,1e-3)
     inflow, tip = case.get('inflow_model', 'uniform'), case.get('tip_loss', 'none')
     if inflow not in ('uniform', 'annular') or tip not in ('none', 'prandtl') or (inflow == 'uniform' and tip != 'none'):
         raise ValueError('inflow_model 选 uniform/annular；Prandtl 尖损失仅用于 annular。')
     return Rotor(geometry, polar, blades, radius, omega, speed, density, collective, reference,
-                 stations, airfoil_grid, cone, sound, inflow, tip), (geo_path, polar_path)
+                 stations, airfoil_grid, cone, sound, inflow, tip, viscosity), (geo_path, polar_path)
 
 
 def run_case(case, base, output):

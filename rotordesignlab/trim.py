@@ -21,7 +21,8 @@ class TrimSystem:
         self.selected={r['role']:r for r in aircraft['rotors']};self.rotors={};self.bases={}
         for role,data in self.selected.items():
             spec={key:data[key] for key in ('blade_count','radius_m','pitch_reference_r_over_R','geometry_csv','polar_csv','polar_json',*AERO_KEYS) if key in data}
-            spec.update(data['defaults'],axial_speed_m_s=0,density_kg_m3=self.air['density_kg_m3'],speed_of_sound_m_s=self.air['speed_of_sound_m_s'])
+            spec.update(data['defaults'],axial_speed_m_s=0,density_kg_m3=self.air['density_kg_m3'],speed_of_sound_m_s=self.air['speed_of_sound_m_s'],
+                        dynamic_viscosity_pa_s=self.air['dynamic_viscosity_pa_s'])
             model,_=read_rotor(spec,base)
             self.rotors[role]=SteadyRotor(model,data['flight']['flapping'],data['rotation_sign'],case['azimuth_stations'])
             self.bases[role]=rotor_basis(data['thrust_axis_body'],data['flight']['x_reference_body'])

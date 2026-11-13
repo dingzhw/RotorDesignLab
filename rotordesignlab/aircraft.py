@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = json.loads((ROOT / 'schemas' / 'aircraft.schema.json').read_text(encoding='utf-8'))
 SCHEMA_V2 = json.loads((ROOT / 'schemas' / 'aircraft-v2.schema.json').read_text(encoding='utf-8'))
 OPERATING_KEYS = ('rpm', 'collective_deg', 'radial_stations')
-AERO_KEYS = ('precone_deg', 'speed_of_sound_m_s', 'inflow_model', 'tip_loss')
+AERO_KEYS = ('precone_deg', 'speed_of_sound_m_s', 'inflow_model', 'tip_loss','dynamic_viscosity_pa_s')
 
 
 def read_aircraft(path):

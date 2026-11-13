@@ -28,6 +28,7 @@ class Rotor:
     speed_of_sound: float = 340.3
     inflow_model: str = 'uniform'
     tip_loss: str = 'none'
+    dynamic_viscosity: float = 1.7894e-5
 
     def grid(self):
         root = self.geometry[0, 0] * self.radius

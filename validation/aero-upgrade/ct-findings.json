@@ -1,0 +1,45 @@
+{
+  "reference_ct": 0.0046,
+  "engineering_accuracy_qualified": false,
+  "input_review": "Original Table 17 and Figure 6 rechecked: 8deg,1250rpm,Mtip=.439,CT=.00460; no transcription discrepancy found.",
+  "re_scope": "Six legacy Re slices cover the rotor; small-alpha CL slope is Re-independent in this database. Experimental pedigree/Mach effects not established.",
+  "finite_wing": "AR6 e=1 slope formula is a diagnostic only, no Prandtl multiplier; finite wing is not a validated rotor wake replacement.",
+  "inference": "Inverted measured sectional load using same airfoil; diagnostic is conditioned on assumed airfoil, not measured induced velocity.",
+  "variants": [
+    {
+      "model": "baseline_annular",
+      "ct": 0.005938125730215506,
+      "ct_error_percent": 29.089689787293604,
+      "radial_mape_percent": 26.047333839792536,
+      "power_w": 7940.148330801942
+    },
+    {
+      "model": "baseline_uniform",
+      "ct": 0.0064167873035205335,
+      "ct_error_percent": 39.49537616348986,
+      "radial_mape_percent": 51.82790004685813,
+      "power_w": 7639.877523125837
+    },
+    {
+      "model": "legacy_local_Re_Mach_held",
+      "ct": 0.005928238634058612,
+      "ct_error_percent": 28.874752914317646,
+      "radial_mape_percent": 25.866710451752272,
+      "power_w": 8027.547943605672
+    },
+    {
+      "model": "legacy_fixed_Re2e6_Mach_held",
+      "ct": 0.005928360945151357,
+      "ct_error_percent": 28.877411851116452,
+      "radial_mape_percent": 25.86876784169184,
+      "power_w": 8002.504005801113
+    },
+    {
+      "model": "finite_wing_AR6_diagnostic_only",
+      "ct": 0.005416448670379777,
+      "ct_error_percent": 17.7488841386908,
+      "radial_mape_percent": 12.486367631971174,
+      "power_w": 6651.775775204342
+    }
+  ]
+}

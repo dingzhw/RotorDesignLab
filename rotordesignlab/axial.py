@@ -30,7 +30,8 @@ def solve_axial(rotor):
         speed = np.hypot(tangent, axial)
         mach = speed/rotor.speed_of_sound
         if rotor.airfoil_grid is not None:
-            cl, cd = rotor.airfoil_grid.coefficients(span, alpha, mach, strict=strict)
+            cl, cd = rotor.airfoil_grid.coefficients(span, alpha, mach,
+                reynolds=rotor.density*speed*chord/rotor.dynamic_viscosity, strict=strict)
         else:
             if strict and (alpha.min() < rotor.polar[0,0] or alpha.max() > rotor.polar[-1,0]):
                 raise SolverError('Converged element angle exceeds the polar domain.')

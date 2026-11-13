@@ -32,6 +32,7 @@
           "pitch_reference_r_over_R":{"type":"number","exclusiveMinimum":0,"maximum":1},
           "geometry_csv":{"type":"string","minLength":1}, "polar_csv":{"type":"string","minLength":1},
           "polar_json":{"type":"string","minLength":1},
+          "dynamic_viscosity_pa_s":{"type":"number","minimum":0.000001,"maximum":0.001},
           "precone_deg":{"type":"number","minimum":0,"maximum":15},
           "speed_of_sound_m_s":{"type":"number","minimum":250,"maximum":400},
           "inflow_model":{"enum":["uniform","annular"]}, "tip_loss":{"enum":["none","prandtl"]},

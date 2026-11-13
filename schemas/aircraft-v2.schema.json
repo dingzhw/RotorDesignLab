@@ -302,6 +302,11 @@
               "flapping",
               "provenance"
             ]
+          },
+          "dynamic_viscosity_pa_s": {
+            "type": "number",
+            "minimum": 1e-06,
+            "maximum": 0.001
           }
         }
       }

@@ -61,7 +61,8 @@ class AzimuthRotor:
         alpha=(np.rad2deg(pitch-phi)+180)%360-180
         speed=np.hypot(ut,up);mach=speed/model.speed_of_sound
         if model.airfoil_grid is not None:
-            cl,cd=model.airfoil_grid.coefficients(self.r/model.radius,alpha,mach,strict=strict)
+            cl,cd=model.airfoil_grid.coefficients(self.r/model.radius,alpha,mach,
+                reynolds=model.density*speed*self.chord/model.dynamic_viscosity,strict=strict)
         else:
             if strict and (alpha.min()<model.polar[0,0] or alpha.max()>model.polar[-1,0]):
                 raise ValueError('方位角叶素攻角超出翼型表；回流区需要四象限数据，禁止端点外推。')
