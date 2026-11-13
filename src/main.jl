@@ -110,10 +110,11 @@ YETRIM = 0.0
 # initialize trim variables
 include("trimInit.jl")
 # trim aircraft
-x0, u0 = trimmer(GenHel!,x0,u0,xdot_targ,t)
+x0, u0, trim_ok = trimmer(GenHel!,x0,u0,xdot_targ,t)
+trim_ok == 1 || error("UH-60 trim failed")
 # linearized aircraft dynamics
 # A, B = linearize(H60!,x0,u0,xdot0,t)
-A, B = linearize(GenHel!,x0,u0,xdot0,t)
+_, _, _, A, B = linearize(GenHel!,x0,u0,xdot0,t)
 # 此处考虑到原先线化的可能是`H60`的专用函数，现在已经是`GenHel!`了但是此处没改过来，所以`H60!`改为`GenHel!`
 
 # ----------------------------- SPECTRAL ANALYSIS ------------------------------

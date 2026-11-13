@@ -12,7 +12,7 @@
 #
 # ------------------------------------------------------------------------------
 
-function GenHel!(dx,x,p,t)
+function GenHel!(dx,x,p,t; legacy_vertical=false, rotor_trace=nothing)
 
     # control system mixing
     controls = control_mixing(p)
@@ -611,7 +611,7 @@ function GenHel!(dx,x,p,t)
     # linear accelerations
     Vxbdot=ur[16]
     Vybdot=ur[17]
-    Vzbdot=ur[118]
+    Vzbdot=legacy_vertical ? ur[118] : ur[18]
     # angular acceleration inputs
     pdot=ur[19]
     qdot=ur[20]
@@ -792,6 +792,13 @@ function GenHel!(dx,x,p,t)
     Fza=-Frb.*sbeta-Fpb.*cbeta
     # total aero thrust
     Tha=-sum(Fza)
+    if rotor_trace !== nothing
+        rotor_trace((; Up, Ut, Ur, theta, RSEG, delseg, CHORD, OMEGA, R,
+                       RHO, VSOUND, alphay, atrans, Mach, CL, CD, Fp, Ft, Fr,
+                       sbeta, cbeta, Fza, Tha, e, muxs, muys, muzs, ps, qs,
+                       rminusO, beta_dot, zeta_dot, cpsizeta, spsizeta, cpsi, spsi,
+                       lambda0, lambda1s, lambda1c))
+    end
     # aero force and momemnt coefficients (used by Pitt Peters model)
     CTa=Tha/(pi*RHO*OMEGA^2*R^4)
     CLa=Lha/(pi*RHO*OMEGA^2*R^5)

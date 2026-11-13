@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "model": "uh60",
+  "duration_s": 1.0,
+  "time_step_s": 0.01
+}

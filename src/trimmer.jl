@@ -17,8 +17,8 @@
 
 function trimmer(acfun,x0,u0,targ_des,t)
     # trim state and controls
-    x0trim=x0
-    u0trim=u0
+    x0trim=copy(x0)
+    u0trim=copy(u0)
     #
     it=0
     err=100.0
@@ -47,12 +47,16 @@ function trimmer(acfun,x0,u0,targ_des,t)
         targvec=xdot0[TRIMTARG]
         targ_err=targvec-targ_des
         err=maximum(abs.(targ_err)./XSCALE[TRIMTARG])
+        if !isfinite(err) || !all(isfinite, x0trim) || !all(isfinite, u0trim)
+            return x0trim, u0trim, 0
+        end
         @printf("%d          %f\n",it,err)
         if (err>trim_tol)
             F, G, M=linearize(acfun,x0trim,u0trim,xdot_in,t)
             # don't use M in trimmer, as it is prone to diverge
             Jac=[F G]
             Jac2 = Jac[TRIMTARG,TRIMVARS]
+            all(isfinite, Jac2) || return x0trim, u0trim, 0
             trimvec=[x0trim;u0trim]
             trimvec[TRIMVARS]=trimvec[TRIMVARS]-0.5*pinv(Jac2)*targ_err
             x0trim=trimvec[1:NSTATES]

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "model": "axial_rotor",
+  "blade_count": 3,
+  "radius_m": 1.1,
+  "rpm": 1700,
+  "axial_speed_m_s": 0,
+  "density_kg_m3": 1.225,
+  "collective_deg": 17,
+  "pitch_reference_r_over_R": 0.75,
+  "radial_stations": 240,
+  "geometry_csv": "synthetic-geometry.csv",
+  "polar_csv": "synthetic-polar.csv"
+}
