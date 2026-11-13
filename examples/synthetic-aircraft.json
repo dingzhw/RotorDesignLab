@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "kind": "aircraft",
+  "id": "synthetic-helicopter",
+  "name": "通用无人直升机工程演示",
+  "description": "合成参数，仅用于功能和数值检查；当前计算选定孤立主旋翼。",
+  "provenance": "Synthetic example; no measured aircraft data",
+  "units": "SI",
+  "axes": "x_forward_y_right_z_down",
+  "mass_properties": {
+    "mass_kg": 200,
+    "cg_m": [0, 0, 0],
+    "inertia_cg_kg_m2": [[65, 0, 0], [0, 120, 0], [0, 0, 140]]
+  },
+  "rotors": [{
+    "id": "main",
+    "description": "三片叶主旋翼",
+    "provenance": "Same synthetic geometry and polar as v0.1.0",
+    "blade_count": 3,
+    "radius_m": 1.1,
+    "pitch_reference_r_over_R": 0.75,
+    "geometry_csv": "synthetic-geometry.csv",
+    "polar_csv": "synthetic-polar.csv",
+    "position_m": [0, 0, -0.6],
+    "thrust_axis_body": [0, 0, -1],
+    "rotation_sign": 1,
+    "defaults": {"rpm": 1700, "collective_deg": 17, "radial_stations": 240},
+    "limits": {"rpm": [800, 2100], "collective_deg": [2, 24], "power_w": 80000, "torque_nm": 450}
+  }]
+}

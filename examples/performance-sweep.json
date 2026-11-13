@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "rotor_sweep",
+  "case_json": "engineering-rotor.json",
+  "axes": {
+    "collective_deg": [6, 8, 10, 12, 14, 16, 18, 20, 22, 24],
+    "rpm": [1400, 1700, 2000]
+  }
+}

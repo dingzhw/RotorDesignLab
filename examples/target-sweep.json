@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "kind": "rotor_sweep",
+  "case_json": "target-thrust.json",
+  "axes": {
+    "target_thrust_n": [1000, 1500, 2000, 2500, 3000],
+    "rpm": [1400, 1700, 2000]
+  }
+}

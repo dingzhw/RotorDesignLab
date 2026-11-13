@@ -1,0 +1,8 @@
+{
+  "schema_version": 2,
+  "model": "aircraft_rotor",
+  "aircraft_json": "synthetic-aircraft.json",
+  "rotor_id": "main",
+  "density_kg_m3": 1.225,
+  "axial_speed_m_s": 0
+}

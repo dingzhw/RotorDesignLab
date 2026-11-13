@@ -87,6 +87,18 @@ def solve(rotor):
         inflow_mean=induced / (rotor.omega * rotor.radius), inflow_sin=0.0, inflow_cos=0.0,
         moment_x_nm=float(mx), moment_y_nm=float(my),
     )
+    tip_speed = rotor.omega * rotor.radius
+    scale = rotor.density * pi * rotor.radius**2 * tip_speed**2
+    summary.update(rpm=rotor.omega * 30 / pi, collective_deg=rotor.collective_deg,
+                   thrust_coefficient=total_thrust / scale,
+                   torque_coefficient=total_torque / (scale * rotor.radius),
+                   power_coefficient=rotor.omega * total_torque / (scale * tip_speed),
+                   tip_speed_m_s=tip_speed, alpha_min_deg=float(alpha.min()),
+                   alpha_max_deg=float(alpha.max()),
+                   propulsive_efficiency=total_thrust * rotor.axial_speed / (rotor.omega * total_torque))
+    if rotor.axial_speed == 0:
+        summary['hover_figure_of_merit'] = total_thrust**1.5 / (
+            np.sqrt(2 * rotor.density * pi * rotor.radius**2) * rotor.omega * total_torque)
     headers = ("r_m", "dr_m", "chord_m", "pitch_deg", "alpha_deg",
                "dthrust_n", "dtorque_nm", "thrust_n_per_m", "torque_nm_per_m")
     radial_thrust, radial_torque = thrust.sum(axis=0), torque.sum(axis=0)

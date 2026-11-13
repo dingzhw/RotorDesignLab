@@ -14,9 +14,16 @@ def main():
     run = commands.add_parser("run", help="Run a versioned JSON case")
     run.add_argument("case", type=Path)
     run.add_argument("--out", type=Path, required=True)
+    batch = commands.add_parser('batch', help='Run an aircraft rotor performance sweep')
+    batch.add_argument('case', type=Path)
+    batch.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
     try:
-        result = run_case(read_case(args.case), args.case.resolve().parent, args.out)
+        if args.command == 'batch':
+            from .batch import run_batch
+            result = run_batch(read_case(args.case), args.case.resolve().parent, args.out)
+        else:
+            result = run_case(read_case(args.case), args.case.resolve().parent, args.out)
     except (OSError, ValueError) as error:
         print(error, file=sys.stderr)
         return 2

@@ -99,9 +99,11 @@ def run_case(case, base, output):
                   scipy_version=scipy.__version__, status="failed", warnings=[])
     snapshot = case.copy() if isinstance(case, dict) else case
     try:
-        if not isinstance(case, dict) or type(case.get("schema_version")) is not int or case["schema_version"] != 1:
-            raise ValueError("工况 JSON 必须是 schema_version 为 1 的对象。")
+        if not isinstance(case, dict) or type(case.get("schema_version")) is not int or case["schema_version"] not in (1, 2):
+            raise ValueError("工况 JSON 必须是 schema_version 为 1 或 2 的对象。")
         result["model"] = case.get("model")
+        if (case['schema_version'] == 2) != (case.get('model') == 'aircraft_rotor'):
+            raise ValueError('schema_version=2 用于 aircraft_rotor，旧算例使用版本 1。')
         if case.get("model") == "uh60":
             duration = numeric(case, "duration_s", 0.1, 3)
             step = numeric(case, "time_step_s", 0.0025, 0.02)
@@ -112,20 +114,40 @@ def run_case(case, base, output):
                 residual = max(float(row["scaled_abs"]) for row in csv.DictReader(stream))
             result.update(summary={"weighted_trim_residual": residual}, backend="Julia 1.12.4")
             result["warnings"] = ["频响采用局部线化，开环时程采用完整非线性方程。"]
-        elif case.get("model") == "axial_rotor":
-            rotor, sources = read_rotor(case, base)
-            for key, source, name in zip(("geometry_csv", "polar_csv"), sources,
-                                         ("geometry.csv", "polar.csv")):
-                shutil.copyfile(source, output / name)
-                snapshot[key] = name
-            summary, headers, radial = solve(rotor)
+        elif case.get("model") in ("axial_rotor", "aircraft_rotor"):
+            if case['model'] == 'aircraft_rotor':
+                from .aircraft import prepare, installed_loads
+                from .inverse import solve_target
+                rotor, aircraft, selected, snapshot = prepare(case, base, output)
+                if 'target' in case:
+                    rotor, answer, diagnostic = solve_target(rotor, case['target'], selected['limits'])
+                    result['target_solution'] = diagnostic
+                else:
+                    answer = solve(rotor)
+                summary, headers, radial = answer
+                result['installation'] = installed_loads(aircraft, selected, summary)
+                result['feasible'] = result['installation']['within_supplied_limits']
+                solved_case = dict(snapshot, rpm=rotor.omega * 30 / pi, collective_deg=rotor.collective_deg)
+                solved_case.pop('target', None)
+                write_json(output / 'solved-case.json', solved_case)
+            else:
+                rotor, sources = read_rotor(case, base)
+                for key, source, name in zip(("geometry_csv", "polar_csv"), sources,
+                                             ("geometry.csv", "polar.csv")):
+                    shutil.copyfile(source, output / name)
+                    snapshot[key] = name
+                summary, headers, radial = solve(rotor)
             if not all(isfinite(value) for value in summary.values()):
                 raise ValueError("计算产生非有限值。")
             write_csv(output / "radial_loads.csv", headers, radial)
             result.update(summary=summary, backend="Python / Pitt–Peters axial steady limit")
             result["warnings"] = ["固定桨叶、均匀轴向入流，翼型系数仅随攻角变化。"]
+            if case['model'] == 'aircraft_rotor':
+                result['warnings'].append('当前为选定孤立旋翼分析，安装载荷已移算到重心；整机配平尚未计算。')
+                if not result['feasible']:
+                    result['warnings'].append('求解收敛，但轴功率或扭矩超过机型给定限制。')
         else:
-            raise ValueError("model 必须为 uh60 或 axial_rotor。")
+            raise ValueError("model 必须为 uh60、axial_rotor 或 aircraft_rotor。")
         result["status"] = "converged"
     except (ValueError, RuntimeError, OSError, TimeoutExpired) as error:
         result["error"] = str(error)
