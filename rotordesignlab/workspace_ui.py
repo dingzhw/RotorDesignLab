@@ -40,23 +40,56 @@ def case_controls(task):
                          format_func=lambda v:('主旋翼' if v==main['id'] else '尾桨')+' · '+v)
         rotor=next(r for r in aircraft['rotors'] if r['id']==selected)
         mode=setting(task,'mode','旋翼计算方式','固定总距正算',['固定总距正算','指定拉力反求总距','指定拉力反求转速','批量正算','批量反求总距'],help='正算：给总距与转速求拉力；反求：给目标拉力求总距或转速；批量：按扫描值逐点计算。')
+        flow_model=setting(task,'flow_model','来流与旋翼模型','三方向来流（方位角叶素）',
+             ['三方向来流（方位角叶素）','轴流性能（原均匀/环带模型）'],
+             help='三方向模型按方位角分解相对速度，支持盘面内来流与周期变距。轴流模型保留原悬停/轴流验证口径，两者的入流分布和挥舞假设不同。')
+        spatial=flow_model.startswith('三方向')
         a,b=st.columns(2)
         with a:rpm=setting(task,'rpm-'+selected,'本次旋翼转速 / rpm',float(rotor['defaults']['rpm']),
                            min_value=1.,max_value=30000.,disabled=mode=='指定拉力反求转速',help=help_text('rpm'))
         with b:collective=setting(task,'collective-'+selected,'本次总距 θ₀ / °',float(rotor['defaults']['collective_deg']),
                                   min_value=-20.,max_value=55.,disabled='反求总距' in mode,
                                   help='总距参考站的桨距角，增加为正；参考站在下方桨叶参数中设置。反求总距时，本项作为初始参考，结果给出求得总距。')
-        a,b=st.columns(2)
-        with a:speed=setting(task,'axial_speed_m_s','轴向来流 / (m/s)',0.,min_value=0.,max_value=150.)
-        with b:density=setting(task,'density_kg_m3','空气密度 / (kg/m³)',1.225,min_value=.05,max_value=3.,format='%.4f')
+        if spatial:
+            st.caption('来流为“空气相对轮毂”的速度，采用机体系：X向前、Y向右、Z向下。常规向上主桨：悬停填[0,0,0]；前飞20 m/s填[-20,0,0]；上升3 m/s填[0,0,3]。')
+            flow=[]
+            for column,axis in zip(st.columns(3),'xyz'):
+                with column:flow.append(setting(task,'flow_'+axis+'_m_s','来流 '+axis.upper()+' 分量 / (m/s)',0.,min_value=-150.,max_value=150.,
+                    help={'x':'正值为空气向机头流动；无风前飞20 m/s填−20。','y':'正值为空气向机体右侧流动；可与X/Z同时填写。','z':'正值为空气向下流动；向上主桨上升3 m/s填+3。尾桨轴向分量由安装方向自动计算。'}[axis]+' 不含旋翼自身诱导速度。'))
+        else:
+            speed=setting(task,'axial_speed_m_s','轴向来流 / (m/s)',0.,min_value=0.,max_value=150.)
+        density=setting(task,'density_kg_m3','空气密度 / (kg/m³)',1.225,min_value=.05,max_value=3.,format='%.4f')
         st.caption(f"当前旋翼：{rotor['blade_count']}片桨叶，R={rotor['radius_m']:g} m；总距参考站 r/R={rotor['pitch_reference_r_over_R']:g}。本页工况随方案保存，优先于机型参考工况。")
-        case=dict(schema_version=2,model='aircraft_rotor',rotor_id=selected,axial_speed_m_s=speed,density_kg_m3=density,rpm=rpm,collective_deg=collective)
+        case=dict(schema_version=2,model='spatial_rotor' if spatial else 'aircraft_rotor',rotor_id=selected,
+                  density_kg_m3=density,rpm=rpm,collective_deg=collective)
+        if spatial:case['flow_body_m_s']=flow
+        else:case['axial_speed_m_s']=speed
+        with st.expander('周期变距、挥舞与计算网格'):
+            case['radial_stations']=setting(task,'radial-'+selected,'本次径向叶素数',rotor['defaults']['radial_stations'],min_value=8,max_value=2000,help=help_text('radial_stations'))
+            if spatial:
+                a,b=st.columns(2)
+                for col,key,symbol in ((a,'cyclic_cos_deg','cos'),(b,'cyclic_sin_deg','sin')):
+                    with col:case[key]=setting(task,key+'-'+selected,symbol+' 周期变距 / °',0.,min_value=-30.,max_value=30.,
+                        help='桨距=总距+θcos·cosψ+θsin·sinψ，再计几何扭转和挥舞耦合。ψ从旋翼+x向+y增加；默认两项为0。')
+                choices=['fixed','aircraft'] if 'flight' in rotor else ['fixed']
+                case['flapping_model']=setting(task,'flapping-'+selected,'桨叶运动模型','fixed',choices,
+                    format_func=lambda v:{'fixed':'固定桨叶（保留预锥）','aircraft':'使用机型挥舞参数'}[v],
+                    help='固定桨叶不求挥舞平衡；使用机型参数时求解锥度和一阶挥舞，需提供相应惯量、质量一阶矩及铰接参数。')
+                case['azimuth_stations']=setting(task,'azimuth_stations','整周方位角站数',36,min_value=12,max_value=720)
+                st.caption('三状态入流；μ≤0.25、正推力和正轴功率，并受当地攻角/Mach/Re数据域限制。当前不含下降涡环态、展向气动力和非定常失速。')
         if '反求' in mode:
             thrust=setting(task,'target_thrust_n','目标拉力 / N',2000.,min_value=.1,max_value=1e7)
             case['target']=dict(thrust_n=thrust,solve_for='rpm' if mode.endswith('转速') else 'collective_deg')
         if '批量' in mode:
             x='target_thrust_n' if '反求' in mode else 'collective_deg'
-            text=setting(task,x+'-scan','目标拉力扫描 / N' if x=='target_thrust_n' else '总距扫描 / °','1000,1500,2000' if x=='target_thrust_n' else '8,12,16',help='数值用逗号分隔；失败点会保留诊断。')
+            if spatial and x=='collective_deg':
+                x=setting(task,'sweep_variable','扫描变量','collective_deg',['collective_deg','flow_x_m_s','flow_y_m_s','flow_z_m_s'],
+                          format_func=lambda v:{'collective_deg':'总距','flow_x_m_s':'X方向来流','flow_y_m_s':'Y方向来流','flow_z_m_s':'Z方向来流'}[v],
+                          help='其他两个来流分量和周期变距保持本页所填数值；第二个扫描变量为转速。')
+            from .presentation import AXIS_LABELS
+            default='1000,1500,2000' if x=='target_thrust_n' else '8,12,16' if x=='collective_deg' else '0,5,10' if x=='flow_z_m_s' else '0,-10,-20'
+            title=('目标拉力扫描 / N' if x=='target_thrust_n' else '总距扫描 / °' if x=='collective_deg' else AXIS_LABELS[x]+'（扫描值）')
+            text=setting(task,x+'-scan',title,default,help='数值用逗号分隔；失败点会保留诊断。')
             rpm=rotor['defaults']['rpm'];rotor_key='rpm-scan-'+selected
             rpms=setting(task,rotor_key,'转速扫描 / rpm',f'{rpm*.95:g},{rpm:g}',help='数值用逗号分隔。')
             batch=lambda:dict(schema_version=1,kind='rotor_sweep',axes={x:values(text),'rpm':values(rpms)})
@@ -150,6 +183,7 @@ def show_result(record,is_current):
     if answer['status']!='converged':st.error(answer.get('error','未得到有效结果，请根据诊断修改参数后重跑。'))
     summary=answer.get('summary') or {}
     specs=[('thrust_n','拉力','N',1),('torque_nm','轴扭矩','N·m',1),('power_w','轴功率','kW',.001),
+           ('collective_deg','计算总距','°',1),('rpm','计算转速','rpm',1),
            ('required_power_w','整机需用轴功率','kW',.001),('duration_margin_w','功率余量','kW',.001),
            ('tail_thrust_n','尾桨推力','N',1),('states','动态状态数','',1),('unstable_modes','不稳定特征根数','',1)]
     chosen=[v for v in specs if v[0] in summary]
@@ -169,7 +203,15 @@ def show_result(record,is_current):
             'not_evaluated':'未检查','unknown':'待检查'}
     text=lambda value:states.get(str(value),str(value))
     st.caption('求解：'+text(answer.get('solver_status',answer['status']))+'；数据域：'+text(answer.get('support_status','见诊断'))+'；设计限制：'+text(answer.get('design_limits_status','见诊断')))
-    for name in ('performance.png','controls.png','modes.png','frequency.png','response.png'):
+    installation=answer.get('installation',{})
+    if 'moment_hub_body_nm' in installation:
+        st.caption('整转平均气动力：机体系X向前、Y向右、Z向下；力矩按右手定则。轮毂力矩与移轴到重心的力矩分别列出。')
+        st.dataframe(pd.DataFrame([
+            {'载荷':'气动力 / N',**dict(zip(('X','Y','Z'),installation['force_body_n']))},
+            {'载荷':'关于轮毂的气动力矩 / (N·m)',**dict(zip(('X','Y','Z'),installation['moment_hub_body_nm']))},
+            {'载荷':'关于重心的气动力矩 / (N·m)',**dict(zip(('X','Y','Z'),installation['moment_cg_body_nm']))},
+        ]),hide_index=True)
+    for name in ('performance.png','azimuth.png','controls.png','modes.png','frequency.png','response.png'):
         if name in files:st.image(files[name])
     if 'radial_loads.csv' in files:
         data=pd.read_csv(BytesIO(files['radial_loads.csv']))

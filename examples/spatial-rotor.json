@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "model": "spatial_rotor",
+  "aircraft_json": "public-helicopter/synthetic.json",
+  "rotor_id": "main",
+  "rpm": 1700,
+  "collective_deg": 14,
+  "density_kg_m3": 1.225,
+  "flow_body_m_s": [-15, -4, 3],
+  "cyclic_cos_deg": 0,
+  "cyclic_sin_deg": 0,
+  "flapping_model": "fixed",
+  "radial_stations": 80,
+  "azimuth_stations": 36
+}

@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "kind": "rotor_sweep",
+  "case_json": "spatial-rotor.json",
+  "axes": {"flow_x_m_s": [0, -10, -20], "rpm": [1600, 1700]}
+}

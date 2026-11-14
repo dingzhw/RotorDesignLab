@@ -178,6 +178,7 @@ def main(tasks=None):
         field(app.checkbox,'确认替换当前草稿（新建、重开、导入或恢复模板时使用）').check().run()
         field(app.button,'从模板新建').click().run();ok(app)
         for group in field(app.selectbox,'参数分组').options:choose(app,group)
+        field(app.selectbox,'来流与旋翼模型').set_value('轴流性能（原均匀/环带模型）').run()
         record=run(app);assert record['answer']['status']=='converged',record['answer']
         with TemporaryDirectory() as temp:
             source=ROOT/'examples/engineering-rotor.json'

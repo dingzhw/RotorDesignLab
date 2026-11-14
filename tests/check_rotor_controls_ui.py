@@ -18,10 +18,22 @@ with TemporaryDirectory() as tmp,patch.object(designs,'LIBRARY',Path(tmp)):
     record=run(app);assert record['answer']['status']=='converged',record['answer']
     assert record['case']['collective_deg']==14 and record['case']['rpm']==1750
     replay(record)
+    assert record['case']['model']=='spatial_rotor'
+    for axis,value in zip('XYZ',[-15.,-4.,3.]):
+        field(app.number_input,'来流 '+axis+' 分量 / (m/s)').set_value(value).run();ok(app)
+    record=run(app);assert record['answer']['status']=='converged',record['answer']
+    assert record['case']['flow_body_m_s']==[-15.,-4.,3.]
+    assert abs(record['answer']['installation']['force_body_n'][1])>.1
+    assert 'azimuth.png' in record['files'];replay(record)
     field(app.selectbox,'选择分析旋翼').set_value('tail').run();ok(app)
     assert field(app.number_input,'本次总距 θ₀ / °').value==12
     field(app.selectbox,'选择分析旋翼').set_value('main').run();ok(app)
     assert field(app.number_input,'本次总距 θ₀ / °').value==14
     for widget in list(app.number_input)+list(app.selectbox):
         assert widget.proto.help,widget.label+' missing help'
-print('Visible pitch/RPM, operating overrides, rotor switching, help and CLI replay passed.')
+    field(app.selectbox,'旋翼计算方式').set_value('批量正算').run()
+    field(app.selectbox,'扫描变量').set_value('flow_x_m_s').run()
+    field(app.text_input,'X方向来流 / (m/s)（扫描值）').set_value('0,-15').run()
+    field(app.text_input,'转速扫描 / rpm').set_value('1750').run()
+    record=run(app);assert record['answer']['summary']['total']==2;replay(record)
+print('Visible pitch/RPM, XYZ flow and loads, rotor switching, help, flow scan and CLI replay passed.')

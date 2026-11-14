@@ -27,6 +27,14 @@ class DesignTests(unittest.TestCase):
             self.assertEqual(designs.issues(d),[])
             self.assertEqual(designs.unpack(designs.pack(d)),d)
 
+    def test_old_scheme_keeps_axial_method(self):
+        d=designs.from_template(next(iter(designs.TEMPLATES)))
+        d['settings'].pop('_workspace_revision')
+        restored=designs.unpack(designs.pack(d))
+        self.assertEqual(restored['settings']['rotor']['flow_model'],'轴流性能（原均匀/环带模型）')
+        self.assertEqual(restored['aircraft'],d['aircraft']);self.assertEqual(restored['assets'],d['assets'])
+        self.assertEqual(designs.from_template('三片叶孤立旋翼示例（兼容旧版）')['template'],list(designs.TEMPLATES)[2])
+
     def test_save_reopen_history_and_conflict(self):
         with TemporaryDirectory() as directory:
             d=designs.from_template(next(iter(designs.TEMPLATES)))

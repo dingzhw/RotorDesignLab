@@ -16,7 +16,8 @@ from .presentation import AXIS_LABELS as DISPLAY_AXIS_LABELS, configure_chinese_
 # These keys also define the supported sweep inputs; labels from other analyses
 # must not expand the isolated-rotor input contract.
 AXIS_LABELS = {key: DISPLAY_AXIS_LABELS[key] for key in
-               ('rpm', 'collective_deg', 'axial_speed_m_s', 'density_kg_m3', 'target_thrust_n')}
+               ('rpm', 'collective_deg', 'axial_speed_m_s', 'density_kg_m3', 'target_thrust_n',
+                'flow_x_m_s','flow_y_m_s','flow_z_m_s')}
 
 
 def plot_performance(rows, axes, output):
@@ -85,11 +86,15 @@ def run_batch(spec, base, output):
             raise ValueError('case_json 必须为工况文件路径。')
         source = (Path(base) / spec['case_json']).resolve()
         case = read_case(source)
-        if not isinstance(case, dict) or case.get('model') != 'aircraft_rotor' or case.get('schema_version') != 2:
-            raise ValueError('批量功能使用版本 2 的 aircraft_rotor 工况。')
+        if not isinstance(case, dict) or case.get('model') not in ('aircraft_rotor','spatial_rotor') or case.get('schema_version') != 2:
+            raise ValueError('旋翼批量功能使用版本2的 aircraft_rotor 或 spatial_rotor 工况。')
         axes = spec.get('axes')
         if not isinstance(axes, dict) or not 1 <= len(axes) <= 2 or set(axes) - set(AXIS_LABELS):
             raise ValueError('axes 需含 1 至 2 个受支持的工况变量。')
+        if case['model']=='spatial_rotor' and ('axial_speed_m_s' in axes or not isinstance(case.get('flow_body_m_s'),list) or len(case['flow_body_m_s'])!=3):
+            raise ValueError('三方向旋翼扫描需提供X/Y/Z来流，扫描变量使用flow_x/y/z_m_s。')
+        if case['model']=='aircraft_rotor' and any(key.startswith('flow_') for key in axes):
+            raise ValueError('X/Y/Z来流扫描需要三方向旋翼模型。')
         count = 1
         for key, values in axes.items():
             if (not isinstance(values, list) or not values or
@@ -126,6 +131,8 @@ def run_batch(spec, base, output):
             for key, value in values.items():
                 if key == 'target_thrust_n':
                     current['target']['thrust_n'] = value
+                elif key in ('flow_x_m_s','flow_y_m_s','flow_z_m_s'):
+                    current['flow_body_m_s']['xyz'.index(key[5])] = value
                 else:
                     current[key] = value
             name = f'case-{index:04d}'

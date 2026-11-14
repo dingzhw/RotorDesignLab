@@ -18,8 +18,9 @@ LIBRARY = ROOT / 'private/designs'
 TEMPLATES = {
     '200 kg 合成无人直升机': ROOT/'examples/public-helicopter/synthetic.json',
     'UH-60 公开部件模型（含工程估计）': ROOT/'examples/public-helicopter/uh60-public.json',
-    '三片叶孤立旋翼示例（兼容旧版）': ROOT/'examples/synthetic-aircraft.json',
+    '三桨叶孤立旋翼示例（兼容旧版）': ROOT/'examples/synthetic-aircraft.json',
 }
+TEMPLATE_ALIASES={'三片叶孤立旋翼示例（兼容旧版）':'三桨叶孤立旋翼示例（兼容旧版）'}
 
 
 def digest(value):
@@ -27,6 +28,7 @@ def digest(value):
 
 
 def from_template(name):
+    name=TEMPLATE_ALIASES.get(name,name)
     path=TEMPLATES[name]; aircraft=read_aircraft(path); assets={}
     for i,rotor in enumerate(aircraft['rotors']):
         for key in ('geometry_csv','polar_csv','polar_json'):
@@ -34,7 +36,7 @@ def from_template(name):
             target=f'rotor-{i}-{key.replace("_", ".")}'
             assets[target]=(path.parent/rotor[key]).read_text(encoding='utf-8-sig')
             rotor[key]=target
-    return dict(format_version=1,template=name,aircraft=aircraft,assets=assets,settings={})
+    return dict(format_version=1,template=name,aircraft=aircraft,assets=assets,settings={'_workspace_revision':3})
 
 
 def materialize(design, directory):
@@ -107,6 +109,10 @@ def unpack(data):
             manifest['assets']=assets
         errors=issues(manifest)
         if errors:raise ValueError('\n'.join(errors))
+        # Old saved schemes keep the axial method they originally used.
+        if '_workspace_revision' not in manifest['settings']:
+            manifest['settings'].setdefault('rotor',{}).setdefault('flow_model','轴流性能（原均匀/环带模型）')
+            manifest['settings']['_workspace_revision']=3
         return manifest
     except (BadZipFile,KeyError,TypeError,UnicodeError,RuntimeError) as error:
         raise ValueError('无法读取方案包：'+str(error)) from error

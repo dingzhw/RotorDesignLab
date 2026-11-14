@@ -117,9 +117,9 @@ def run_case(case, base, output):
         if not isinstance(case, dict) or type(case.get("schema_version")) is not int or case["schema_version"] not in (1, 2, 3):
             raise ValueError("工况 JSON 必须是 schema_version 为 1、2 或 3 的对象。")
         result["model"] = case.get("model")
-        expected = {'aircraft_rotor': 2, 'helicopter': 3}.get(case.get('model'), 1)
+        expected = {'aircraft_rotor': 2, 'spatial_rotor': 2, 'helicopter': 3}.get(case.get('model'), 1)
         if case['schema_version'] != expected:
-            raise ValueError('工况版本：旧算例 1、aircraft_rotor 2、helicopter 3。')
+            raise ValueError('工况版本：旧算例1，aircraft_rotor/spatial_rotor为2，helicopter为3。')
         if case.get("model") == "uh60":
             duration = numeric(case, "duration_s", 0.1, 3)
             step = numeric(case, "time_step_s", 0.0025, 0.02)
@@ -140,6 +140,10 @@ def run_case(case, base, output):
             else:
                 from .hover import run_budget
                 payload, snapshot = run_budget(case, base, output)
+            result.update(payload)
+        elif case.get('model') == 'spatial_rotor':
+            from .isolated import run_spatial
+            payload,snapshot=run_spatial(case,base,output)
             result.update(payload)
         elif case.get("model") in ("axial_rotor", "aircraft_rotor"):
             if case['model'] == 'aircraft_rotor':
@@ -180,12 +184,12 @@ def run_case(case, base, output):
                 if not result['feasible']:
                     result['warnings'].append('求解收敛，但轴功率或扭矩超过机型给定限制。')
         else:
-            raise ValueError("model 必须为 uh60、axial_rotor 或 aircraft_rotor。")
+            raise ValueError("model 应为 uh60、axial_rotor、aircraft_rotor、spatial_rotor 或 helicopter。")
         if case.get('model') != 'helicopter':
             result["status"] = "converged"
     except (ValueError, RuntimeError, OSError, TimeoutExpired) as error:
         result["error"] = str(error)
-        if isinstance(case, dict) and case.get('model') == 'helicopter':
+        if isinstance(case, dict) and case.get('model') in ('helicopter','spatial_rotor'):
             result.update(solver_status='failed', support_status='not_established',
                           design_limits_status='not_evaluated', evidence_status='model_estimate')
             if (output / 'case.json').exists():

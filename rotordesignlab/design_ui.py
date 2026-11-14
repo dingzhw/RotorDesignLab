@@ -307,7 +307,7 @@ def manager():
                 except ValueError as e:st.error(str(e))
             else:st.warning('请先保存修改，或确认替换当前草稿。')
         if st.button('恢复原模板参数'):
-            if current()['template'] not in designs.TEMPLATES:st.warning('此导入方案没有对应的本机模板，请从模板新建。')
+            if current()['template'] not in designs.TEMPLATES and current()['template'] not in designs.TEMPLATE_ALIASES:st.warning('此导入方案没有对应的本机模板，请从模板新建。')
             elif consent:replace_design(designs.from_template(current()['template']));st.rerun()
             else:st.warning('恢复会替换机型、气动表和各任务工况，请先保存或勾选替换当前草稿。')
         try:payload=designs.pack(current())

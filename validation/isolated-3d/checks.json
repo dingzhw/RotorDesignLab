@@ -1,0 +1,149 @@
+{
+  "scope": "software and model consistency, not new flight validation",
+  "checks": {
+    "caradonna_tung_uniform_limit": {
+      "case": "NASA TM-81232, 1250 rpm / 8 deg / 0.5 deg precone",
+      "reference_ct": 0.0046,
+      "computed_ct": 0.006416987923027916,
+      "ct_error_percent": 39.4997374571286,
+      "relative_difference_from_existing_uniform": {
+        "thrust_n": 3.1264789978724394e-05,
+        "torque_nm": 8.334440232848905e-06,
+        "power_w": 8.334440232848905e-06
+      },
+      "zero_precone_thrust_relative_difference": 4.240297002411353e-11,
+      "note": "Pitt-Peters uses nominal disk area; old axial momentum uses projected area with precone. Existing thrust bias retained; no fitting or accuracy improvement claimed."
+    },
+    "synthetic_xyz_grid": {
+      "flow_body_m_s": [
+        -15.0,
+        -4.0,
+        3.0
+      ],
+      "levels": [
+        {
+          "radial": 60,
+          "azimuth": 24,
+          "thrust_n": 2670.867134304826,
+          "torque_nm": 313.5146406607837,
+          "power_w": 55812.99987392317
+        },
+        {
+          "radial": 120,
+          "azimuth": 48,
+          "thrust_n": 2670.785092971492,
+          "torque_nm": 313.50058763139924,
+          "power_w": 55810.498103270256
+        },
+        {
+          "radial": 240,
+          "azimuth": 96,
+          "thrust_n": 2670.7658180140943,
+          "torque_nm": 313.4994157876134,
+          "power_w": 55810.28948743996
+        }
+      ],
+      "last_change_percent": {
+        "thrust_n": 0.0007216963075151739,
+        "torque_nm": 0.000373793170449499,
+        "power_w": 0.00037379317043839677
+      }
+    },
+    "uh60_main": {
+      "flow_body_m_s": [
+        -20.0,
+        0.0,
+        0.0
+      ],
+      "summary": {
+        "thrust_n": 102928.41355067473,
+        "torque_nm": 48370.9098954502,
+        "power_w": 1306014.5671771555,
+        "rpm": 257.8310078088705,
+        "collective_deg": 8,
+        "thrust_coefficient": 0.008203123460522111,
+        "torque_coefficient": 0.00047140326967037193,
+        "power_coefficient": 0.000471403269670372,
+        "tip_speed_m_s": 220.800168,
+        "inflow_mean": 0.040762625360687005,
+        "inflow_cos": -0.030769842356793205,
+        "inflow_sin": 0.0007914526536046733,
+        "induced_speed_m_s": 9.00039452776075,
+        "alpha_min_deg": -25.93775403142476,
+        "alpha_max_deg": 9.26046417795311,
+        "mu": 0.0904555049753924,
+        "flap_coning_deg": 4.871643613267314,
+        "flap_cos_deg": 2.1352975761240844,
+        "flap_sin_deg": 2.309785668487724
+      },
+      "force_body_n": [
+        1282.5505263523048,
+        1738.0193463198657,
+        -103002.45132217892
+      ],
+      "diagnostics": {
+        "momentum_induced": 0.04054585920895675,
+        "total_axial_ratio": 0.04528643134864315,
+        "mu": 0.0904555049753924,
+        "mass_flow_mean": 0.10115858463150128,
+        "mass_flow_harmonic": 0.119310057155825,
+        "wake_skew_rad": 1.1066298891517792,
+        "internal_max_residual": 6.102063299096017e-14,
+        "omitted_flap_harmonics_rms": 0.0031177833988633337,
+        "alpha_min_deg": -25.93775403142476,
+        "alpha_max_deg": 9.26046417795311,
+        "mach_max": 0.7053026184262559,
+        "flap_peak_deg": 8.013584914334452,
+        "reverse_flow_fraction": 0.0
+      }
+    },
+    "uh60_tail": {
+      "flow_body_m_s": [
+        -10.0,
+        -2.0,
+        3.0
+      ],
+      "summary": {
+        "thrust_n": 6349.5752493897435,
+        "torque_nm": 1015.8139114095569,
+        "power_w": 126590.729639859,
+        "rpm": 1190.03334048672,
+        "collective_deg": 12,
+        "thrust_coefficient": 0.013451558681292525,
+        "torque_coefficient": 0.0012837026569443351,
+        "power_coefficient": 0.0012837026569443354,
+        "tip_speed_m_s": 208.91296800000003,
+        "inflow_mean": 0.06950354887265361,
+        "inflow_cos": -0.016919856538857508,
+        "inflow_sin": -0.003685904194410016,
+        "induced_speed_m_s": 14.520192681519124,
+        "alpha_min_deg": -6.903794725377935,
+        "alpha_max_deg": 5.93920643512547,
+        "mu": 0.04894564265177708,
+        "flap_coning_deg": 1.6551425034006573,
+        "flap_cos_deg": 1.068867338365839,
+        "flap_sin_deg": 0.5102883295254395
+      },
+      "force_body_n": [
+        -153.2271775546553,
+        5965.692795607463,
+        -2174.30980599774
+      ],
+      "diagnostics": {
+        "momentum_induced": 0.0695290964429841,
+        "total_axial_ratio": 0.08343654172684424,
+        "mu": 0.04894564265177708,
+        "mass_flow_mean": 0.09673330569111592,
+        "mass_flow_harmonic": 0.1567050735858175,
+        "wake_skew_rad": 0.5305240473800725,
+        "internal_max_residual": 4.318299875810055e-11,
+        "omitted_flap_harmonics_rms": 0.00027937003889132845,
+        "alpha_min_deg": -6.903794725377935,
+        "alpha_max_deg": 5.93920643512547,
+        "mach_max": 0.6438703663246341,
+        "flap_peak_deg": 2.835952936463651,
+        "reverse_flow_fraction": 0.0
+      }
+    }
+  }
+}
