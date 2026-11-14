@@ -16,7 +16,7 @@ def render():
     name='synthetic' if preset.startswith('200') else 'uh60-public';path=base/f'{name}.json'
     aircraft=read_case(path)
     mode=st.radio('开环任务',['线化、模态与频响','小扰动阶跃响应'],horizontal=True)
-    st.caption('低频模型估算：六自由度机体、动态入流、准定常挥舞。输入为叶片变距角；完整动态挥舞和惯性耦合仍待补充。')
+    st.caption('低频模型估算：六自由度机体、动态入流、准定常挥舞。输入为桨叶变距角；完整动态挥舞和惯性耦合仍待补充。')
     with st.form('open-loop-parameters'):
         local=st.text_input('开环机型 JSON 路径',str(path))
         a,b,c=st.columns(3)

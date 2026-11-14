@@ -89,7 +89,7 @@ def read_rotor(case, base):
     reference = numeric(case, "pitch_reference_r_over_R", float(geometry[0, 0]), 1)
     stations = numeric(case, "radial_stations", 8, 2000, integer=True)
     if np.hypot(omega * radius, speed) > 250:
-        raise ValueError("叶尖合速度超过当前低速翼型模型的 250 m/s 上限。")
+        raise ValueError("桨尖合速度超过当前低速翼型模型的 250 m/s 上限。")
     cone = numeric(dict(precone_deg=case.get('precone_deg', 0)), 'precone_deg', 0, 15)
     sound = numeric(dict(speed_of_sound_m_s=case.get('speed_of_sound_m_s', 340.3)), 'speed_of_sound_m_s', 250, 400)
     viscosity=numeric(dict(dynamic_viscosity_pa_s=case.get('dynamic_viscosity_pa_s',1.7894e-5)),'dynamic_viscosity_pa_s',1e-6,1e-3)

@@ -130,13 +130,13 @@ def array_editor(path,schema):
     st.caption(label(name)+'：'+help_text(name))
     if name=='inertia_cg_kg_m2':
         rows=[dict(行=x,x=data[i][0],y=data[i][1],z=data[i][2]) for i,x in enumerate('xyz')]
-        config={'行':st.column_config.TextColumn('张量行'),**{x:st.column_config.NumberColumn(f'{x}列 / (kg·m²)',format='%.9g') for x in 'xyz'}}
+        config={'行':st.column_config.TextColumn('张量行'),**{x:st.column_config.NumberColumn(f'{x}列 / (kg·m²)',help=help_text(name),format='%.9g') for x in 'xyz'}}
         edit_table(rows,path,lambda v:put_at(path,[[r.get(x) for x in 'xyz'] for r in v]),columns=config,disabled=['行'])
     else:
         vector=len(data)==3 and schema.get('maxItems')==3
         columns=list('xyz') if vector else ['下限','上限']
         rows=[dict(zip(columns,data))]
-        config={c:st.column_config.NumberColumn(c,format='%.9g') for c in columns}
+        config={c:st.column_config.NumberColumn(c,help=help_text(name),format='%.9g') for c in columns}
         edit_table(rows,path,lambda v:put_at(path,[v[0].get(c) for c in columns]),columns=config)
 
 
@@ -170,7 +170,7 @@ def object_editor(path,schema):
             st.checkbox('填写'+label(name),value=True,key=opt,on_change=optional_change,args=(path+[name],opt,None))
         if data.get(name) is None and child.get('type')=='object':data[name]={}
         if child.get('type')=='object':
-            with st.expander(label(name)):
+            with st.expander(label(name),expanded=name=='defaults'):
                 st.caption(help_text(name));object_editor(path+[name],child)
         elif child.get('type')=='array':
             if data[name] is None:st.caption(label(name)+'：待补充');continue
@@ -207,10 +207,10 @@ def airfoil_editor(rotor,index):
         st.caption('单张极曲线；攻角为°，CL/CD为无量纲。更改数据后请填写旋翼参数来源。')
         csv_editor(rotor,index,'polar_csv');return
     name=rotor['polar_json'];grid=json.loads(current()['assets'][name]);sections=grid['sections']
-    section=st.selectbox('展向翼型站',range(len(sections)),format_func=lambda i:f"r/R = {sections[i]['r_over_R']:g}",key=key_for(['airfoil',index,'span']))
+    section=st.selectbox('展向翼型站',range(len(sections)),format_func=lambda i:f"r/R = {sections[i]['r_over_R']:g}",key=key_for(['airfoil',index,'span']),help='选择该半径比处的翼型数据；中间展向位置由现有求解器插值。')
     slices=sections[section].get('reynolds_slices',[sections[section]])
-    selected=st.selectbox('Re 数据层',range(len(slices)),format_func=lambda i:f"Re = {slices[i]['reynolds']:g}" if 'reynolds' in slices[i] else '不区分 Re',key=key_for(['airfoil',index,'re']))
-    coefficient=st.selectbox('气动系数',['cl','cd'],format_func=lambda v:label(v),key=key_for(['airfoil',index,'coefficient']))
+    selected=st.selectbox('Re 数据层',range(len(slices)),format_func=lambda i:f"Re = {slices[i]['reynolds']:g}" if 'reynolds' in slices[i] else '不区分 Re',key=key_for(['airfoil',index,'re']),help='Re为以当地弦长和相对速度计算的雷诺数。表内按log(Re)插值；未分层的原表不具备Re修正。')
+    coefficient=st.selectbox('气动系数',['cl','cd'],format_func=lambda v:label(v),key=key_for(['airfoil',index,'coefficient']),help='CL是升力系数，CD是阻力系数，均无量纲；各列对应Mach数，各行对应攻角。')
     table=slices[selected][coefficient]
     st.caption('保留原展向、Re、Mach网格及高攻角分段；当前可编辑系数值。新增维度、数据表导入在表格导入版本接入。')
     columns=['alpha_deg']+[f'Ma={m:g}' for m in table['mach']]
@@ -218,7 +218,7 @@ def airfoil_editor(rotor,index):
     def apply(rows):
         table['values']=[[r.get(k) for k in columns[1:]] for r in rows]
         put_at(['assets',name],json.dumps(grid,ensure_ascii=False,allow_nan=False))
-    config={k:st.column_config.NumberColumn(label(k) if k=='alpha_deg' else k,format='%.9g') for k in columns}
+    config={k:st.column_config.NumberColumn(label(k) if k=='alpha_deg' else k,help=help_text('alpha_deg' if k=='alpha_deg' else coefficient),format='%.9g') for k in columns}
     edit_table(rows,['airfoil',index,section,selected,coefficient],apply,columns=config,disabled=['alpha_deg'])
     if 'outer_alpha' in table:
         outer=table['outer_alpha'];st.caption('高攻角独立分支（原UT口径，不随主表重新插值）')
@@ -235,7 +235,7 @@ def details():
     with st.expander('详细设置：机型、旋翼、气动与动力',expanded=False):
         st.info('机体系：x向前、y向右、z向下。位置共用同一原点；重心和部件位置均填绝对坐标，程序计算相对力臂。单位向量不自动归一化，以便检查填写错误。')
         groups=['基本信息','质量、重心与惯量','主旋翼','尾桨','悬停下载','动力与传动','配平姿态限制','机身','平尾与垂尾']
-        group=st.selectbox('参数分组',groups,key='parameter-group')
+        group=st.selectbox('参数分组',groups,key='parameter-group',help='本次计算的总距、转速与来流在计算页直接填写；这里设置方案的几何、安装、气动、质量和限制。')
         if group=='基本信息':
             st.caption('方案名称在上方“方案管理”中修改。')
             object_editor(['aircraft'],dict(properties={k:props[k] for k in ('description','provenance')}))
@@ -244,7 +244,7 @@ def details():
             indexes=[i for i,r in enumerate(a['rotors']) if r.get('role','main')==('main' if group=='主旋翼' else 'tail')]
             if not indexes:st.info('此模板未配置尾桨。整机任务请从完整直升机模板新建方案。');return
             i=indexes[0];rotor=a['rotors'][i];schema=props['rotors']['items']
-            page=st.radio('旋翼设置内容',['参数与操纵','桨叶几何表','翼型气动表'],horizontal=True,key='rotor-page')
+            page=st.radio('旋翼设置内容',['参数与操纵','桨叶几何表','翼型气动表'],horizontal=True,key='rotor-page',help='参数与操纵包含桨叶数、半径、安装、参考工况和限位；另两页可直接编辑数值表。')
             if page=='参数与操纵':object_editor(['aircraft','rotors',i],schema)
             elif page=='桨叶几何表':
                 st.caption('r/R递增到1；弦长是实际米数；扭转相对总距参考站归零后使用。表格可以直接增加/删除径向站。')
@@ -275,9 +275,9 @@ def manager():
         st.caption('修改名称即可重命名。保存到本机方案库；另存会保留原方案。下载的.rdl包可在另一目录/电脑导入，用户无需编辑内部文件。')
         scalar(['aircraft','name'],{'type':'string'})
         a,b=st.columns(2)
-        template=a.selectbox('新建所用模板',list(designs.TEMPLATES),key='new-template')
+        template=a.selectbox('新建所用模板',list(designs.TEMPLATES),key='new-template',help='模板提供一套完整初始参数。合成模板用于操作与数值检查，公开模型含来源及工程估计说明。')
         saved=designs.saved_designs();names=dict(saved)
-        identifier=b.selectbox('已保存方案',[i for i,n in saved],format_func=lambda i:names[i]+' · '+i[:6],index=0 if saved else None)
+        identifier=b.selectbox('已保存方案',[i for i,n in saved],format_func=lambda i:names[i]+' · '+i[:6],index=0 if saved else None,help='选择本机保存的方案后点击重新打开；名称后短编号用于区分重名方案。')
         consent=st.checkbox('确认替换当前草稿（新建、重开、导入或恢复模板时使用）',key='replace-consent')
         a,b,c,d=st.columns(4)
         if a.button('从模板新建'):
@@ -313,7 +313,6 @@ def manager():
         try:payload=designs.pack(current())
         except ValueError:st.caption('请修正参数后下载方案包。')
         else:st.download_button('下载当前方案包',payload,'rotordesignlab-design.rdl',key='download-design')
-    details()
     if dirty():status.warning('当前草稿尚未保存。切换分析任务会保留修改；关闭或刷新网页前请保存方案。')
     else:status.success('当前方案已保存。')
     return current()

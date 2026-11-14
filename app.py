@@ -17,5 +17,6 @@ else:
     manager()
     def remember_task():
         st.session_state['design']['settings']['_active_task']=st.session_state['analysis-task']
-    task=st.radio('分析任务',list(TASKS),horizontal=True,key='analysis-task',on_change=remember_task)
+    task=st.radio('分析任务',list(TASKS),horizontal=True,key='analysis-task',on_change=remember_task,
+                  help='孤立旋翼：给定操纵求载荷；悬停预算：估算功率收支；整机配平：求平衡操纵；开环操稳：在配平点分析小扰动。')
     render(task)

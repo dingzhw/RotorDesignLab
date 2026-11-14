@@ -94,7 +94,7 @@ def run_open_loop(case,base,output):
     result['elapsed_s']=perf_counter()-started
     report=['# 通用低频开环分析','',f"状态：{result['status']}；设计限制：{result['design_limits_status']}；证据：模型估算。",'',*WARNINGS,'',
         '状态/操纵单位、基点、差分检查和参与因子见linearization.json。A/B为显式导数，E/F/G同时导出。',
-        '控制量是叶片总距与cos/sin周期变距弧度；不等同于原UH-60英寸杆量。',
+        '控制量是桨叶总距与cos/sin周期变距弧度；不等同于原UH-60英寸杆量。',
         f"主要导数步长减半检查：{check['passed']}；线性不稳定根数：{result['summary']['unstable_modes']}（复共轭分别计数）。",'',
         '完整配平与参数来源见trim/；将本目录搬移后运行case.json可复算。']
     (output/'report.md').write_text('\n'.join(report)+'\n',encoding='utf-8')

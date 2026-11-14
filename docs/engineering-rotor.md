@@ -25,7 +25,7 @@
 |---|---|
 |`units`、`axes`|固定为 `SI` 和 `x_forward_y_right_z_down`：机体 x 向前、y 向右、z 向下|
 |`mass_properties`|质量 kg、重心坐标 m、关于重心的机体系惯量张量 kg·m²；非对角项直接填写张量元素|
-|`rotors`|旋翼列表；每项具有唯一 ID、叶片数、半径、几何、翼型、安装与工况限制|
+|`rotors`|旋翼列表；每项具有唯一 ID、桨叶数、半径、几何、翼型、安装与工况限制|
 |`position_m`、`thrust_axis_body`|桨毂坐标与正推力单位向量，和重心使用同一原点；向上的主旋翼示例为 `[0,0,-1]`|
 |`rotation_sign`|`+1` 表示角速度沿推力轴按右手定则，`-1` 表示相反；机体承受的反扭矩为 `-rotation_sign × Q × thrust_axis_body`|
 |`defaults`|默认 rpm、总距 deg、径向叶素数；可在工况中覆盖|

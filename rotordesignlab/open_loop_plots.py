@@ -30,7 +30,7 @@ def save_figures(output,result):
         pair[0].set_ylabel(f'{CONTROL_LABELS[control]} → {state}\n幅值 / dB（基准：1 {unit}）');pair[1].set_ylabel('相位 / °')
         for ax in pair:ax.grid(alpha=.25)
     for ax in axes[-1]:ax.set_xlabel('角频率 / (rad/s)')
-    fig.suptitle('低频开环频率响应（叶片变距角输入）');fig.tight_layout()
+    fig.suptitle('低频开环频率响应（桨叶变距角输入）');fig.tight_layout()
     for suffix in ('png','svg'):fig.savefig(out/f'frequency.{suffix}',dpi=160)
     plt.close(fig)
     if (out/'response.csv').exists():
