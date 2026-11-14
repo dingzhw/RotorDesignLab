@@ -2,7 +2,9 @@
 
 本入口用于单主旋翼＋尾桨的无地效悬停方案筛选。质量进入重量，旋翼安装进入垂向力与偏航反扭矩平衡；输入惯量暂不参与计算。
 
-机型版本 2 见 `schemas/aircraft-v2.schema.json`。工况版本 3 使用 `model: helicopter`、`analysis: hover_budget`；其他整机任务待 v0.3/v0.4 实现。旧机型和旧工况继续读取。SI，机体系 x 前、y 右、z 下；旋转和力矩定义沿用 engineering-rotor.md。
+机型版本 2 见 `schemas/aircraft-v2.schema.json`。工况版本 3 使用 `model: helicopter`、`analysis: hover_budget`；通用配平和低频开环任务现已接入。旧机型和旧工况继续读取。SI，机体系 x 前、y 右、z 下；旋转和力矩定义沿用 engineering-rotor.md。
+
+当前网页使用统一机型与详细设置，见[网页方案用法](design-workspace.md)。网页UH-60采用`examples/public-helicopter`中的完整部件机型；下述`examples/hover`仍是原预算算例，分别保留其输入和来源，数值应按实际工况比较。
 
 ## 模板来源
 

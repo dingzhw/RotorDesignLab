@@ -12,6 +12,33 @@
 
 ## 工作包二：网页设置与入口统一
 
-实施中。主入口按分析用途组织：孤立旋翼、整机悬停预算、整机配平、通用开环操稳。三片叶与原工程旋翼合为孤立旋翼，桨叶数和预设工况属于方案参数。原 Julia UH-60 80 kt 移到基准验证；它与通用Python整机模型具有不同方程和验证范围，保留复算入口。
+已实现，当前为0.4.2.dev1。主入口按分析用途组织：孤立旋翼、整机悬停预算、整机配平、通用开环操稳。三片叶与原工程旋翼合为孤立旋翼，桨叶数和预设工况属于方案参数。原 Julia UH-60 80 kt 移到基准验证；它与通用Python整机模型具有不同方程和验证范围，保留配平操纵、频响和时程复算入口。
 
-详细设置与各任务共用同一当前方案。保存、重开、导入、导出、来源/未保存标识和实际运行快照一起检查；网页调整参数后与CLI同输入对照。Excel、CSV/TXT专用表导入按0.4.3继续；本轮几何和气动表可在网页中直接编辑。
+详细设置与各任务共用同一当前方案。质量/重心/惯量、主尾桨安装/默认工况/限位/挥舞、机身尾翼、下载和动力均可编辑。保存内容含各任务工况及最后选择的任务；可选参数关闭后再开启恢复原值。网页编辑表格保留原节点精度，多维翼型按展向/Re/CL或CD分组编辑系数，高攻角分支独立保留。保留原几何与单张极曲线CSV载入，并提供中文表头模板；Excel、TXT及新增气动维度按0.4.3继续。
+
+## 验证结果
+
+- `test_designs.py`：6项通过。覆盖字典字段、全部模板原数据往返、保存/历史/并发覆盖保护、非法包和参数、缺惯量、两整机模板搬移复算。
+- `test_engineering.py`：原工程旋翼8项回归通过，包括正反求、非法输入、坐标与反扭矩、失败点和批量结果搬移复算。
+- `check_workspace_ui.py`：真实Streamlit AppTest通过。检查全部参数组、查看不修改数据、质量/半径/重心/几何/功率表编辑、惯量开关恢复、保存与未保存保护、任务切换、四种分析、指定拉力反求、失败后重跑、过期结果提示。旋翼批量、三方案比较、配平扫描及开环阶跃响应均经导出工况复算。
+- 合并后的三片叶模板通过旧版全部参数页检查，计算总量与原`examples/engineering-rotor.json`逐项一致。
+- 新会话重新打开已保存方案，恢复模型、最后分析任务、5 m/s工况和24径向站；导出工况经CLI复算一致。原流程四个UI检查脚本已改为统一工作台测试的兼容入口。
+- 公开UH-60所有参数分组及Re/高攻角表查看不改变数据；悬停配平及导出复算通过。原Julia基准入口渲染检查通过，本轮未重跑Julia求解器。
+- `check_workspace_csv.py`：中文CSV表头载入和非法表保护通过（模拟上传输入，执行真实页面应用逻辑）。
+- 浏览器检查：中文重心/惯量表、帮助说明和四任务入口显示正常；实际上传`.rdl`方案包，导入240 kg合成机型并运行悬停预算，得到需用功率55.795 kW、功率余量−10.795 kW，显示超过给定限制。此点只验证导入与界面数据传递，不作为新物理验证。
+
+工作目录为仓库根目录，主要命令：
+
+```powershell
+$env:PYTHONPATH='.'
+.venv\Scripts\python.exe -m unittest discover -s tests -p test_designs.py -v
+.venv\Scripts\python.exe -m unittest discover -s tests -p test_engineering.py -v
+.venv\Scripts\python.exe tests/check_workspace_ui.py
+.venv\Scripts\python.exe tests/check_workspace_csv.py
+```
+
+日志保留在`runs/v042-design-tests.log`、`runs/v042-engineering-tests.log`、`runs/v042-workspace-ui.log`、`runs/v042-csv-ui.log`。原文件及SHA-256备份在`runs/v042-backup`。自动UI测试使用临时方案库，未覆盖用户方案；浏览器临时检查服务已停止。
+
+表格编辑使用[Streamlit data_editor](https://docs.streamlit.io/develop/api-reference/data/st.data_editor)的提交事件和稳定基表，防止重渲染重复应用行编辑。当前环境为Python 3.14、Streamlit 1.67.0，未新增依赖。
+
+日常操作见[统一方案用法](design-workspace.md)。模型方程及既有验证范围保持不变；本轮未发布正式v0.4或开展新的飞行精度验收。

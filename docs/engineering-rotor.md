@@ -13,7 +13,7 @@
 .\.venv\Scripts\python.exe -m rotordesignlab batch examples/target-sweep.json --out runs/target-map
 ```
 
-网页选择“工程旋翼”，使用本地机型 JSON 路径和旋翼 ID，再选择正算、反求总距、反求转速或批量计算。结果页显示实际运行参数，表单提交时计算。完整结果 ZIP 包含机型、几何、翼型、工况、诊断和图表。单点解压后用 `run case.json` 复算；批量用 `batch batch.json` 复算。
+网页使用统一方案，选择“孤立旋翼”和主桨/尾桨，再选择正算、反求总距、反求转速或批量计算。参数在“详细设置”中编辑，不再填写JSON路径或旋翼ID。结果页显示实际运行参数，点击运行时计算。[网页方案用法](design-workspace.md)。完整结果 ZIP 包含机型、几何、翼型、工况、诊断和图表。单点解压后用 `run case.json` 复算；批量用 `batch batch.json` 复算。
 
 `synthetic-aircraft.json` 是合成的单主旋翼布局，用于演示和数值检查。200 kg 质量、惯量与安装点均为示例值。其尾桨、机身、尾翼模型尚未定义，现阶段求解所选孤立旋翼并计算它对整机重心的载荷。
 

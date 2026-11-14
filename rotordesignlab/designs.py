@@ -18,7 +18,7 @@ LIBRARY = ROOT / 'private/designs'
 TEMPLATES = {
     '200 kg 合成无人直升机': ROOT/'examples/public-helicopter/synthetic.json',
     'UH-60 公开部件模型（含工程估计）': ROOT/'examples/public-helicopter/uh60-public.json',
-    '合成孤立旋翼（旧版兼容）': ROOT/'examples/synthetic-aircraft.json',
+    '三片叶孤立旋翼示例（兼容旧版）': ROOT/'examples/synthetic-aircraft.json',
 }
 
 
@@ -112,7 +112,8 @@ def unpack(data):
         raise ValueError('无法读取方案包：'+str(error)) from error
 
 
-def saved_designs(library=LIBRARY):
+def saved_designs(library=None):
+    library=LIBRARY if library is None else library
     result=[]
     for path in sorted(Path(library).glob('*.rdl'),key=lambda p:p.stat().st_mtime,reverse=True):
         try:
@@ -122,15 +123,16 @@ def saved_designs(library=LIBRARY):
     return result
 
 
-def load_design(identifier,library=LIBRARY):
+def load_design(identifier,library=None):
+    library=LIBRARY if library is None else library
     if not re.fullmatch(r'[a-f0-9]{32}',identifier):raise ValueError('无效的方案编号。')
     data=(Path(library)/(identifier+'.rdl')).read_bytes()
     return unpack(data),sha256(data).hexdigest()
 
 
-def save_design(design,identifier=None,expected=None,library=LIBRARY):
+def save_design(design,identifier=None,expected=None,library=None):
     """Atomic write, optimistic concurrency and recoverable prior revisions."""
-    data=pack(design);library=Path(library);library.mkdir(parents=True,exist_ok=True)
+    data=pack(design);library=Path(LIBRARY if library is None else library);library.mkdir(parents=True,exist_ok=True)
     identifier=identifier or uuid4().hex
     if not re.fullmatch(r'[a-f0-9]{32}',identifier):raise ValueError('无效的方案编号。')
     path=library/(identifier+'.rdl');lock=path.with_suffix('.lock');temporary=None
@@ -150,3 +152,28 @@ def save_design(design,identifier=None,expected=None,library=LIBRARY):
         handle.close();lock.unlink()
         if temporary and temporary.exists():temporary.unlink()
     return identifier,sha256(data).hexdigest()
+
+
+def execute(design,case,batch=None):
+    """Same CLI solver, with an immutable submitted design and portable exports."""
+    from .cases import run_case
+    from .batch import run_batch
+    design=deepcopy(design);case=deepcopy(case)
+    errors=issues(design,case.get('analysis'))
+    if errors:raise ValueError('\n'.join(errors))
+    with TemporaryDirectory(prefix='rdl-design-run-') as directory:
+        root=Path(directory);path=materialize(design,root/'inputs');out=root/'output'
+        case['aircraft_json']=str(path)
+        if batch is None:answer=run_case(case,root,out)
+        else:
+            write_json(root/'case.json',case)
+            answer=run_batch(dict(batch,case_json='case.json'),root,out)
+        files={p.relative_to(out).as_posix():p.read_bytes() for p in out.rglob('*') if p.is_file()}
+    files['design.rdl']=pack(design)
+    notes=['# 本次实际方案',design['aircraft']['name'],'',
+           '方案指纹：'+digest(design),'', '模板来源：'+design['template'],
+           '参数来源：'+design['aircraft'].get('provenance','未填写'),'',
+           '修改记录（原来源保留供参考，新值须另核对依据）：']
+    notes.extend('- '+v for v in design['settings'].get('_edits',[]))
+    files['design-summary.md']=('\n'.join(notes)+'\n').encode('utf-8')
+    return answer,files
