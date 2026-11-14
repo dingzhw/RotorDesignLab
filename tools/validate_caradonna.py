@@ -116,19 +116,21 @@ def run(source,out):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
+    from rotordesignlab.presentation import configure_chinese_plots
+    configure_chinese_plots()
     fig,axes=plt.subplots(1,2,figsize=(11.5,4.4),layout='constrained')
-    axes[0].scatter(rr,actual,color='black',marker='o',label='Experiment: Table 17',zorder=5)
-    for name,color,label in [('uniform','tab:blue','Uniform, 8 deg'),('annular','tab:red','Annular + Prandtl, 8 deg'),
-                             ('annular_same_CT','tab:green','Annular, same CT (diagnostic)')]:
+    axes[0].scatter(rr,actual,color='black',marker='o',label='试验数据：表17',zorder=5)
+    for name,color,label in [('uniform','tab:blue','均匀入流，总距 8°'),('annular','tab:red','环带入流＋Prandtl，总距 8°'),
+                             ('annular_same_CT','tab:green','环带入流，同 CT 对照（诊断）')]:
         curve=curves[name];style='--' if 'same' in name else '-'
         axes[0].plot(curve['r_over_R'],curve['rotor_normal_coefficient'],style,color=color,label=label)
         points=[row for row in comparisons if row['model']==name]
         axes[1].plot(rr,[row['error_pct'] for row in points],style+'o',color=color,label=label)
-    axes[0].set(xlabel='r/R',ylabel='Section load coefficient (local rotational q)',xlim=(.4,1),ylim=(0,.6))
+    axes[0].set(xlabel='r/R',ylabel='剖面载荷系数（局部旋转动压归一化）',xlim=(.4,1),ylim=(0,.6))
     axes[0].legend(fontsize=8);axes[1].axhline(0,color='black',linewidth=.7)
-    axes[1].set(xlabel='r/R',ylabel='Difference from Table 17 (%)',xlim=(.45,1))
+    axes[1].set(xlabel='r/R',ylabel='相对表17试验值的误差 / %',xlim=(.45,1))
     for ax in axes:ax.grid(alpha=.3)
-    fig.suptitle('Caradonna–Tung hover: 1250 rpm, tip Mach 0.439, NACA 0012')
+    fig.suptitle('Caradonna–Tung 悬停：1250 rpm，桨尖 Ma = 0.439，NACA 0012')
     fig.savefig(out/'comparison.png',dpi=150);fig.savefig(out/'comparison.svg');plt.close(fig)
     svg=out/'comparison.svg';svg.write_text('\n'.join(line.rstrip() for line in svg.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')
     print(json.dumps(dict(models=summaries,grid=changes,pressure=checks['pressure_check']),indent=2))

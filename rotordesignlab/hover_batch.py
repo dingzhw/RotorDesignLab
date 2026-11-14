@@ -11,6 +11,7 @@ from . import __version__
 from .aircraft import read_aircraft, snapshot_aircraft
 from .cases import read_case, run_case, write_csv, write_json
 from .hover import VARIABLES
+from .presentation import AXIS_LABELS, configure_chinese_plots
 
 
 def finite_values(values):
@@ -56,6 +57,7 @@ def plot(rows, axes, output):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import numpy as np
+    configure_chinese_plots()
     fig,panels=plt.subplots(2,2,figsize=(12,8),layout='constrained')
     first=next(iter(axes),None)
     second=list(axes)[1] if len(axes)==2 else None
@@ -64,20 +66,20 @@ def plot(rows, axes, output):
         points=[row for row in rows if second is None or row[second]==group]
         if first:points=sorted(points,key=lambda r:r[first])
         x=[row[first] for row in points] if first else list(range(1,len(points)+1))
-        label=f'{second}={group:g}' if second else 'Budget'
+        label=f'{AXIS_LABELS[second]} = {group:g}' if second else '功率预算'
         for panel,(key,factor,title) in zip(panels.flat,[
-                ('required_power_w',.001,'Required shaft power / kW'),
-                ('duration_margin_w',.001,'Power margin for requested duration / kW'),
-                ('tail_thrust_n',1,'Tail thrust / N'),('main_collective_deg',1,'Main collective at reference / deg')]):
+                ('required_power_w',.001,'需用轴功率 / kW'),
+                ('duration_margin_w',.001,'指定时长的功率余量 / kW'),
+                ('tail_thrust_n',1,'尾桨拉力 / N'),('main_collective_deg',1,'主桨参考站总距 / °')]):
             y=[row.get(key,float('nan'))*factor for row in points]
             panel.plot(x,y,'o-',label=label,markersize=4)
             bad=[i for i,row in enumerate(points) if row['status']=='converged' and not row['feasible']]
             panel.scatter(np.asarray(x)[bad],np.asarray(y)[bad],marker='x',color='crimson',zorder=4)
-            panel.set(xlabel=first or 'Candidate index (names in CSV/report)',ylabel=title)
+            panel.set(xlabel=AXIS_LABELS[first] if first else '候选方案（名称见表格与报告）',ylabel=title)
             panel.grid(alpha=.25)
             if not first:panel.set_xticks(x)
     panels[0,0].legend(fontsize=8);panels[0,1].axhline(0,color='black',linewidth=.7)
-    fig.suptitle('Hover power/load budget (not six-axis trim); red x = supplied limit exceeded')
+    fig.suptitle('悬停功率与载荷预算｜红色叉号表示超过给定限制')
     for ext in ('png','svg'):fig.savefig(output/f'performance.{ext}',dpi=140)
     plt.close(fig)
 

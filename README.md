@@ -4,13 +4,15 @@
 
 [GitHub 仓库](https://github.com/dingzhw/RotorDesignLab) · [v0.1.0 发布](https://github.com/dingzhw/RotorDesignLab/releases/tag/v0.1.0) · [公开数据验证路线](docs/public-validation.md)
 
-已发布v0.3.0整机配平。当前开发版 `0.4.0.dev1` 新增“通用开环操稳”：6自由度机体、动态入流与准定常挥舞，导出A/B、模态、频响和小扰动响应。补齐原公开主桨BT/UT高攻角、Re插值、机身/尾翼表和尾桨δ3。完整动态挥舞与桨叶惯性耦合仍待完成，尚未发布正式v0.4。[开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md) · [工程旋翼](docs/engineering-rotor.md) · [开发路线](docs/roadmap.md)
+已发布v0.3.0整机配平。当前开发版 `0.4.1.dev1` 完成中文绘图和双击启动，沿用上一版“通用开环操稳”：6自由度机体、动态入流与准定常挥舞，导出A/B、模态、频响和小扰动响应。完整动态挥舞与桨叶惯性耦合仍待完成，尚未发布正式v0.4。[易用性迭代计划](docs/usability-plan.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md) · [工程旋翼](docs/engineering-rotor.md)
 
 旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：原环带模型 XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.09%；接入旧表局部Re后仍为28.87%，真实Re气动与非局部尾迹继续排查。均匀入流核 C–T 偏差39.5%。UH‑60 与 NASA TM‑85890 姿态及部分导数作带配置差异的数学模型对照，所有通用整机结果标记为模型估算。公开参数和工程估计分别注明；已发布标签保持可复算。
 
 ## 在 Windows 上启动
 
-需要 64 位 Python 3.14 和 Julia 1.12.4。首次准备依赖后，计算和界面可以离线运行。使用 PowerShell 从仓库根目录执行。
+**日常使用：双击根目录的 `启动旋翼设计台.cmd`。** 启动器会自动打开浏览器，无需输入网址或终端命令。中文控制窗口可以最小化；点击“停止服务并退出”会关闭本次服务，浏览器标签页可自行关闭。重复双击会打开同一工作台；端口占用时自动使用空闲端口。也可运行一个命令：`.\.venv\Scripts\pythonw.exe launch.py`。
+
+首次部署由维护人员准备64位Python 3.14项目环境；Julia 1.12.4仅原UH-60基准入口需要，Python旋翼和通用整机模块可独立运行。安装包尚未包含在本开发版中；已有项目环境可直接双击。缺环境时启动器会提示，服务日志位于`runs/launcher/server.log`。启动仅监听本机，默认不收集框架使用统计。以下为**首次环境准备**命令：
 
 ```powershell
 python -m venv .venv
@@ -19,7 +21,7 @@ julia --startup-file=no --project=julia -e 'using Pkg; Pkg.instantiate()'
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-打开 [127.0.0.1:8501](http://127.0.0.1:8501)。如 `julia` 未加入 PATH，请把 `ROTOR_DESIGN_JULIA` 设为 Julia 1.12.4 的可执行文件绝对路径。网页仅监听本机地址。浏览器选择算例后点 **运行工况**，图表下方可下载完整工况与结果。UH‑60 首次运行需要等待 Julia 启动和编译。
+手工运行Streamlit时打开 [127.0.0.1:8501](http://127.0.0.1:8501)；使用双击启动器时以其自动打开的地址为准。如 `julia` 未加入 PATH，请把 `ROTOR_DESIGN_JULIA` 设为 Julia 1.12.4 的可执行文件绝对路径。浏览器选择算例后点 **运行工况**，图表下方可下载完整工况与结果。UH‑60 首次运行需要等待 Julia 启动和编译。
 
 Windows 应用执行别名有时会显示 `julia.exe`，但实际无法启动。先用 `julia --version` 检查；失败时使用真实安装路径。例如默认 Juliaup 安装可在当前 PowerShell 会话中运行：
 

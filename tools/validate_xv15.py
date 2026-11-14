@@ -127,22 +127,25 @@ def plot_results(source,output):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
+    from rotordesignlab.presentation import configure_chinese_plots
+    configure_chinese_plots()
     fig,axes=plt.subplots(1,2,figsize=(12,4.6),layout='constrained')
-    axes[0].plot(reference[:,0],reference[:,1],'k.',label='Reused public digitization')
+    axes[0].plot(reference[:,0],reference[:,1],'k.',label='既有公开图表数字化数据')
     for run,values in digitization.items():
         axes[0].errorbar(values[:,0],values[:,1],xerr=dx,yerr=dy,fmt='o' if run==33 else '^',
-                         markersize=4,alpha=.6,label=f'PDF vector markers: Run {run}')
+                         markersize=4,alpha=.6,label=f'原图矢量测点：试验 {run}')
     for mode in ('uniform','annular'):
         selected=[r for r in rows if r['model']==mode]
         x=[r['ct_sigma'] for r in selected]
         color={'uniform':'#1f77b4','annular':'#d62728'}[mode]
-        axes[0].plot(x,[r['cq']/.089 for r in selected],'o-',label=mode,color=color)
-        axes[1].plot(x,[r['power_error_pct'] for r in selected],'o-',label=mode,color=color)
-    axes[0].set(xlabel='CT / sigma',ylabel='CQ / sigma',xlim=(.04,.135),ylim=(.002,.014))
-    axes[1].set(xlabel='CT / sigma',ylabel='Same-thrust power error / %')
+        label={'uniform':'均匀入流','annular':'环带入流'}[mode]
+        axes[0].plot(x,[r['cq']/.089 for r in selected],'o-',label=label,color=color)
+        axes[1].plot(x,[r['power_error_pct'] for r in selected],'o-',label=label,color=color)
+    axes[0].set(xlabel='CT / σ',ylabel='CQ / σ',xlim=(.04,.135),ylim=(.002,.014))
+    axes[1].set(xlabel='CT / σ',ylabel='同拉力功率误差 / %')
     axes[1].axhline(0,color='gray',linewidth=.8)
     for axis in axes:axis.grid(alpha=.25);axis.legend(fontsize=8)
-    fig.suptitle('XV-15 metal rotor | Mtip = 0.691 | rigid blade, no Reynolds correction')
+    fig.suptitle('XV-15 金属旋翼｜桨尖 Ma = 0.691｜刚性桨叶，未作 Re 修正')
     fig.savefig(output/'comparison.png',dpi=160);fig.savefig(output/'comparison.svg');plt.close(fig)
     svg=output/'comparison.svg'
     svg.write_text('\n'.join(line.rstrip() for line in svg.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')

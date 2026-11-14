@@ -120,6 +120,8 @@ def write_rows(path, rows):
 
 
 def compare(pdf, runs, output):
+    from rotordesignlab.presentation import configure_chinese_plots
+    configure_chinese_plots()
     rows, stats = [], []
     models = {f"{mode}_{method}": responses(runs / mode, method, ("A", "B"))
               for mode in MODES for method in METHODS}
@@ -157,30 +159,33 @@ def compare(pdf, runs, output):
                                          flight_coherence=c if np.isfinite(c) else ""))
             if name.startswith("corrected"):
                 fixed = name.endswith("fixed_azimuth")
-                label = "Local fixed azimuth" if fixed else "Local azimuth average"
+                label = "本模型固定方位" if fixed else "本模型方位平均"
                 style = "-" if fixed else ":"
                 axes[0, column].plot(SAMPLE, db, style, label=label)
                 axes[1, column].plot(SAMPLE, broken_at_wrap(wrap(phase - full_phase)), style)
-        axes[0, column].plot(SAMPLE, full_db, "--", color="#b52530", label="Paper J-GenHel full order")
-        axes[0, column].plot(SAMPLE, flight_db, "-", color="#9a54b3", alpha=.75, label="RASCAL flight")
+        axes[0, column].plot(SAMPLE, full_db, "--", color="#b52530", label="论文 J-GenHel 全阶模型")
+        axes[0, column].plot(SAMPLE, flight_db, "-", color="#9a54b3", alpha=.75, label="RASCAL 飞行试验")
         axes[1, column].plot(SAMPLE, broken_at_wrap(wrap(flight_phase - full_phase)),
                              "-", color="#9a54b3", alpha=.75)
         axes[2, column].plot(SAMPLE, coherence, color="#9a54b3")
         axes[2, column].axhline(.6, color="0.5", linestyle="--", linewidth=.8)
         axes[2, column].set_ylim(0, 1.05)
-        axes[0, column].set_title(channel.replace("_", " / "))
-        axes[2, column].set_xlabel("Frequency (rad/s)")
+        axes[0, column].set_title({"p_lateral": "滚转角速度 p / 横向杆",
+                                  "q_longitudinal": "俯仰角速度 q / 纵向杆",
+                                  "r_pedal": "偏航角速度 r / 脚蹬"}[channel])
+        axes[2, column].set_xlabel("角频率 / (rad/s)")
         for ax in axes[:, column]:
             ax.set_xscale("log")
             ax.set_xlim(.1, 30)
             ax.grid(alpha=.2)
-    axes[0, 0].set_ylabel("Magnitude [dB, rad/s per in]")
-    axes[1, 0].set_ylabel("Phase relative to paper model [deg]")
-    axes[2, 0].set_ylabel("Flight coherence")
+    axes[0, 0].set_ylabel("幅值 / dB（基准：1 (rad/s)/in）")
+    axes[1, 0].set_ylabel("相对论文模型的相位差 / °")
+    axes[2, 0].set_ylabel("飞行试验相干系数")
     axes[0, 0].legend(fontsize=7, loc="lower left")
-    figure.suptitle("UH-60 at 80 kt | AIAA 2022-2354 Figure 3")
+    figure.suptitle("UH-60 80 kt｜AIAA 2022-2354 图3对照")
     output.mkdir(parents=True, exist_ok=True)
     figure.savefig(output / "figure3-comparison.png", dpi=180)
+    figure.savefig(output / "figure3-comparison.svg")
     plt.close(figure)
     write_rows(output / "figure3-comparison.csv", rows)
     (output / "figure3-metrics.json").write_text(json.dumps(stats, indent=2) + "\n", encoding="utf-8")

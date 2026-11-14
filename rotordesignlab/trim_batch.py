@@ -10,6 +10,7 @@ from .aircraft import read_aircraft,snapshot_aircraft
 from .cases import read_case,write_json,write_csv,run_case
 from .hover import VARIABLES
 from .hover_batch import design_points
+from .presentation import AXIS_LABELS, configure_chinese_plots
 
 AXES=VARIABLES|{'speed_m_s','climb_m_s','cg_x_m'}
 
@@ -20,23 +21,24 @@ def plot_trim(rows,axes,output):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import numpy as np
+    configure_chinese_plots()
     first,*others=axes;second=others[0] if others else None
-    panelspec=[('required_power_w',.001,'Required shaft power / kW'),
-               ('duration_margin_w',.001,'Power margin / kW'),('main_collective_deg',1,'Main collective / deg'),
-               ('tail_collective_deg',1,'Tail collective / deg'),('pitch_deg',1,'Body pitch / deg'),('roll_deg',1,'Body roll / deg')]
-    for name,spec in [('performance',panelspec),('controls',[(k,1,k+' / deg') for k in ('main_cos_deg','main_sin_deg')])]:
+    panelspec=[('required_power_w',.001,'需用轴功率 / kW'),
+               ('duration_margin_w',.001,'功率余量 / kW'),('main_collective_deg',1,'主桨总距 / °'),
+               ('tail_collective_deg',1,'尾桨总距 / °'),('pitch_deg',1,'机体俯仰角 / °'),('roll_deg',1,'机体滚转角 / °')]
+    for name,spec in [('performance',panelspec),('controls',[(k,1,AXIS_LABELS[k]) for k in ('main_cos_deg','main_sin_deg')])]:
         fig,panels=plt.subplots(len(spec)//2,2,figsize=(12,3.6*(len(spec)//2)),layout='constrained',squeeze=False)
         for group in axes[second] if second else [None]:
             points=sorted((r for r in rows if second is None or r[second]==group),key=lambda r:r[first])
-            x=np.array([r[first] for r in points]);label=f'{second}={group:g}' if second else 'Trim'
+            x=np.array([r[first] for r in points]);label=f'{AXIS_LABELS[second]} = {group:g}' if second else '配平结果'
             for panel,(key,factor,title) in zip(panels.flat,spec):
                 y=np.array([r.get(key,float('nan'))*factor for r in points])
                 panel.plot(x,y,'o-',label=label,markersize=3)
                 bad=[i for i,r in enumerate(points) if r['status']=='converged' and not r['feasible']]
                 panel.scatter(x[bad],y[bad],marker='x',color='crimson',zorder=4)
-                panel.set(xlabel=first+' (SI)',ylabel=title);panel.grid(alpha=.25)
+                panel.set(xlabel=AXIS_LABELS[first],ylabel=title);panel.grid(alpha=.25)
         panels[0,0].legend(fontsize=8)
-        fig.suptitle('Steady six-component trim | gaps = failed/domain rejected | red x = supplied limit exceeded')
+        fig.suptitle('整机六分量配平｜缺口表示失败或数据越界｜红色叉号表示超过给定限制')
         for ext in ('png','svg'):fig.savefig(output/f'{name}.{ext}',dpi=140)
         plt.close(fig)
 

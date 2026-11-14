@@ -15,7 +15,7 @@
 |径向入流 + Prandtl|8.00000|0.005938|+29.09%|26.04%|30.95%|
 |径向入流，同 CT 诊断|6.67072|0.004600|小于 1e-8%|2.94%|5.50%|
 
-![径向载荷及偏差](../validation/caradonna-tung/results/comparison.png)
+![径向载荷及偏差](../validation/presentation/caradonna-tung.svg)
 
 |r/R|原表 CL|径向模型，同总距|偏差|径向模型，同 CT|偏差|
 |---:|---:|---:|---:|---:|---:|

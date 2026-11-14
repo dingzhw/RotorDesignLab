@@ -11,9 +11,12 @@ from . import __version__
 from .aircraft import read_aircraft, snapshot_aircraft
 from .cases import read_case, run_case, write_csv, write_json
 
-AXIS_LABELS = {'rpm': 'Rotor speed / rpm', 'collective_deg': 'Collective / deg',
-               'axial_speed_m_s': 'Axial speed / m/s', 'density_kg_m3': 'Density / kg/m3',
-               'target_thrust_n': 'Target thrust / N'}
+from .presentation import AXIS_LABELS as DISPLAY_AXIS_LABELS, configure_chinese_plots
+
+# These keys also define the supported sweep inputs; labels from other analyses
+# must not expand the isolated-rotor input contract.
+AXIS_LABELS = {key: DISPLAY_AXIS_LABELS[key] for key in
+               ('rpm', 'collective_deg', 'axial_speed_m_s', 'density_kg_m3', 'target_thrust_n')}
 
 
 def plot_performance(rows, axes, output):
@@ -25,6 +28,7 @@ def plot_performance(rows, axes, output):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import numpy as np
+    configure_chinese_plots()
     x_key, *groups = list(axes)
     group_key = groups[0] if groups else None
     group_values = axes[group_key] if group_key else [None]
@@ -33,10 +37,10 @@ def plot_performance(rows, axes, output):
     for index, group in enumerate(group_values):
         selected = sorted((row for row in rows if group_key is None or row[group_key] == group),
                           key=lambda row: row[x_key])
-        label = f'{AXIS_LABELS[group_key]} = {group:g}' if group_key else 'Operating points'
+        label = f'{AXIS_LABELS[group_key]} = {group:g}' if group_key else '计算工况'
         x = [row[x_key] for row in selected]
         for panel, key, title, factor in zip(panels, ('thrust_n', 'torque_nm', 'power_w'),
-                                            ('Thrust / N', 'Shaft torque / N m', 'Shaft power / kW'),
+                                            ('拉力 / N', '轴扭矩 / (N·m)', '轴功率 / kW'),
                                             (1, 1, 0.001)):
             # NaN retains failed-point gaps instead of bridging across them.
             y = [row.get(key, float('nan')) * factor for row in selected]
@@ -49,8 +53,8 @@ def plot_performance(rows, axes, output):
     panels[0].legend(fontsize=8)
     failures = sum(row['status'] != 'converged' for row in rows)
     violations = sum(row['status'] == 'converged' and not row['feasible'] for row in rows)
-    fig.suptitle(f'Isolated axial rotor | {len(rows)} points | {failures} failed | '
-                 f'{violations} limit violations (red x)', fontsize=11)
+    fig.suptitle(f'孤立旋翼轴流性能｜{len(rows)} 个工况｜{failures} 个失败｜'
+                 f'{violations} 个超过限制（红色叉号）', fontsize=11)
     fig.savefig(output / 'performance.png', dpi=160)
     fig.savefig(output / 'performance.svg')
     plt.close(fig)
