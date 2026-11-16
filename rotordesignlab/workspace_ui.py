@@ -22,6 +22,11 @@ def setting(task,name,title,default,options=None,help=None,**kwargs):
     if options is not None:
         return st.selectbox(title,options,index=options.index(value) if value in options else 0,**common,**kwargs)
     if isinstance(default,str):return st.text_input(title,value=value,**common,**kwargs)
+    if isinstance(value, (int, float)):
+        for bound, invalid in (('min_value', lambda v, limit: v < limit), ('max_value', lambda v, limit: v > limit)):
+            if bound in kwargs and invalid(value, kwargs[bound]):
+                st.error(f'{title}保存值{value:g}超出允许边界{kwargs[bound]:g}；已保留原值，请在此修改。')
+                kwargs[bound] = value
     return st.number_input(title,value=value,**common,**kwargs)
 
 
@@ -108,9 +113,16 @@ def case_controls(task):
         mode=setting(task,'mode','配平任务','单点配平',['单点配平','速度曲线','速度—质量比较','速度—重心比较'],help='单点求一个速度下的六分量平衡；扫描逐点改变速度，并可比较不同质量或纵向重心。')
         st.caption('同一整机方程求解六分量平衡；悬停、正爬升、无侧滑前飞，μ≤0.25且受局部气动表域限制。')
     else:
-        mode=setting(task,'mode','开环任务','线化、模态与频响',['线化、模态与频响','小扰动阶跃响应'],help='先求当前工况配平，再计算小扰动矩阵/频响或阶跃时程。分析使用当前机型的重心惯量。')
+        mode = setting(task, 'mode', '开环任务', '线化、模态与频响',
+                       ['线化、模态与频响', '小扰动阶跃响应'],
+                       format_func=lambda value: '小扰动响应' if value == '小扰动阶跃响应' else value,
+                       help='先配平，再计算矩阵/频响或响应。响应可选平滑脉冲、正负双脉冲和阶跃；使用当前重心惯量。')
         case['analysis']='linearize' if mode.startswith('线化') else 'response'
         st.caption('低频模型估算：六自由度机体、动态入流、准定常挥舞；桨叶变距角输入。完整动态挥舞和惯性耦合仍待补充。')
+    from .download import settings as download_settings
+    download = download_settings(aircraft, case['analysis'])
+    st.caption(f"本次附加下载比例：{download['effective_fraction']:.1%}。" + download['note'])
+    st.caption(download['comparison_note'])
     a,b,c=st.columns(3)
     with a:case['altitude_m']=setting(task,'altitude_m','飞行高度 / m',0.,min_value=0.,max_value=11000.)
     with b:case['requested_duration_s']=setting(task,'requested_duration_s','需维持时间 / s',600.,min_value=.001,max_value=1e9,help='用于连续或短时功率余量检查，不是响应积分时长。')
@@ -147,13 +159,32 @@ def case_controls(task):
             if mode=='速度—重心比较':group='cg_x_m';default=str(aircraft['mass_properties']['cg_m'][0])
             groups=setting(task,group+'-scan','质量扫描 / kg' if group=='mass_kg' else '重心 x 扫描 / m',default,help='用逗号分隔候选值。质量单位kg；重心x相对机型原点、向前为正。') if group else None
             batch=lambda:dict(schema_version=1,kind='helicopter_trim_sweep',axes={'speed_m_s':values(speed),**({group:values(groups)} if group else {})},continuation=True)
-        if case['analysis']=='response':
-            from .presentation import CONTROL_LABELS
-            case['control']=setting(task,'control','阶跃操纵','main_collective',list(CONTROL_LABELS),format_func=lambda v:CONTROL_LABELS[v])
-            case['amplitude_deg']=setting(task,'amplitude_deg','阶跃幅值 / °',.05,min_value=-2.,max_value=2.,format='%.3f')
-            case['duration_s'] = setting(task, 'duration_s', '响应时长 / s', .1,
-                                        min_value=RESPONSE_DURATION_BOUNDS[0], max_value=RESPONSE_DURATION_BOUNDS[1])
-            case['time_step_s']=setting(task,'time_step_s','响应时间步 / s',.001,options=[.01,.005,.002,.001,.0005])
+    if case['analysis'] == 'response':
+        from .presentation import CONTROL_LABELS
+        modern = current()['settings'].get('_workspace_revision', 3) >= 4
+        st.subheader('扰动输入与观察窗口')
+        case['control'] = setting(task, 'control', '扰动操纵', 'main_collective', list(CONTROL_LABELS),
+                                  format_func=lambda value: CONTROL_LABELS[value],
+                                  help='给所选桨叶变距角叠加小扰动；其余操纵保持配平值。')
+        names = {'pulse': '平滑脉冲（sin²）', 'doublet': '正负双脉冲', 'step': '阶跃'}
+        case['input_type'] = setting(task, 'input_type', '扰动波形', 'pulse' if modern else 'step', list(names),
+                                     format_func=lambda value: names[value],
+                                     help='平滑脉冲在一段持续时间后归零；双脉冲先正后负，各持续一段；阶跃开始后一直保持。')
+        case['amplitude_deg'] = setting(task, 'amplitude_deg', '扰动峰值 / °', .05, min_value=-2., max_value=2.,
+                                        format='%.3f', help='相对配平操纵的角度增量。负峰值反转波形符号，建议从0.05°开始。')
+        case['duration_s'] = setting(task, 'duration_s', '响应时长 / s', 2. if modern else .1,
+                                     min_value=RESPONSE_DURATION_BOUNDS[0], max_value=RESPONSE_DURATION_BOUNDS[1],
+                                     help='完整观察窗口，与扰动持续时间分开；开环不稳定响应可能增长或越界中止。')
+        case['input_start_s'] = setting(task, 'input_start_s', '扰动开始时间 / s', .2 if modern else 0.,
+                                        min_value=0., max_value=10., help='从配平状态开始计时；此时刻之前不施加扰动。')
+        if case['input_type'] != 'step':
+            case['input_duration_s'] = setting(task, 'input_duration_s', '每段扰动持续时间 / s', .5,
+                                               min_value=.001, max_value=10.,
+                                               help='平滑脉冲为总持续时间；双脉冲每段均取此值，总持续时间为两倍。')
+        case['time_step_s'] = setting(task, 'time_step_s', '响应时间步 / s', .001,
+                                      options=[.01, .005, .002, .001, .0005],
+                                      help='需满足最快模型模态的步长限制；程序在输入跳变处自动拆步，观察窗口须为此步长整数倍。')
+        st.caption('响应逐步重算旋翼载荷，耗时明显长于线化；可先缩短观察窗口检查输入。')
     return case,batch
 
 
@@ -208,6 +239,10 @@ def show_result(record,is_current):
     st.caption('求解：'+text(answer.get('solver_status',answer['status']))+'；数据域：'+text(answer.get('support_status','见诊断'))+'；设计限制：'+text(answer.get('design_limits_status','见诊断'))+'；验证依据：'+{'model_estimate':'模型估算'}.get(answer.get('evidence_status'), '见逐项验证记录'))
     if answer.get('model_maturity'):
         st.info(answer['model_maturity'])
+    if answer.get('download_model'):
+        download = answer['download_model']
+        st.caption(f"实际附加下载比例：{download['effective_fraction']:.1%}。" + download['note'])
+        st.caption(download['comparison_note'])
     installation=answer.get('installation',{})
     if 'moment_hub_body_nm' in installation:
         st.caption('整转平均气动力：机体系X向前、Y向右、Z向下；力矩按右手定则。轮毂力矩与移轴到重心的力矩分别列出。')
@@ -216,7 +251,7 @@ def show_result(record,is_current):
             {'载荷':'关于轮毂的气动力矩 / (N·m)',**dict(zip(('X','Y','Z'),installation['moment_hub_body_nm']))},
             {'载荷':'关于重心的气动力矩 / (N·m)',**dict(zip(('X','Y','Z'),installation['moment_cg_body_nm']))},
         ]),hide_index=True)
-    for name in ('performance.png','azimuth.png','controls.png','modes.png','frequency.png','response.png'):
+    for name in ('performance.png','azimuth.png','controls.png','modes.png','frequency.png','input.png','response.png'):
         if name in files:st.image(files[name])
     if 'radial_loads.csv' in files:
         data=pd.read_csv(BytesIO(files['radial_loads.csv']))
@@ -250,6 +285,14 @@ def render(task_label):
     except (ValueError, KeyError, TypeError, IndexError) as error:
         input_errors.append('详细设置存在结构缺项，请补齐或重新载入完整方案：' + str(error))
     errors = input_errors + designs.issues(current(), case.get('analysis') if case else None)
+    if case and case.get('analysis') == 'response':
+        from .perturbation import from_case
+        try:
+            from_case(case)
+            if abs(case['duration_s'] / case['time_step_s'] - round(case['duration_s'] / case['time_step_s'])) > 1e-8:
+                raise ValueError('响应时长须为时间步的整数倍。')
+        except ValueError as error:
+            errors.append(str(error))
     if errors:
         st.warning('暂不能运行；草稿和上次结果已保留。请修正以下参数：')
         for error in errors:

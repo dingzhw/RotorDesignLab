@@ -394,6 +394,11 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "download_policy": {
+          "type": "string",
+          "enum": ["none", "legacy_fraction"],
+          "description": "Explicit six-DOF residual download; absent preserves legacy_fraction."
+        },
         "roll_deg": {
           "$ref": "#/$defs/range"
         },

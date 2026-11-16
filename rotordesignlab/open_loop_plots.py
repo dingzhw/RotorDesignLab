@@ -34,17 +34,50 @@ def save_figures(output,result):
     fig.tight_layout()
     for suffix in ('png','svg'):fig.savefig(out/f'frequency.{suffix}',dpi=160)
     plt.close(fig)
-    if (out/'response.csv').exists():
-        with (out/'response.csv').open() as f:history=list(csv.DictReader(f))
+    response_path = out / 'response.csv'
+    partial = not response_path.exists()
+    if partial:
+        response_path = out / 'partial-response.csv'
+    if response_path.exists():
+        with response_path.open() as f:
+            history = list(csv.DictReader(f))
         fig,axes=plt.subplots(3,2,figsize=(9,8),sharex=True);time=[float(r['time_s']) for r in history]
         for state,ax in zip(('u','v','w','p','q','r'),axes.ravel()):
             for kind,style in [('nonlinear','-'),('linear','--')]:
                 ax.plot(time,[float(r[state+'_'+kind]) for r in history],style,label={'nonlinear':'非线性','linear':'线性'}[kind])
             ax.set_ylabel(STATE_LABELS[state]+' 增量'+(' / (m/s)' if state in 'uvw' else ' / (rad/s)'));ax.grid(alpha=.25)
         axes[0,0].legend()
+        if not history:
+            axes[0,0].text(.5, .5, '无有效时程点，请查看中止原因', transform=axes[0,0].transAxes, ha='center')
         axes[-1,0].set_xlabel('时间 / s')
         axes[-1,1].set_xlabel('时间 / s')
-        fig.suptitle('开环小扰动响应（低频模型·试验性）')
+        fig.suptitle('开环小扰动响应（低频模型·试验性）' + ('\n仅最后有效段，积分已中止' if partial else ''))
         fig.tight_layout()
         for suffix in ('png','svg'):fig.savefig(out/f'response.{suffix}',dpi=160)
         plt.close(fig)
+    if (out / 'input.csv').exists():
+        save_input_figure(out, result)
+
+
+def save_input_figure(output, result):
+    configure_chinese_plots()
+    output = Path(output)
+    with (output / 'input.csv').open() as stream:
+        rows = list(csv.DictReader(stream))
+    info = result['perturbation']
+    names = {'step': '阶跃', 'pulse': '平滑脉冲', 'doublet': '正负双脉冲'}
+    fig, ax = plt.subplots(figsize=(8, 3.5), layout='constrained')
+    if rows:
+        time = [float(row['time_s']) for row in rows]
+        values = [float(row['control_delta_deg']) for row in rows]
+        ax.plot(time, values, drawstyle='default' if info['type'] == 'pulse' else 'steps-post')
+    else:
+        ax.text(.5, .5, '无有效时程点，请查看中止原因', transform=ax.transAxes, ha='center')
+    ax.set(xlabel='时间 / s', ylabel=CONTROL_LABELS[info['control']] + '扰动 / °',
+           title=names[info['type']] + '实际输入（低频模型·试验性）')
+    ax.grid(alpha=.25)
+    if result['status'] != 'converged':
+        ax.set_title(names[info['type']] + '实际输入（仅最后有效段·响应已中止）')
+    for suffix in ('png', 'svg'):
+        fig.savefig(output / f'input.{suffix}', dpi=160)
+    plt.close(fig)

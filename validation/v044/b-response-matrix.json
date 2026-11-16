@@ -1,0 +1,1440 @@
+{
+  "solver_version": "0.4.4.dev2",
+  "python": "3.14.3",
+  "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+  "logical_cpu_count": 24,
+  "workers": 8,
+  "native_threads_per_worker": 1,
+  "grid": {
+    "radial": 24,
+    "azimuth": 24
+  },
+  "cases": [
+    {
+      "base": "model-0-speed-0",
+      "control": "main_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00037416490744652197,
+        "elapsed_s": 99.50963059999049,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.10405526456879559,
+        "nonlinear_linear_relative_error": 0.003595828706957396
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 7.94255239973013e-05,
+        "elapsed_s": 96.94185159995686,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.08467696202975629,
+        "nonlinear_linear_relative_error": 0.0009379826825788863
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 7.942551680714404e-05,
+          "elapsed_s": 199.7695381999947,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.879900580982714e-05,
+          "elapsed_s": 98.88214360002894,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 7.44344075360853e-10,
+        "amplitude_error_ratio": 0.23668721166341805,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.0006453244574466667,
+        "elapsed_s": 99.80853989999741,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.45825548005549904,
+        "nonlinear_linear_relative_error": 0.0014082198370404906
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_cos",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 2.8128926914920777e-05,
+        "elapsed_s": 104.20457239996176,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.06049814157773251,
+        "nonlinear_linear_relative_error": 0.0004649552231084427
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_cos",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.4406377750758339e-05,
+        "elapsed_s": 102.37521249998827,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.05014437386584054,
+        "nonlinear_linear_relative_error": 0.00028729798858994796
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.4406377098446344e-05,
+          "elapsed_s": 210.9328891999321,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 7.290344688925651e-06,
+          "elapsed_s": 100.15700710006058,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 1.794216310897264e-09,
+        "amplitude_error_ratio": 0.5060498075959374,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_cos",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.000142561345384424,
+        "elapsed_s": 102.10623910010327,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.09270220877570114,
+        "nonlinear_linear_relative_error": 0.0015378419486137618
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_sin",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 5.021057978624256e-05,
+        "elapsed_s": 104.27039620000869,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.061073564232634533,
+        "nonlinear_linear_relative_error": 0.0008221327904653817
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_sin",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.4942951525339997e-05,
+        "elapsed_s": 99.82188210007735,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.05073785525667814,
+        "nonlinear_linear_relative_error": 0.00029451287307563515
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.4942949742882206e-05,
+          "elapsed_s": 208.00322459999006,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 5.05969844179514e-06,
+          "elapsed_s": 102.08168179995846,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 1.0287255750813667e-09,
+        "amplitude_error_ratio": 0.33860100751949784,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "main_sin",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00013637668196740324,
+        "elapsed_s": 99.39816530002281,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.09394383959785695,
+        "nonlinear_linear_relative_error": 0.0014516830752414156
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "tail_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 5.99226743996089e-05,
+        "elapsed_s": 101.8869873000076,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.06745781892984772,
+        "nonlinear_linear_relative_error": 0.0008882984263384659
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "tail_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.2432291228579162e-05,
+        "elapsed_s": 98.77839260001201,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.053773603942766625,
+        "nonlinear_linear_relative_error": 0.00023119691292797378
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.2432291227204696e-05,
+          "elapsed_s": 203.56262380001135,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 3.2681430028501776e-06,
+          "elapsed_s": 93.96619419998024,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 7.470549688873173e-09,
+        "amplitude_error_ratio": 0.2628753576281595,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-0",
+      "control": "tail_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 840.6103255882625,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00012206730745259197,
+        "elapsed_s": 102.21313629997894,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.29268621920054944,
+        "nonlinear_linear_relative_error": 0.00041705860899775093
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00018985073102309222,
+        "elapsed_s": 105.07021859998349,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.07682385336139902,
+        "nonlinear_linear_relative_error": 0.002471247180611807
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 6.56370646849948e-05,
+        "elapsed_s": 102.86293129995465,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.036662874968878004,
+        "nonlinear_linear_relative_error": 0.0017902868975963313
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 6.563729199620804e-05,
+          "elapsed_s": 197.74884780007415,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 2.2145657935048123e-05,
+          "elapsed_s": 98.34025240002666,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 2.332748133836131e-09,
+        "amplitude_error_ratio": 0.33739561696321274,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00036126609298215475,
+        "elapsed_s": 101.64532030001283,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.0773463455885122,
+        "nonlinear_linear_relative_error": 0.004670758395026378
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_cos",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 6.013103876813263e-05,
+        "elapsed_s": 104.88371369999368,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.058119351415278096,
+        "nonlinear_linear_relative_error": 0.001034613038581255
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_cos",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.3088687522352849e-05,
+        "elapsed_s": 104.7753253999399,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.04962127749741295,
+        "nonlinear_linear_relative_error": 0.00026377167583070064
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.3088779829373433e-05,
+          "elapsed_s": 198.53701019997243,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 3.2698085768869657e-06,
+          "elapsed_s": 95.55979259999003,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 1.0541830858722195e-09,
+        "amplitude_error_ratio": 0.24981943921442007,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_cos",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00035893536278143326,
+        "elapsed_s": 110.10594520007726,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.1046405497682131,
+        "nonlinear_linear_relative_error": 0.003430174665332921
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_sin",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 4.1105372641155346e-05,
+        "elapsed_s": 99.62262309994549,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.058835880422521226,
+        "nonlinear_linear_relative_error": 0.0006986446424522444
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_sin",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.6956642963053623e-05,
+        "elapsed_s": 95.70844039996155,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.049002598397924126,
+        "nonlinear_linear_relative_error": 0.0003460355882632532
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.6956810005748095e-05,
+          "elapsed_s": 191.51512380002532,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 4.155700517973681e-06,
+          "elapsed_s": 92.75591149996035,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 1.5238574205366066e-09,
+        "amplitude_error_ratio": 0.24507802204884696,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "main_sin",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.0001997749607243219,
+        "elapsed_s": 107.19284859998152,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.0997382837253043,
+        "nonlinear_linear_relative_error": 0.0020029917626669326
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "tail_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 3.9707553323081626e-05,
+        "elapsed_s": 94.84521990001667,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.06052702683073218,
+        "nonlinear_linear_relative_error": 0.0006560301307071701
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "tail_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.8475793971953605e-05,
+        "elapsed_s": 95.33345329994336,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.02846464996588609,
+        "nonlinear_linear_relative_error": 0.0006490785586366322
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.8475793381862715e-05,
+          "elapsed_s": 192.09096679999493,
+          "time_step_s": 0.0005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 8.176464670061407e-06,
+          "elapsed_s": 95.00706930004526,
+          "time_step_s": 0.001
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 1.2489643820976356e-07,
+        "amplitude_error_ratio": 0.44255011083547163,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-0-speed-20",
+      "control": "tail_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 642.5276583142048,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00011961162415072835,
+        "elapsed_s": 99.42064620007295,
+        "time_step_s": 0.001,
+        "scaled_response_peak": 0.06023740298512353,
+        "nonlinear_linear_relative_error": 0.001985670334763073
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.0005986168522819753,
+        "elapsed_s": 35.81238449993543,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.04408448138897023,
+        "nonlinear_linear_relative_error": 0.013578856627578404
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.0001149825808555121,
+        "elapsed_s": 35.70035080006346,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.029853194182370542,
+        "nonlinear_linear_relative_error": 0.0038516006077304026
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 0.0001149848423450196,
+          "elapsed_s": 70.30815219995566,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 3.758578527111943e-05,
+          "elapsed_s": 33.72783579991665,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 4.493901631151139e-06,
+        "amplitude_error_ratio": 0.32688242855106886,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.0005960090609248819,
+        "elapsed_s": 35.18142549996264,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.17016059718394616,
+        "nonlinear_linear_relative_error": 0.0035026267584180324
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_cos",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 2.771539017212812e-05,
+        "elapsed_s": 35.45049730001483,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.045209525446862256,
+        "nonlinear_linear_relative_error": 0.0006130431562415724
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_cos",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 2.7785621193980785e-05,
+        "elapsed_s": 35.71136230009142,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.03155798975804504,
+        "nonlinear_linear_relative_error": 0.0008804623300474148
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 2.7785345056925194e-05,
+          "elapsed_s": 68.9742584999185,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.6742465262088167e-05,
+          "elapsed_s": 34.53164239996113,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 1.0839835878482074e-05,
+        "amplitude_error_ratio": 0.6025586091886654,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_cos",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.0001280969871991079,
+        "elapsed_s": 35.76419969997369,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.028756717940970237,
+        "nonlinear_linear_relative_error": 0.00445450650738573
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_sin",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 2.6029490305349182e-05,
+        "elapsed_s": 34.775702200015076,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.024199537110088286,
+        "nonlinear_linear_relative_error": 0.0010756193470534618
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_sin",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 4.247627810265716e-05,
+        "elapsed_s": 34.08966210007202,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.01650759187057737,
+        "nonlinear_linear_relative_error": 0.0025731359507600612
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 4.247430280569641e-05,
+          "elapsed_s": 68.34467190003488,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 2.199657113150946e-05,
+          "elapsed_s": 34.498739999951795,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 7.4716088182554314e-06,
+        "amplitude_error_ratio": 0.5178554269361335,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "main_sin",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00017139242938727511,
+        "elapsed_s": 35.44418390002102,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.02286503959931108,
+        "nonlinear_linear_relative_error": 0.007495829108139359
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "tail_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 4.804477893963245e-05,
+        "elapsed_s": 34.395308399922214,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.02932440316639952,
+        "nonlinear_linear_relative_error": 0.0016383889781833004
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "tail_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.3386105264401088e-05,
+        "elapsed_s": 34.137461100006476,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.019544886498646104,
+        "nonlinear_linear_relative_error": 0.0006848904067735752
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.338603718162534e-05,
+          "elapsed_s": 68.00257929996587,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 4.005256881256127e-06,
+          "elapsed_s": 34.733773400075734,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 9.203964683988751e-06,
+        "amplitude_error_ratio": 0.2992100242859794,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-0",
+      "control": "tail_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 79.22098664126456,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 6.905335653648295e-05,
+        "elapsed_s": 34.87417500000447,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.1117230342255328,
+        "nonlinear_linear_relative_error": 0.0006180762724102755
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.0002187166353528298,
+        "elapsed_s": 34.933992300066166,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.033500746875550956,
+        "nonlinear_linear_relative_error": 0.006528709230433621
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 7.790753307366779e-05,
+        "elapsed_s": 34.33328979997896,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.02045522847342807,
+        "nonlinear_linear_relative_error": 0.0038086855482876623
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 7.790735886678825e-05,
+          "elapsed_s": 68.95979570003692,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 3.463135092236627e-05,
+          "elapsed_s": 34.61762000003364,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 5.075962601470809e-06,
+        "amplitude_error_ratio": 0.4445186435260318,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00044241875484880925,
+        "elapsed_s": 34.64825460000429,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.09618458462610084,
+        "nonlinear_linear_relative_error": 0.004599684622734791
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_cos",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 2.7673800343079293e-05,
+        "elapsed_s": 34.48897399997804,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.045433897868807936,
+        "nonlinear_linear_relative_error": 0.0006091002894576295
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_cos",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 9.808030616199595e-06,
+        "elapsed_s": 33.83595360000618,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.02991401801841418,
+        "nonlinear_linear_relative_error": 0.00032787406259373323
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 9.808318971037718e-06,
+          "elapsed_s": 67.7770197999198,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 3.7880664642586615e-06,
+          "elapsed_s": 31.791945799952373,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 8.701900324012932e-06,
+        "amplitude_error_ratio": 0.3862209053468939,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_cos",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 3.5387662706175714e-05,
+        "elapsed_s": 34.69670989993028,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.02783963429371638,
+        "nonlinear_linear_relative_error": 0.0012711252717196426
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_sin",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 2.6944954140485023e-05,
+        "elapsed_s": 33.79623219999485,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.02615416908185634,
+        "nonlinear_linear_relative_error": 0.0010302355259749875
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_sin",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 1.168509166567319e-05,
+        "elapsed_s": 33.49224419996608,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.017774101585796568,
+        "nonlinear_linear_relative_error": 0.000657422351800377
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 1.1685140406669643e-05,
+          "elapsed_s": 67.19455650006421,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 3.519148996890452e-06,
+          "elapsed_s": 33.86558709992096,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 5.766856301605639e-06,
+        "amplitude_error_ratio": 0.301165715903497,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "main_sin",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 3.9663645775451684e-05,
+        "elapsed_s": 34.611968499957584,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.025481555409736206,
+        "nonlinear_linear_relative_error": 0.0015565629781099102
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "tail_collective",
+      "input": {
+        "type": "doublet",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "等时长正负方波两段，之后归零"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 9.711952223984745e-05,
+        "elapsed_s": 34.701760000083596,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.024507033796777298,
+        "nonlinear_linear_relative_error": 0.003962924401427103
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "tail_collective",
+      "input": {
+        "type": "pulse",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": 0.5,
+        "definition": "单段sin²平滑脉冲"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 4.973245803720759e-05,
+        "elapsed_s": 34.51756950002164,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.012795980259086855,
+        "nonlinear_linear_relative_error": 0.003886568831011669
+      },
+      "refinement": {
+        "fine": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 4.973244826141443e-05,
+          "elapsed_s": 69.09911860001739,
+          "time_step_s": 0.005
+        },
+        "half_amplitude": {
+          "status": "complete",
+          "error": null,
+          "end_s": 2.0,
+          "scaled_nonlinear_linear_error": 2.4578763633481387e-05,
+          "elapsed_s": 28.084035400068387,
+          "time_step_s": 0.01
+        },
+        "compared_until_s": 2.0,
+        "time_step_relative_change": 8.890368399555376e-05,
+        "amplitude_error_ratio": 0.49421976317946437,
+        "time_step_pass": true,
+        "amplitude_pass": true
+      }
+    },
+    {
+      "base": "model-1-speed-20",
+      "control": "tail_collective",
+      "input": {
+        "type": "step",
+        "amplitude_deg": 0.05,
+        "start_s": 0.2,
+        "duration_s": null,
+        "definition": "start后保持幅值"
+      },
+      "fastest_eigenvalue_magnitude": 86.02580846678823,
+      "baseline": {
+        "status": "complete",
+        "error": null,
+        "end_s": 2.0,
+        "scaled_nonlinear_linear_error": 0.00024468476485102583,
+        "elapsed_s": 35.33906830009073,
+        "time_step_s": 0.01,
+        "scaled_response_peak": 0.07036995517790486,
+        "nonlinear_linear_relative_error": 0.003477119805354847
+      }
+    }
+  ],
+  "passed": true,
+  "comparison_definition": "Norms use STATE_SCALE=[10]*3+[0.1]*6+[0.05]*6; amplitude ratio is half/full nonlinear-linear error on common valid interval. Predefined reduction gate <=0.65; timestep gate <=0.01."
+}

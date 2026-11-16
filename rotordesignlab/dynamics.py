@@ -171,25 +171,67 @@ def frequency_response(a,b,frequencies):
 
 class ResponseDomainError(ValueError):
     def __init__(self,message,history):
-        super().__init__(message);self.history=np.asarray(history)
+        super().__init__(message)
+        self.history = np.asarray(history).reshape((-1, 31))
 
 
-def step_response(plant,a,b,control_index,amplitude_deg,duration,step):
-    """Simultaneous nonlinear RK4 and exact constant-input linear propagation."""
-    count=round(duration/step);times=np.arange(count+1)*step
-    du=np.zeros(4);du[control_index]=np.deg2rad(amplitude_deg)
-    transition=expm(np.block([[a,b],[np.zeros((4,19))]])*step)
-    linear=np.zeros(15);nonlinear=plant.state.copy();rows=[]
-    for i,t in enumerate(times):
-        try:k1=plant.rhs(nonlinear,plant.controls+du)
-        except ValueError as error:raise ResponseDomainError(f't={t:g}s状态超出支持域：{error}',rows) from error
-        delta=nonlinear-plant.state;rows.append(np.r_[t,delta,linear])
-        if i==count:break
+def step_response(plant, a, b, control_index, amplitude_deg, duration, step, *, perturbation=None):
+    """Shared waveform, nonlinear RK4 and linear propagation, split at input knots.
+
+    The historical API still defaults to a step at zero. Constant-input pieces
+    use the exact linear exponential; smooth pulse pieces use matching RK stages.
+    Rows retain the original time + 15 nonlinear + 15 linear column layout.
+    """
+    from .perturbation import Perturbation
+    wave = (perturbation or Perturbation(amplitude_deg=amplitude_deg)).validate(duration)
+    count = round(duration / step)
+    if count < 1 or abs(duration / step - count) > 1e-8:
+        raise ValueError('时长必须为步长整数倍。')
+    events = [v for v in wave.breakpoints() if 0 <= v <= duration]
+    times = [t for t in np.arange(count + 1) * step if not any(abs(t - e) < 1e-12 for e in events)]
+    times = sorted([*times, *events])
+    linear = np.zeros(15)
+    nonlinear = plant.state.copy()
+    transitions = {}
+    rows = []
+
+    def input_at(time):
+        du = np.zeros(4)
+        du[control_index] = np.deg2rad(wave.value_deg(time))
+        return du
+
+    for index, time in enumerate(times):
+        first_input = input_at(time)
         try:
-            k2=plant.rhs(nonlinear+step*k1/2,plant.controls+du)
-            k3=plant.rhs(nonlinear+step*k2/2,plant.controls+du)
-            k4=plant.rhs(nonlinear+step*k3,plant.controls+du)
-        except ValueError as error:raise ResponseDomainError(f't={t:g}s之后积分失败：{error}',rows) from error
-        nonlinear+=step*(k1+2*k2+2*k3+k4)/6
-        linear=transition[:15,:15]@linear+transition[:15,15:]@du
+            k1 = plant.rhs(nonlinear, plant.controls + first_input)
+        except ValueError as error:
+            raise ResponseDomainError(f't={time:g}s状态超出支持域：{error}', rows) from error
+        rows.append(np.r_[time, nonlinear - plant.state, linear])
+        if index == len(times) - 1:
+            break
+        end = times[index + 1]
+        h = end - time
+        middle_input = input_at(time + h / 2)
+        # The ending RK stage belongs to the interval on the LEFT of a jump.
+        endpoint = np.nextafter(end, -np.inf) if wave.kind != 'pulse' and end in events else end
+        last_input = input_at(endpoint)
+        try:
+            k2 = plant.rhs(nonlinear + h * k1 / 2, plant.controls + middle_input)
+            k3 = plant.rhs(nonlinear + h * k2 / 2, plant.controls + middle_input)
+            k4 = plant.rhs(nonlinear + h * k3, plant.controls + last_input)
+        except ValueError as error:
+            raise ResponseDomainError(f't={time:g}s之后积分失败：{error}', rows) from error
+        nonlinear += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6
+        if wave.kind != 'pulse':
+            key = round(h, 12)
+            if key not in transitions:
+                transitions[key] = expm(np.block([[a, b], [np.zeros((4, 19))]]) * h)
+            transition = transitions[key]
+            linear = transition[:15, :15] @ linear + transition[:15, 15:] @ first_input
+        else:
+            l1 = a @ linear + b @ first_input
+            l2 = a @ (linear + h * l1 / 2) + b @ middle_input
+            l3 = a @ (linear + h * l2 / 2) + b @ middle_input
+            l4 = a @ (linear + h * l3) + b @ last_input
+            linear += h * (l1 + 2 * l2 + 2 * l3 + l4) / 6
     return np.asarray(rows)

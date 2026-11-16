@@ -4,9 +4,9 @@
 
 [GitHub 仓库](https://github.com/dingzhw/RotorDesignLab) · [v0.1.0 发布](https://github.com/dingzhw/RotorDesignLab/releases/tag/v0.1.0) · [公开数据验证路线](docs/public-validation.md)
 
-2026-11-16 已完成0.4.4-A：速度/Mach边界、模态可靠性、错误恢复与试验性标识，下一包为扰动输入与下载边界。[整改跟踪表](docs/reviews/RotorDesignLab-v0.4.3-评审意见回复书.md) · [开发路线](docs/roadmap.md) · [检查记录](docs/v044-work.md)。软件小版本与模型成熟度分别管理，完整动态挥舞及独立操稳验证仍待完成。
+2026-11-16 已完成0.4.4-A/B：速度/Mach边界、模态可靠性、错误恢复与试验性标识，以及共享扰动输入和显式下载策略。新建方案可直接选择平滑脉冲/双脉冲/阶跃并导出实际输入，旧方案保留原计算语义。下一阶段为0.4.5工程输入完善。[整改跟踪表](docs/reviews/RotorDesignLab-v0.4.3-评审意见回复书.md) · [开发路线](docs/roadmap.md) · [检查记录](docs/v044-work.md)。软件小版本与模型成熟度分别管理，完整动态挥舞及独立操稳验证仍待完成。
 
-已发布v0.3.0整机配平。当前开发版 `0.4.4.dev1` 将总距和转速放回孤立旋翼计算页，补齐参数提示，并接入X/Y/Z三方向来流、周期变距及六分量气动载荷，保留原轴流算法。共用方案支持保存重开和四类分析。“开环初评（低频模型·试验性）”采用6自由度机体、动态入流与准定常挥舞；完整动态挥舞与桨叶惯性耦合仍待完成，尚未发布正式v0.4。[孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [易用性迭代计划](docs/usability-plan.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
+已发布v0.3.0整机配平。当前开发版 `0.4.4.dev2` 将总距和转速放回孤立旋翼计算页，补齐参数提示，并接入X/Y/Z三方向来流、周期变距及六分量气动载荷，保留原轴流算法。共用方案支持保存重开和四类分析。“开环初评（低频模型·试验性）”采用6自由度机体、动态入流与准定常挥舞；完整动态挥舞与桨叶惯性耦合仍待完成，尚未发布正式v0.4。[孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [易用性迭代计划](docs/usability-plan.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
 
 旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：原环带模型 XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.09%；接入旧表局部Re后仍为28.87%，真实Re气动与非局部尾迹继续排查。均匀入流核 C–T 偏差39.5%。UH‑60 与 NASA TM‑85890 姿态及部分导数作带配置差异的数学模型对照，所有通用整机结果标记为模型估算。公开参数和工程估计分别注明；已发布标签保持可复算。
 

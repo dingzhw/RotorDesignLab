@@ -21,7 +21,7 @@
 
 ## 当前工作包：0.4.4 缺陷修复与防误用
 
-状态：**A 包已实现并通过检查，B 包接续实施**。证据见[工作记录](v044-work.md)及[调用数与耗时](../validation/v044/a-performance.json)。先 A 后 B，每包检查通过后提交并同步 GitHub，服务器 SHA 核对后继续。
+状态：**A、B 包已实现并通过限定范围检查，当前开发版0.4.4.dev2**。A包先提交同步，B包随后实施。证据见[工作记录](v044-work.md)、[调用数与耗时](../validation/v044/a-performance.json)、[48项响应及16组加密检查](../validation/v044/b-response-matrix.json)。下一阶段为0.4.5；每包检查通过后提交并同步 GitHub，服务器 SHA 核对后继续。
 
 ### A：确定性缺陷和结果可靠性（R02–R06、R16–R17）
 

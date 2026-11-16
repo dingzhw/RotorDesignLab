@@ -10,6 +10,7 @@ from .azimuth import rotor_basis
 from .cases import numeric,read_rotor,write_csv,write_json
 from .hover import atmosphere,apply_design,G,VARIABLES
 from .steady_rotor import SteadyRotor
+from .download import load as download_load, settings as download_settings
 
 CONTROL_NAMES=['main_collective_deg','main_cos_deg','main_sin_deg','tail_collective_deg','roll_deg','pitch_deg']
 
@@ -79,10 +80,9 @@ class TrimSystem:
         extra=airframe_loads(self.aircraft,velocity,self.air['density_kg_m3'],induced,strict,body_rates=body_rates,tail_induced_velocity_body=tail_induced)
         for item in extra.values():F+=item['force_body_n'];M+=item['moment_cg_body_nm']
         items.update(extra)
-        # Explicit residual download coefficient, separate from fuselage wake loads.
-        download=self.aircraft['hover']['download_fraction']*items['main']['thrust_n']
-        df=-download*self.bases['main'][:,2];F+=df
-        items['download']=dict(force_body_n=df.tolist(),moment_cg_body_nm=[0,0,0],power_w=0)
+        # A single policy feeds trim, derivatives and every dynamic RHS.
+        items['download'] = download_load(self.aircraft, items['main']['thrust_n'], self.bases['main'][:, 2])
+        F += items['download']['force_body_n']
         outer=np.r_[F/self.weight,M/(self.weight*self.Rmain)]
         if strict:
             if items['main']['diagnostics']['mu']>.25+1e-9:raise ValueError('主桨推进比超出μ≤0.25范围。')
@@ -138,6 +138,7 @@ def run_trim(case,base,output):
         return dict(status='failed',solver_status='not_converged' if numerical else 'converged',analysis='trim',
             support_status='not_established' if numerical else 'outside_implemented_domain',
             design_limits_status='not_evaluated',evidence_status='model_estimate',diagnostics=diagnostic,
+            download_model=download_settings(aircraft),
             failure_kind=('control_limited' if near_limits else 'residual_not_converged') if numerical else 'outside_supported_domain',
             error=('配平方程未收敛；最终试探状态检查：' if numerical else '')+str(error)),snapshot
     controls=dict(zip(CONTROL_NAMES,np.rad2deg(fit.x[:6]).tolist()))
@@ -157,6 +158,7 @@ def run_trim(case,base,output):
     saturated=[key for key,m in margins.items() if min(m.values())<.01]
     violations.extend(key+'_at_limit' for key in saturated)
     summary=dict(speed_m_s=case['speed_m_s'],climb_m_s=case['climb_m_s'],altitude_m=altitude,
+        download_n=data['components']['download']['magnitude_n'],
         mass_kg=aircraft['mass_properties']['mass_kg'],required_power_w=required,transmission_loss_w=loss,
         accessory_power_w=plant['accessory_power_w'],continuous_margin_w=continuous-required,
         short_time_margin_w=short-required,duration_margin_w=margin,
@@ -173,15 +175,18 @@ def run_trim(case,base,output):
     result=dict(status='converged',solver_status='converged',analysis='trim',summary=summary,
         feasible=not violations,support_status='within_implemented_steady_domain',design_limits_status='exceeded' if violations else 'within_supplied_limits',
         evidence_status='model_estimate',violations=violations,control_margins_deg=margins,components=data['components'],
+        download_model=download_settings(aircraft),
         residual_force_body_n=data['force'].tolist(),residual_moment_body_nm=data['moment'].tolist(),
         velocity_body_m_s=data['velocity'].tolist(),diagnostics=diagnostic,
         short_time_rating_applicable=applicable,elapsed_s=perf_counter()-started,
         backend='Python / azimuth blade elements + steady PP + first harmonic flap + six-component trim',
         warnings=['旋翼模型估算，稳态一阶挥舞；未包含高阶桨叶运动、弹性、旋流和主尾桨干扰。',
-                  '下载/尾翼下洗采用输入显式系数；数据来源与工程估计见机型。'])
+                  download_settings(aircraft)['note'], download_settings(aircraft)['comparison_note']])
     lines=['# 整机六分量配平','',f"求解收敛；数据域：{result['support_status']}；限制：{result['design_limits_status']}；证据：模型估算。",'',
            '|量|值|','|---|---:|']+[f'|{k}|{v:.8g}|' for k,v in summary.items()]
-    lines+=['','控制定义与双向余量见result.json；旋翼内部残差与初值见trim-diagnostics.json。',
+    lines+=['',f"残余下载策略：{result['download_model']['strategy']}；实际比例：{result['download_model']['effective_fraction']:g}。",
+             result['download_model']['note'], result['download_model']['comparison_note'],
+             '控制定义与双向余量见result.json；旋翼内部残差与初值见trim-diagnostics.json。',
              '零侧滑直线前飞，纯垂直爬升保留姿态变换产生的机体系侧向速度。全输入可用run case.json复算。']
     (output/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     return result,snapshot

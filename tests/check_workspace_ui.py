@@ -140,6 +140,8 @@ def analysis_checks(app,tasks=None):
     if '开环初评（低频模型·试验性）' in tasks:
         field(app.radio,'分析任务').set_value('开环初评（低频模型·试验性）').run()
         field(app.selectbox,'开环任务').set_value('小扰动阶跃响应').run()
+        field(app.selectbox, '扰动波形').set_value('step').run()
+        field(app.number_input, '扰动开始时间 / s').set_value(0.).run()
         field(app.number_input,'响应时长 / s').set_value(.05).run()
         record=run(app);assert record['answer']['status']=='converged',record['answer']
         assert 'response.png' in record['files'];replay(record)

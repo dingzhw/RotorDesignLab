@@ -55,7 +55,10 @@ def measure(template, speed, analysis):
 
 if __name__ == '__main__':
     names = list(designs.TEMPLATES)
-    records = [measure(names[0], 20., 'linearize'), measure(names[1], 40., 'trim')]
+    # Freeze A's historical inputs even after the new-template selector advances.
+    source = Path(__file__).resolve().parents[1] / 'examples/public-helicopter'
+    with patch.dict(designs.TEMPLATES, {names[0]: source / 'synthetic.json', names[1]: source / 'uh60-public.json'}):
+        records = [measure(names[0], 20., 'linearize'), measure(names[1], 40., 'trim')]
     assert records[0]['status'] == 'converged', records[0]
     assert records[1]['status'] == 'failed' and records[1]['solver_status'] == 'converged', records[1]
     assert all(r['trim_diagnostics']['residual_calls'] > r['trim_diagnostics']['nfev'] for r in records)

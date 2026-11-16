@@ -73,8 +73,9 @@ def scalar(path,schema):
     kwargs=dict(key=key,help=help_text(name),on_change=scalar_change,args=(path,key))
     if 'enum' in schema:
         options=schema['enum']
+        labels = {'none': '不附加残余比例力', 'legacy_fraction': '历史常比例下载'} if name == 'download_policy' else ENUM_LABELS
         st.selectbox(label(name),options,index=options.index(value) if value in options else None,
-                     format_func=lambda v:ENUM_LABELS.get(v,str(v)),**kwargs)
+                     format_func=lambda v:labels.get(v,str(v)),**kwargs)
     elif schema.get('type')=='boolean':
         kwargs.pop('help');st.checkbox(label(name),value=bool(value),**kwargs);st.caption(help_text(name))
     elif schema.get('type') in ('number','integer'):

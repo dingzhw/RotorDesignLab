@@ -1,0 +1,6 @@
+{
+  "old_commit": "0c617d8c74ad8585e9223ba71e34568fec2876e5",
+  "case": "public UH-60 legacy download, collective step 0.05 deg, 0.1 s / 0.005 s",
+  "max_abs_difference": 2.8015784137025435e-16,
+  "passed": true
+}

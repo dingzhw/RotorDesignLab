@@ -157,7 +157,9 @@ def run_budget(case, base, output):
     for role in ('main','tail'):
         for key in ('thrust_n','torque_nm','collective_deg','rpm','tip_speed_m_s'):
             summary[role+'_'+key] = components[role]['summary'][key]
+    from .download import settings as download_settings
     result = dict(status='converged', solver_status='converged', analysis='hover_budget', summary=summary,
+        download_model=download_settings(aircraft, 'hover_budget'),
         support_status='within_budget_input_domain', design_limits_status='exceeded' if violations else 'within_supplied_limits',
         feasible=not violations, violations=violations, evidence_status='model_estimate', atmosphere=air,
         components=components, residual_force_body_n=force.tolist(), residual_moment_body_nm=moment.tolist(),
@@ -166,7 +168,7 @@ def run_budget(case, base, output):
         diagnostics=diagnostic, elapsed_s=perf_counter()-start,
         scope='hover power/load budget: Fz and Mz closed; not full six-axis trim',
         backend='Python / isolated axial rotors + installed loads + bounded hover budget',
-        warnings=['侧力、滚转和俯仰未配平；下载施于重心。',
+        warnings=[download_settings(aircraft, 'hover_budget')['comparison_note'], '侧力、滚转和俯仰未配平；下载施于重心。',
                   '模型估算：固定桨叶轴流、无主尾桨互扰；翼型与动力估计见输入 provenance。'],
         validation_basis=['docs/hover-budget.md','docs/xv15-validation.md','docs/caradonna-tung-validation.md'])
     write_csv(output/'budget.csv', ['quantity','value'], summary.items())
@@ -182,6 +184,8 @@ def write_report(result, output):
     lines.extend(f'|{key}|{value:.8g}|' for key,value in s.items())
     lines.extend(['',f"机体系剩余力 N：{result['residual_force_body_n']}",
                   f"重心剩余力矩 N·m：{result['residual_moment_body_nm']}", '',
+                  f"预算下载比例：{result['download_model']['effective_fraction']:g}。",
+                  result['download_model']['comparison_note'],
                   '完整输入、来源及限制见 aircraft.json；case.json 可通过 run 命令离线复算。',
                   '半径变化保持实际弦长与扭转，径向几何站按 r/R 同比例伸缩。'])
     (output/'report.md').write_text('\n'.join(lines)+'\n', encoding='utf-8')
