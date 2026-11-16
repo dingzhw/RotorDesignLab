@@ -9,17 +9,10 @@ from scipy.optimize import least_squares
 from .aircraft import AERO_KEYS, installed_loads, read_aircraft, require_analysis, snapshot_aircraft
 from .cases import numeric, read_rotor, write_csv, write_json
 from .rotor import solve
+from .environment import standard as atmosphere, from_case as case_environment
 
 G = 9.80665
 VARIABLES = {'mass_kg', 'altitude_m', 'main_radius_m', 'main_rpm', 'tail_radius_m', 'tail_rpm', 'tail_arm_m'}
-
-
-def atmosphere(altitude):
-    temperature = 288.15 - .0065 * altitude
-    pressure = 101325 * (temperature / 288.15)**(G/(287.05287*.0065))
-    return dict(temperature_k=temperature, density_kg_m3=pressure/(287.05287*temperature),
-                speed_of_sound_m_s=sqrt(1.4*287.05287*temperature),
-                dynamic_viscosity_pa_s=1.716e-5*(temperature/273.15)**1.5*(273.15+110.4)/(temperature+110.4))
 
 
 def apply_design(aircraft, case):
@@ -55,7 +48,7 @@ def balance(aircraft, components):
 
 def run_budget(case, base, output):
     start = perf_counter()
-    allowed = {'schema_version','model','analysis','aircraft_json','requested_duration_s','radial_stations',*VARIABLES}
+    allowed = {'schema_version','model','analysis','aircraft_json','requested_duration_s','radial_stations','environment',*VARIABLES}
     if set(case)-allowed:
         raise ValueError(f'整机工况未识别字段：{sorted(set(case)-allowed)}')
     if not isinstance(case.get('aircraft_json'), str):
@@ -73,7 +66,7 @@ def run_budget(case, base, output):
     plant = aircraft['powerplant']
     if not plant['altitude_m'][0] <= altitude <= plant['altitude_m'][-1]:
         raise ValueError('高度超出输入可用功率曲线范围；不外推。')
-    air = atmosphere(altitude)
+    air = case_environment(case)
     selected = {r['role']: r for r in copied['rotors']}
     main, tail = selected['main'], selected['tail']
     if main['thrust_axis_body'][2] >= -.5:

@@ -8,16 +8,19 @@ from .aircraft import read_aircraft,require_analysis,snapshot_aircraft,AERO_KEYS
 from .airframe import airframe_loads,body_to_ned,flight_velocity
 from .azimuth import rotor_basis
 from .cases import numeric,read_rotor,write_csv,write_json
-from .hover import atmosphere,apply_design,G,VARIABLES
+from .hover import apply_design,G,VARIABLES
 from .steady_rotor import SteadyRotor
 from .download import load as download_load, settings as download_settings
+from .environment import from_case as case_environment
 
 CONTROL_NAMES=['main_collective_deg','main_cos_deg','main_sin_deg','tail_collective_deg','roll_deg','pitch_deg']
 
 
 class TrimSystem:
     def __init__(self,aircraft,base,case):
-        self.aircraft=aircraft;self.case=case;self.air=atmosphere(case['altitude_m'])
+        self.aircraft = aircraft
+        self.case = case
+        self.air = case_environment(case)
         self.weight=aircraft['mass_properties']['mass_kg']*G
         self.selected={r['role']:r for r in aircraft['rotors']};self.rotors={};self.bases={}
         for role,data in self.selected.items():
@@ -92,7 +95,7 @@ class TrimSystem:
 def run_trim(case,base,output):
     started=perf_counter()
     allowed={'schema_version','model','analysis','aircraft_json','speed_m_s','climb_m_s','requested_duration_s',
-             'radial_stations','azimuth_stations','cg_x_m','initial_state',*VARIABLES}
+             'radial_stations','azimuth_stations','cg_x_m','initial_state','environment',*VARIABLES}
     if set(case)-allowed:raise ValueError(f'配平工况未识别字段：{sorted(set(case)-allowed)}')
     if not isinstance(case.get('aircraft_json'),str):raise ValueError('需要aircraft_json。')
     for key,bounds in [('speed_m_s',(0,150)),('climb_m_s',(0,15)),('altitude_m',(0,11000)),('requested_duration_s',(.001,1e9))]:numeric(case,key,*bounds)

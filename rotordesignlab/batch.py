@@ -101,6 +101,8 @@ def run_batch(spec, base, output):
                 raise ValueError('同一批次不能混合运动速度与机体系来流扫描轴。')
         if case['model'] == 'aircraft_rotor' and set(axes) & set((*FLOW_AXES, *MOTION_AXES)):
             raise ValueError('运动速度和X/Y/Z来流扫描需要三方向旋翼模型。')
+        if 'environment' in case and 'density_kg_m3' in axes and (not isinstance(case['environment'], dict) or case['environment'].get('mode') != 'custom'):
+            raise ValueError('ISA环境的密度由高度与温差确定；密度扫描需选择完整自定义环境。')
         count = 1
         for key, values in axes.items():
             if (not isinstance(values, list) or not values or
@@ -139,6 +141,8 @@ def run_batch(spec, base, output):
             for key, value in values.items():
                 if key == 'target_thrust_n':
                     current['target']['thrust_n'] = value
+                elif key == 'density_kg_m3' and 'environment' in current:
+                    current['environment']['density_kg_m3'] = value
                 elif key in (*FLOW_AXES, *MOTION_AXES):
                     continue
                 else:

@@ -56,8 +56,8 @@ def editor_checks(app):
     assert app.session_state['design']['aircraft']['mass_properties']['cg_m'][0]==.01
     app.run();assert app.session_state['design']['aircraft']['mass_properties']['cg_m'][0]==.01
     choose(app,'动力与传动')
-    key=f'd:{epoch}:aircraft/powerplant/_table'
-    app.session_state[key]={'edited_rows':{0:{'continuous_power_w':46000}},'added_rows':[],'deleted_rows':[]}
+    key=f'd:{epoch}:aircraft/powerplant/_table_kw'
+    app.session_state[key]={'edited_rows':{0:{'continuous_power_w':46.}},'added_rows':[],'deleted_rows':[]}
     app.run();ok(app)
     assert app.session_state['design']['aircraft']['powerplant']['continuous_power_w'][0]==46000
     choose(app,'基本信息')

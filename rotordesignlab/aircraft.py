@@ -111,7 +111,7 @@ def snapshot_aircraft(aircraft, source_dir, output):
 def prepare(case, base, output):
     from .cases import read_rotor
     allowed = {'schema_version', 'model', 'aircraft_json', 'rotor_id', 'density_kg_m3',
-               'axial_speed_m_s', 'target', *OPERATING_KEYS, *AERO_KEYS}
+               'axial_speed_m_s', 'target', 'environment', 'altitude_m', *OPERATING_KEYS, *AERO_KEYS}
     unknown = set(case) - allowed
     if unknown:
         raise ValueError(f'工况中未识别的字段：{sorted(unknown)}')
@@ -136,9 +136,18 @@ def prepare(case, base, output):
     resolved.update({key: case[key] for key in AERO_KEYS if key in case})
     resolved.update(operating, density_kg_m3=case.get('density_kg_m3', 1.225),
                     axial_speed_m_s=case.get('axial_speed_m_s', 0.0))
+    if 'environment' in case:
+        from .environment import AIR_FIELDS, from_case
+        if set(case) & set(AIR_FIELDS):
+            raise ValueError('环境对象与旧式密度/声速/黏度字段不可同时填写。')
+        air = from_case(case)
+        resolved.update({key: air[key] for key in AIR_FIELDS})
+    elif 'altitude_m' in case:
+        raise ValueError('孤立旋翼高度需配合显式environment环境设置。')
     model, _ = read_rotor(resolved, output)
     saved_case = dict(case, aircraft_json='aircraft.json', **operating)
-    saved_case.setdefault('density_kg_m3', 1.225)
+    if 'environment' not in case:
+        saved_case.setdefault('density_kg_m3', 1.225)
     saved_case.setdefault('axial_speed_m_s', 0.0)
     return model, aircraft, selected, saved_case
 

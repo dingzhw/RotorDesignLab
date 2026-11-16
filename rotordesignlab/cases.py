@@ -120,6 +120,8 @@ def run_case(case, base, output):
         expected = {'aircraft_rotor': 2, 'spatial_rotor': 2, 'helicopter': 3}.get(case.get('model'), 1)
         if case['schema_version'] != expected:
             raise ValueError('工况版本：旧算例1，aircraft_rotor/spatial_rotor为2，helicopter为3。')
+        if 'environment' in case and case.get('model') not in ('helicopter', 'aircraft_rotor', 'spatial_rotor'):
+            raise ValueError('显式环境设置用于统一机型入口；历史原始算例按其原输入复算。')
         if case.get("model") == "uh60":
             duration = numeric(case, "duration_s", 0.1, 3)
             step = numeric(case, "time_step_s", 0.0025, 0.02)
@@ -191,6 +193,9 @@ def run_case(case, base, output):
             raise ValueError("model 应为 uh60、axial_rotor、aircraft_rotor、spatial_rotor 或 helicopter。")
         if case.get('model') != 'helicopter':
             result["status"] = "converged"
+        if 'environment' in case:
+            from .environment import from_case
+            result['atmosphere'] = from_case(case)
     except (ValueError, RuntimeError, OSError, TimeoutExpired) as error:
         result["error"] = str(error)
         if isinstance(case, dict) and case.get('model') in ('helicopter','spatial_rotor','axial_rotor','aircraft_rotor'):

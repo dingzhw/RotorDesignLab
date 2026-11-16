@@ -15,7 +15,7 @@ from .steady_rotor import SteadyRotor
 from .coordinates import canonical_spatial_case, selected_basis, attitude_matrix, flow_to_motion
 
 SPATIAL_KEYS = {'flow_body_m_s', 'motion_m_s', 'attitude_deg', 'cyclic_cos_deg', 'cyclic_sin_deg', 'azimuth_stations', 'flapping_model'}
-COMMON_KEYS = {'schema_version','model','aircraft_json','rotor_id','density_kg_m3','target',*OPERATING_KEYS,*AERO_KEYS}
+COMMON_KEYS = {'schema_version','model','aircraft_json','rotor_id','density_kg_m3','target','environment','altitude_m',*OPERATING_KEYS,*AERO_KEYS}
 
 
 def setup(case, selected, rotor):

@@ -10,6 +10,7 @@ from . import designs
 from .aircraft import SCHEMA, SCHEMA_V2
 from .parameter_fields import FIELDS, INTERNAL, ENUM_LABELS, label, help_text, location
 from .model_scope import OPEN_LOOP_LABEL
+from .engineering_display import is_power, display_label
 
 
 def current():return st.session_state['design']
@@ -57,7 +58,11 @@ def put_at(path,value,remove=False):
 def dirty():return designs.digest(current())!=st.session_state.get('saved_fingerprint')
 
 
-def scalar_change(path,key):put_at(path,st.session_state[key])
+def scalar_change(path, key, factor=1.):
+    value = st.session_state[key]
+    if factor != 1. and value is not None:
+        value *= factor
+    put_at(path, value)
 
 
 def optional_change(path,key,initial):
@@ -69,7 +74,12 @@ def optional_change(path,key,initial):
 
 
 def scalar(path,schema):
-    name=path[-1];value=get_at(path);key=key_for(path)
+    name = path[-1]
+    value = get_at(path)
+    key = key_for(path)
+    if is_power(name):
+        # Do not reuse an old W widget's session value after Streamlit hot reload.
+        key += ':kW'
     kwargs=dict(key=key,help=help_text(name),on_change=scalar_change,args=(path,key))
     if 'enum' in schema:
         options=schema['enum']
@@ -79,14 +89,23 @@ def scalar(path,schema):
         st.selectbox(label(name),options,index=options.index(value) if value in options else None,
                      format_func=lambda v:labels.get(v,str(v)),**kwargs)
     elif schema.get('type')=='boolean':
-        kwargs.pop('help');st.checkbox(label(name),value=bool(value),**kwargs);st.caption(help_text(name))
+        kwargs.pop('help')
+        st.checkbox(label(name), value=bool(value), **kwargs)
+        st.caption(help_text(name))
     elif schema.get('type') in ('number','integer'):
         integer=schema['type']=='integer'
-        st.number_input(label(name),value=(int(value) if integer else float(value)) if value is not None else None,
+        if is_power(name):
+            value = value / 1000. if value is not None else None
+            kwargs['args'] = (path, key, 1000.)
+            kwargs['help'] += ' 本栏以kW填写，保存及求解使用W。'
+        title = label(name).replace('/ W', '/ kW') if is_power(name) else label(name)
+        st.number_input(title,value=(int(value) if integer else float(value)) if value is not None else None,
                         step=1 if integer else None,format='%d' if integer else '%.9g',placeholder='待填写',**kwargs)
     elif schema.get('type')=='string':
-        if name in ('description','provenance'):st.text_area(label(name),value=value or '',**kwargs)
-        else:st.text_input(label(name),value=value or '',**kwargs)
+        if name in ('description', 'provenance'):
+            st.text_area(label(name), value=value or '', **kwargs)
+        else:
+            st.text_input(label(name), value=value or '', **kwargs)
 
 
 def clean(value):
@@ -147,18 +166,29 @@ def array_editor(path,schema):
 
 
 def object_editor(path,schema):
-    data=get_at(path);properties=schema.get('properties',{})
+    data = get_at(path)
+    properties = schema.get('properties', {})
     # Column arrays are editable tables. No row is reordered or silently interpolated.
     table_keys=[k for k,v in properties.items() if v.get('type')=='array' and v.get('items',{}).get('type')=='number']
     if table_keys:
-        subset={k:data.get(k,[]) for k in table_keys}
-        names=list(subset);size=max((len(v) for v in subset.values()),default=0)
+        subset = {k: [v / 1000. if is_power(k) and v is not None else v for v in data.get(k, [])] for k in table_keys}
+        names = list(subset)
+        size = max((len(v) for v in subset.values()), default=0)
         rows=[{k:subset[k][i] if i<len(subset[k]) else None for k in names} for i in range(size)]
         def apply(values):
-            for k in names:put_at(path+[k],[r.get(k) for r in values])
-        config={k:st.column_config.NumberColumn(label(k),help=help_text(k),format='%.9g') for k in names}
+            for k in names:
+                converted = []
+                for i, row in enumerate(values):
+                    value = row.get(k)
+                    if is_power(k) and value is not None:
+                        # An untouched cell keeps its exact old SI float.
+                        value = data[k][i] if i < len(subset[k]) and value == subset[k][i] else value * 1000.
+                    converted.append(value)
+                put_at(path + [k], converted)
+        config = {k: st.column_config.NumberColumn(display_label(k), help=help_text(k) + (' 本列单位kW。' if is_power(k) else ''), format='%.9g') for k in names}
         if path[-1]=='beta_table' and 'cl' in names:config['cl']=st.column_config.NumberColumn('滚转力矩系数 Cl',format='%.9g')
-        edit_table(rows,path+['_table'],apply,columns=config,dynamic=True)
+        table_key = '_table_kw' if any(is_power(k) for k in names) else '_table'
+        edit_table(rows, path + [table_key], apply, columns=config, dynamic=True)
     for name,child in properties.items():
         if name in INTERNAL or name in table_keys:continue
         child=SCHEMA_V2['$defs'][child['$ref'].split('/')[-1]] if '$ref' in child else child
@@ -206,6 +236,13 @@ def csv_editor(rotor,index,key):
     path=['assets',name]
     def apply(rows):put_at(path,pd.DataFrame(rows,columns=data.columns).to_csv(index=False))
     edit_table(data.to_dict('records'),path,apply,dynamic=True)
+    from .previews import csv_figure, show
+    try:
+        show(csv_figure(current()['assets'][name], key == 'geometry_csv'))
+        st.caption('预览使用当前草稿的原始站点；弦长为实际尺寸，扭转尚未扣除总距参考站。' if key == 'geometry_csv' else '预览范围就是当前表的攻角范围；此单表没有Mach/Re维度。')
+        st.caption('参数来源：' + rotor.get('provenance', '待填写来源'))
+    except (ValueError, KeyError, TypeError) as error:
+        st.warning('数据尚不完整，暂不预览：' + str(error))
 
 
 def airfoil_editor(rotor,index):
@@ -234,6 +271,13 @@ def airfoil_editor(rotor,index):
             put_at(['assets',name],json.dumps(grid,ensure_ascii=False,allow_nan=False))
         edit_table(rows,['airfoil',index,section,selected,coefficient,'outer'],outer_apply,
                    columns={'alpha_deg':st.column_config.NumberColumn('攻角 / °'),'value':st.column_config.NumberColumn(label(coefficient),format='%.9g')},disabled=['alpha_deg'])
+    from .previews import polar_figure, show
+    try:
+        show(polar_figure(table, coefficient))
+        st.caption(f"原主表攻角域：{min(table['alpha_deg']):g}–{max(table['alpha_deg']):g}°；Mach域：{min(table['mach']):g}–{max(table['mach']):g}。高攻角分支单独绘制。")
+        st.caption('翼型表来源：' + str(grid.get('provenance', rotor.get('provenance', '待填写来源'))))
+    except (ValueError, TypeError, KeyError) as error:
+        st.warning('系数尚不完整，暂不预览：' + str(error))
 
 
 def rotor_parameters(rotor, index, schema):
@@ -256,6 +300,13 @@ def rotor_parameters(rotor, index, schema):
 def details():
     a=current()['aircraft'];props=(SCHEMA_V2 if a['schema_version']==2 else SCHEMA)['properties']
     with st.expander('详细设置：机型、旋翼、气动与动力',expanded=False):
+        from .previews import layout_figure, show
+        with st.expander('当前方案侧视与俯视'):
+            try:
+                show(layout_figure(a))
+            except (ValueError, TypeError, KeyError) as error:
+                st.warning('布局参数尚不完整：' + str(error))
+            st.caption('示意采用实际桨毂位置、半径、安装轴和重心；虚线仅连接位置，未提供机身/尾翼外形时不虚构轮廓。')
         st.info('机体系：x向前、y向右、z向下。位置共用同一原点；重心和部件位置均填绝对坐标，程序计算相对力臂。单位向量不自动归一化，以便检查填写错误。')
         groups=['基本信息','质量、重心与惯量','主旋翼','尾桨','悬停下载','动力与传动','配平姿态限制','机身','平尾与垂尾']
         group=st.selectbox('参数分组',groups,key='parameter-group',help='本次计算的总距、转速与来流在计算页直接填写；这里设置方案的几何、安装、气动、质量和限制。')

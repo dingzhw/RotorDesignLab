@@ -68,10 +68,11 @@ def case_controls(task):
             velocity_input = render_velocity(current(), st.session_state['design_epoch'], setting)
         else:
             speed=setting(task,'axial_speed_m_s','轴向来流 / (m/s)',0.,min_value=0.,max_value=150.)
-        density=setting(task,'density_kg_m3','空气密度 / (kg/m³)',1.225,min_value=.05,max_value=3.,format='%.4f')
+        from .environment_ui import render_environment
+        environment = render_environment(current(), task, setting, rotor=rotor)
         st.caption(f"当前旋翼：{rotor['blade_count']}片桨叶，R={rotor['radius_m']:g} m；总距参考站 r/R={rotor['pitch_reference_r_over_R']:g}。本页工况随方案保存，优先于机型参考工况。")
         case=dict(schema_version=2,model='spatial_rotor' if spatial else 'aircraft_rotor',rotor_id=selected,
-                  density_kg_m3=density,rpm=rpm,collective_deg=collective)
+                  rpm=rpm,collective_deg=collective, **environment)
         if spatial:
             case.update(velocity_input)
             inflow_preview(case, rotor, rpm)
@@ -150,6 +151,8 @@ def case_controls(task):
     a,b,c=st.columns(3)
     with a:case['altitude_m']=setting(task,'altitude_m','飞行高度 / m',0.,min_value=0.,max_value=11000.)
     with b:case['requested_duration_s']=setting(task,'requested_duration_s','需维持时间 / s',600.,min_value=.001,max_value=1e9,help='用于连续或短时功率余量检查，不是响应积分时长。')
+    from .environment_ui import render_environment
+    case.update(render_environment(current(), task, setting, altitude=case['altitude_m']))
     if task!='hover_budget':
         with c:case['speed_m_s']=setting(task,'speed_m_s','水平速度 / (m/s)',0.,min_value=0.,max_value=150.)
         case['climb_m_s']=setting(task,'climb_m_s','爬升率 / (m/s)',0.,min_value=0.,max_value=15.,help='正值向上爬升；下降涡环态尚未覆盖。')
@@ -291,9 +294,24 @@ def show_result(record,is_current):
     for name in ('trim.csv','budget.csv','performance.csv','modes.csv'):
         if name in files:
             with st.expander('结果表：'+{'trim.csv':'配平','budget.csv':'功率收支','performance.csv':'批量性能','modes.csv':'模态'}[name]):
-                st.dataframe(pd.read_csv(BytesIO(files[name])),hide_index=True)
+                from .engineering_display import result_table
+                table = result_table(pd.read_csv(BytesIO(files[name])))
+                st.dataframe(table, hide_index=True)
+                st.download_button('下载中文结果表', table.to_csv(index=False).encode('utf-8-sig'),
+                                   '中文-' + name, key='zh-' + name)
     for warning in answer.get('warnings',[]):st.caption(warning)
-    with st.expander('专业诊断与操纵余量'):st.json({k:v for k,v in answer.items() if k not in ('summary','warnings')})
+    with st.expander('专业诊断与操纵余量'):
+        from .engineering_display import label as engineering_label, result_table
+        statuses = {engineering_label(k): engineering_label(answer.get(k, 'not_evaluated')) for k in
+                    ('solver_status', 'support_status', 'design_limits_status', 'evidence_status')}
+        st.write(statuses)
+        margins = answer.get('control_margins_deg', answer.get('control_margins', {}))
+        if margins:
+            st.dataframe(result_table(pd.DataFrame(margins).T.reset_index(names='操纵量')), hide_index=True)
+        if 'error' in answer:
+            st.error(answer['error'])
+        with st.expander('原始字段与完整诊断（供复算核查）'):
+            st.json({k: v for k, v in answer.items() if k not in ('summary', 'warnings')})
     archive=BytesIO()
     with ZipFile(archive,'w',ZIP_DEFLATED) as z:
         for name,data in files.items():z.writestr(name,data)
