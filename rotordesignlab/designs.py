@@ -36,7 +36,7 @@ def from_template(name):
             target=f'rotor-{i}-{key.replace("_", ".")}'
             assets[target]=(path.parent/rotor[key]).read_text(encoding='utf-8-sig')
             rotor[key]=target
-    return dict(format_version=1,template=name,aircraft=aircraft,assets=assets,settings={'_workspace_revision':4})
+    return dict(format_version=1,template=name,aircraft=aircraft,assets=assets,settings={'_workspace_revision':5})
 
 
 def materialize(design, directory):

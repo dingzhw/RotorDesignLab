@@ -19,6 +19,7 @@ with TemporaryDirectory() as tmp,patch.object(designs,'LIBRARY',Path(tmp)):
     assert record['case']['collective_deg']==14 and record['case']['rpm']==1750
     replay(record)
     assert record['case']['model']=='spatial_rotor'
+    field(app.selectbox, '速度输入视角').set_value('flow').run()
     for axis,value in zip('XYZ',[-15.,-4.,3.]):
         field(app.number_input,'来流 '+axis+' 分量 / (m/s)').set_value(value).run();ok(app)
     record=run(app);assert record['answer']['status']=='converged',record['answer']

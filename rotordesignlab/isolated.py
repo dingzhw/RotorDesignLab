@@ -10,11 +10,11 @@ import numpy as np
 from scipy.optimize import brentq
 
 from .aircraft import prepare, OPERATING_KEYS, AERO_KEYS
-from .azimuth import rotor_basis
 from .cases import numeric, write_csv, write_json
 from .steady_rotor import SteadyRotor
+from .coordinates import canonical_spatial_case, selected_basis, attitude_matrix, flow_to_motion
 
-SPATIAL_KEYS = {'flow_body_m_s','cyclic_cos_deg','cyclic_sin_deg','azimuth_stations','flapping_model'}
+SPATIAL_KEYS = {'flow_body_m_s', 'motion_m_s', 'attitude_deg', 'cyclic_cos_deg', 'cyclic_sin_deg', 'azimuth_stations', 'flapping_model'}
 COMMON_KEYS = {'schema_version','model','aircraft_json','rotor_id','density_kg_m3','target',*OPERATING_KEYS,*AERO_KEYS}
 
 
@@ -26,11 +26,7 @@ def setup(case, selected, rotor):
     flow=np.array(raw,dtype=float)
     if np.linalg.norm(flow)>150:raise ValueError('来流合速度超过本入口150 m/s的输入范围。')
     flight=selected.get('flight',{})
-    reference=flight.get('x_reference_body')
-    if reference is None:
-        reference=next(axis for axis in ([1,0,0],[0,1,0],[0,0,1])
-                       if abs(np.dot(axis,selected['thrust_axis_body']))<.99)
-    basis=rotor_basis(selected['thrust_axis_body'],reference)
+    basis = selected_basis(selected)
     velocity=-basis.T@flow
     if velocity[2]<-1e-9:
         raise ValueError('沿正推力轴的来流分量为正，属于反向贯流/下降分支；本入口目前支持悬停、正贯流和盘面内来流。')
@@ -50,16 +46,17 @@ def setup(case, selected, rotor):
     else:
         cone=rotor.precone_deg
         config=dict(mode='fixed',hinge_offset_m=0.,precone_deg=cone,max_flap_deg=max(15.,abs(cone)))
-    return flow,basis,velocity,na,cyclic,config
+    gravity_body = attitude_matrix(case.get('attitude_deg', [0., 0.])).T @ np.array([0., 0., 9.80665])
+    return flow, basis, velocity, na, cyclic, config, gravity_body
 
 
 def evaluate(rotor,selected,setup_values):
-    flow,basis,velocity,na,cyclic,config=setup_values
+    flow, basis, velocity, na, cyclic, config, gravity_body = setup_values
     mu=np.linalg.norm(velocity[:2])/(rotor.omega*rotor.radius)
     if mu>.25+1e-12:raise ValueError(f'盘面内推进比 μ={mu:.4f} 超过当前模型范围0.25。')
     model=SteadyRotor(rotor,config,selected['rotation_sign'],na)
     controls=np.deg2rad([rotor.collective_deg,*cyclic])
-    state,loads,diagnostic=model.solve(controls,velocity,gravity=basis.T@np.array([0,0,9.80665]))
+    state, loads, diagnostic = model.solve(controls, velocity, gravity=basis.T @ gravity_body)
     if not np.isfinite(loads['force']).all() or not np.isfinite(loads['moment']).all():
         raise ValueError('旋翼载荷出现非有限值。')
     return model,state,loads,diagnostic
@@ -123,6 +120,8 @@ def run_spatial(case,base,output):
     from .model_scope import SPATIAL_SCOPE, MACH_SCOPE
     unknown=set(case)-(COMMON_KEYS|SPATIAL_KEYS)
     if unknown:raise ValueError('三方向来流工况含未识别或轴流专用字段：'+', '.join(sorted(unknown)))
+    input_view = 'motion' if 'motion_m_s' in case else 'flow'
+    case = canonical_spatial_case(case)
     rotor,aircraft,selected,snapshot=prepare({k:v for k,v in case.items() if k in COMMON_KEYS},base,output)
     snapshot.pop('axial_speed_m_s',None)
     snapshot.update({k:v for k,v in case.items() if k in SPATIAL_KEYS})
@@ -134,7 +133,7 @@ def run_spatial(case,base,output):
     if 'target' in case:rotor,answer,target_solution=inverse(rotor,selected,setup_values,case['target'])
     else:answer=evaluate(rotor,selected,setup_values)
     model,state,loads,diagnostic=answer
-    flow,basis,velocity,na,cyclic,config=setup_values
+    flow, basis, velocity, na, cyclic, config, gravity_body = setup_values
     F=basis@loads['force'];M=basis@loads['moment']
     arm=np.asarray(selected['position_m'])-np.asarray(aircraft['mass_properties']['cg_m'])
     Mcg=M+np.cross(arm,F)
@@ -169,6 +168,7 @@ def run_spatial(case,base,output):
     write_json(output/'solved-case.json',solved)
     notes=['# 孤立旋翼三方向来流结果','',f"拉力 {summary['thrust_n']:.6g} N；轴功率 {summary['power_w']/1000:.6g} kW。",
         f'输入来流（空气相对轮毂，机体系m/s）：{flow.tolist()}。',
+        f"机体滚转/俯仰（°）：{snapshot.get('attitude_deg', [0., 0.])}；实际运动〔水平前、水平右、上〕m/s：{flow_to_motion(flow, snapshot.get('attitude_deg', [0., 0.])).tolist()}。",
         '机体系x向前、y向右、z向下；力矩按右手定则，CSV区分轮毂与重心。',
         '方位角从旋翼+x向+y增加；旋翼+z为正推力轴。输出为整转平均气动力，不含重力或整机配平。',
         '适用范围：正推力、正轴功率、非负正贯流、μ≤0.25，且所有当地攻角/Mach/Re在所给翼型数据域内。',
@@ -181,6 +181,9 @@ def run_spatial(case,base,output):
         solver_status='converged',support_status='within_implemented_steady_domain',
         design_limits_status='satisfied' if within else 'exceeded',evidence_status='model_estimate',
         flow_body_m_s=flow.tolist(),hub_velocity_rotor_m_s=velocity.tolist(),
+        attitude_deg=snapshot.get('attitude_deg', [0., 0.]), gravity_body_m_s2=gravity_body.tolist(),
+        velocity_input=dict(view=input_view, motion_heading_m_s=flow_to_motion(flow, snapshot.get('attitude_deg', [0., 0.])).tolist(),
+                            definition='horizontal heading-forward/right/up; flow is air relative to hub in body X/Y/Z; no induced velocity'),
         model_maturity=SPATIAL_SCOPE,
         warnings=[SPATIAL_SCOPE, MACH_SCOPE, '整转平均孤立旋翼气动力；机身、尾翼、整机重力和旋翼间干扰未参与求解。',
                   '方位角模型采用三状态入流；轴流环带/Prandtl选项仅作用于独立的轴流性能模型。'])

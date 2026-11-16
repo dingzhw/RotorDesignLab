@@ -3,6 +3,8 @@ AXIS_LABELS = {
     'rpm':'旋翼转速 / rpm', 'collective_deg':'总距 / °',
     'axial_speed_m_s':'轴向来流速度 / (m/s)', 'density_kg_m3':'空气密度 / (kg/m³)',
     'flow_x_m_s':'X方向来流 / (m/s)', 'flow_y_m_s':'Y方向来流 / (m/s)', 'flow_z_m_s':'Z方向来流 / (m/s)',
+    'motion_forward_m_s':'水平前向运动速度 / (m/s)', 'motion_right_m_s':'水平右向运动速度 / (m/s)',
+    'motion_climb_m_s':'上升速度 / (m/s)',
     'target_thrust_n':'目标拉力 / N', 'mass_kg':'整机质量 / kg', 'altitude_m':'高度 / m',
     'main_radius_m':'主旋翼半径 / m', 'main_rpm':'主旋翼转速 / rpm',
     'tail_radius_m':'尾桨半径 / m', 'tail_rpm':'尾桨转速 / rpm', 'tail_arm_m':'尾桨力臂 / m',

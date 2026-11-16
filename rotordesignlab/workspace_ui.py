@@ -16,18 +16,24 @@ TASKS={'孤立旋翼':'rotor','整机悬停预算':'hover_budget','整机配平'
 
 def setting(task,name,title,default,options=None,help=None,**kwargs):
     cfg=current()['settings'].get(task,{})
-    value=cfg.get(name,default);key=f'a:{st.session_state["design_epoch"]}:{task}:{name}'
-    def changed():current()['settings'].setdefault(task,{})[name]=st.session_state[key]
+    value = cfg.get(name, default)
+    key = f'a:{st.session_state["design_epoch"]}:{task}:{name}'
+    def changed():
+        current()['settings'].setdefault(task, {})[name] = st.session_state[key]
     common=dict(key=key,on_change=changed,help=help or help_text(name))
     if options is not None:
         return st.selectbox(title,options,index=options.index(value) if value in options else 0,**common,**kwargs)
-    if isinstance(default,str):return st.text_input(title,value=value,**common,**kwargs)
+    if isinstance(default, str):
+        return st.text_input(title, value=value, **common, **kwargs)
     if isinstance(value, (int, float)):
         for bound, invalid in (('min_value', lambda v, limit: v < limit), ('max_value', lambda v, limit: v > limit)):
             if bound in kwargs and invalid(value, kwargs[bound]):
                 st.error(f'{title}保存值{value:g}超出允许边界{kwargs[bound]:g}；已保留原值，请在此修改。')
                 kwargs[bound] = value
-    return st.number_input(title,value=value,**common,**kwargs)
+    # Converted velocity widgets already have an explicit value in session state.
+    # A second widget default would compete with that value on a view switch.
+    initial = None if key in st.session_state else value
+    return st.number_input(title, value=initial, **common, **kwargs)
 
 
 def values(text):
@@ -58,19 +64,19 @@ def case_controls(task):
                                   help='总距参考站的桨距角，增加为正；参考站在下方桨叶参数中设置。反求总距时，本项作为初始参考，结果给出求得总距。')
         if spatial:
             st.caption(SPATIAL_SCOPE)
-            st.caption('来流为“空气相对轮毂”的速度，采用机体系：X向前、Y向右、Z向下。常规向上主桨：悬停填[0,0,0]；前飞20 m/s填[-20,0,0]；上升3 m/s填[0,0,3]。')
-            flow=[]
-            for column,axis in zip(st.columns(3),'xyz'):
-                with column:flow.append(setting(task,'flow_'+axis+'_m_s','来流 '+axis.upper()+' 分量 / (m/s)',0.,min_value=-150.,max_value=150.,
-                    help={'x':'正值为空气向机头流动；无风前飞20 m/s填−20。','y':'正值为空气向机体右侧流动；可与X/Z同时填写。','z':'正值为空气向下流动；向上主桨上升3 m/s填+3。尾桨轴向分量由安装方向自动计算。'}[axis]+' 不含旋翼自身诱导速度。'))
+            from .velocity_ui import render_velocity, inflow_preview
+            velocity_input = render_velocity(current(), st.session_state['design_epoch'], setting)
         else:
             speed=setting(task,'axial_speed_m_s','轴向来流 / (m/s)',0.,min_value=0.,max_value=150.)
         density=setting(task,'density_kg_m3','空气密度 / (kg/m³)',1.225,min_value=.05,max_value=3.,format='%.4f')
         st.caption(f"当前旋翼：{rotor['blade_count']}片桨叶，R={rotor['radius_m']:g} m；总距参考站 r/R={rotor['pitch_reference_r_over_R']:g}。本页工况随方案保存，优先于机型参考工况。")
         case=dict(schema_version=2,model='spatial_rotor' if spatial else 'aircraft_rotor',rotor_id=selected,
                   density_kg_m3=density,rpm=rpm,collective_deg=collective)
-        if spatial:case['flow_body_m_s']=flow
-        else:case['axial_speed_m_s']=speed
+        if spatial:
+            case.update(velocity_input)
+            inflow_preview(case, rotor, rpm)
+        else:
+            case['axial_speed_m_s'] = speed
         with st.expander('周期变距、挥舞与计算网格'):
             case['radial_stations']=setting(task,'radial-'+selected,'本次径向叶素数',rotor['defaults']['radial_stations'],min_value=8,max_value=2000,help=help_text('radial_stations'))
             if spatial:
@@ -90,11 +96,14 @@ def case_controls(task):
         if '批量' in mode:
             x='target_thrust_n' if '反求' in mode else 'collective_deg'
             if spatial and x=='collective_deg':
-                x=setting(task,'sweep_variable','扫描变量','collective_deg',['collective_deg','flow_x_m_s','flow_y_m_s','flow_z_m_s'],
-                          format_func=lambda v:{'collective_deg':'总距','flow_x_m_s':'X方向来流','flow_y_m_s':'Y方向来流','flow_z_m_s':'Z方向来流'}[v],
-                          help='其他两个来流分量和周期变距保持本页所填数值；第二个扫描变量为转速。')
+                from .coordinates import FLOW_AXES, MOTION_AXES
+                from .presentation import AXIS_LABELS
+                x = setting(task, 'sweep_variable', '扫描变量', 'collective_deg', ['collective_deg', *MOTION_AXES, *FLOW_AXES],
+                            format_func=lambda value: AXIS_LABELS[value],
+                            help='扫描轴按其名称所指的参考系定义，独立于当前输入视角；同参考系其他分量保持不变，第二变量为转速。')
             from .presentation import AXIS_LABELS
-            default='1000,1500,2000' if x=='target_thrust_n' else '8,12,16' if x=='collective_deg' else '0,5,10' if x=='flow_z_m_s' else '0,-10,-20'
+            default = ('1000,1500,2000' if x == 'target_thrust_n' else '8,12,16' if x == 'collective_deg'
+                       else '0,5,10' if x == 'flow_z_m_s' else '0,10,20' if x.startswith('motion_') else '0,-10,-20')
             title=('目标拉力扫描 / N' if x=='target_thrust_n' else '总距扫描 / °' if x=='collective_deg' else AXIS_LABELS[x]+'（扫描值）')
             text=setting(task,x+'-scan',title,default,help='数值用逗号分隔；失败点会保留诊断。')
             rpm=rotor['defaults']['rpm'];rotor_key='rpm-scan-'+selected
@@ -202,6 +211,12 @@ def input_rows(design):
 
 
 def input_fingerprint(design,case,batch):
+    if case.get('model') == 'spatial_rotor':
+        from .coordinates import canonical_spatial_case
+        case = canonical_spatial_case(case)
+        # Ignore only round-off from a view round trip, not physical input edits.
+        case['flow_body_m_s'] = [0. if abs(v) < 5e-13 else round(v, 12) for v in case['flow_body_m_s']]
+        case.setdefault('attitude_deg', [0., 0.])
     return designs.digest(dict(aircraft=design['aircraft'],assets=design['assets'],case=case,batch=batch))
 
 

@@ -10,6 +10,7 @@ from tempfile import gettempdir
 from . import __version__
 from .aircraft import read_aircraft, snapshot_aircraft
 from .cases import read_case, run_case, write_csv, write_json
+from .coordinates import MOTION_AXES, FLOW_AXES, canonical_spatial_case, scan_velocity
 
 from .presentation import AXIS_LABELS as DISPLAY_AXIS_LABELS, configure_chinese_plots
 
@@ -17,7 +18,7 @@ from .presentation import AXIS_LABELS as DISPLAY_AXIS_LABELS, configure_chinese_
 # must not expand the isolated-rotor input contract.
 AXIS_LABELS = {key: DISPLAY_AXIS_LABELS[key] for key in
                ('rpm', 'collective_deg', 'axial_speed_m_s', 'density_kg_m3', 'target_thrust_n',
-                'flow_x_m_s','flow_y_m_s','flow_z_m_s')}
+                *FLOW_AXES, *MOTION_AXES)}
 
 
 def plot_performance(rows, axes, output, model='aircraft_rotor'):
@@ -92,10 +93,14 @@ def run_batch(spec, base, output):
         axes = spec.get('axes')
         if not isinstance(axes, dict) or not 1 <= len(axes) <= 2 or set(axes) - set(AXIS_LABELS):
             raise ValueError('axes 需含 1 至 2 个受支持的工况变量。')
-        if case['model']=='spatial_rotor' and ('axial_speed_m_s' in axes or not isinstance(case.get('flow_body_m_s'),list) or len(case['flow_body_m_s'])!=3):
-            raise ValueError('三方向旋翼扫描需提供X/Y/Z来流，扫描变量使用flow_x/y/z_m_s。')
-        if case['model']=='aircraft_rotor' and any(key.startswith('flow_') for key in axes):
-            raise ValueError('X/Y/Z来流扫描需要三方向旋翼模型。')
+        if case['model'] == 'spatial_rotor':
+            if 'axial_speed_m_s' in axes:
+                raise ValueError('三方向旋翼扫描请使用运动速度或机体系来流分量。')
+            case = canonical_spatial_case(case)
+            if set(axes) & set(MOTION_AXES) and set(axes) & set(FLOW_AXES):
+                raise ValueError('同一批次不能混合运动速度与机体系来流扫描轴。')
+        if case['model'] == 'aircraft_rotor' and set(axes) & set((*FLOW_AXES, *MOTION_AXES)):
+            raise ValueError('运动速度和X/Y/Z来流扫描需要三方向旋翼模型。')
         count = 1
         for key, values in axes.items():
             if (not isinstance(values, list) or not values or
@@ -129,11 +134,13 @@ def run_batch(spec, base, output):
         for index, point in enumerate(product(*axes.values())):
             current = deepcopy(case)
             values = dict(zip(axes, point))
+            if case['model'] == 'spatial_rotor':
+                current = scan_velocity(current, values)
             for key, value in values.items():
                 if key == 'target_thrust_n':
                     current['target']['thrust_n'] = value
-                elif key in ('flow_x_m_s','flow_y_m_s','flow_z_m_s'):
-                    current['flow_body_m_s']['xyz'.index(key[5])] = value
+                elif key in (*FLOW_AXES, *MOTION_AXES):
+                    continue
                 else:
                     current[key] = value
             name = f'case-{index:04d}'
