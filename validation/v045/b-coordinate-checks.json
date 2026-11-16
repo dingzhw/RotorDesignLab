@@ -1,0 +1,58 @@
+{
+  "checks": [
+    {
+      "template": "synthetic",
+      "speed_m_s": 0.0,
+      "radial_stations": 24,
+      "azimuth_stations": 24,
+      "maximum_trim_state_difference": 6.938893903907228e-16,
+      "A_relative_norm": 6.483916643571135e-12,
+      "B_relative_norm": 1.8466922366539923e-12,
+      "response_max_absolute_difference": 1.0398447511036912e-15,
+      "response_duration_s": 0.025,
+      "response_step_s": 0.001,
+      "passed": true
+    },
+    {
+      "template": "synthetic",
+      "speed_m_s": 20.0,
+      "radial_stations": 24,
+      "azimuth_stations": 24,
+      "maximum_trim_state_difference": 8.326672684688674e-16,
+      "A_relative_norm": 2.331347437952924e-12,
+      "B_relative_norm": 8.780202001689821e-13,
+      "response_max_absolute_difference": 5.551115123125783e-16,
+      "response_duration_s": 0.025,
+      "response_step_s": 0.001,
+      "passed": true
+    },
+    {
+      "template": "uh60-public",
+      "speed_m_s": 0.0,
+      "radial_stations": 24,
+      "azimuth_stations": 24,
+      "maximum_trim_state_difference": 2.3592239273284576e-16,
+      "A_relative_norm": 8.653629389966038e-12,
+      "B_relative_norm": 2.833315390336585e-12,
+      "response_max_absolute_difference": 4.4358776634528807e-16,
+      "response_duration_s": 0.025,
+      "response_step_s": 0.001,
+      "passed": true
+    },
+    {
+      "template": "uh60-public",
+      "speed_m_s": 20.0,
+      "radial_stations": 24,
+      "azimuth_stations": 24,
+      "maximum_trim_state_difference": 1.249000902703301e-16,
+      "A_relative_norm": 3.6328502477797834e-12,
+      "B_relative_norm": 1.0443170315645611e-12,
+      "response_max_absolute_difference": 4.972242219060353e-17,
+      "response_duration_s": 0.025,
+      "response_step_s": 0.001,
+      "passed": true
+    }
+  ],
+  "definition": "New main basis = old basis @ diag(-1,-1,1); harmonic controls, inflow and flap mapped consistently.",
+  "scope": "Coordinate covariance and software replay; not independent aerodynamic or dynamic validation."
+}

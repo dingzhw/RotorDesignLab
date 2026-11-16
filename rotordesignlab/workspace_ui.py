@@ -90,6 +90,21 @@ def case_controls(task):
                     help='固定桨叶不求挥舞平衡；使用机型参数时求解锥度和一阶挥舞，需提供相应惯量、质量一阶矩及铰接参数。')
                 case['azimuth_stations']=setting(task,'azimuth_stations','整周方位角站数',36,min_value=12,max_value=720)
                 st.caption('三状态入流；μ≤0.25、正推力和正轴功率，并受当地攻角/Mach/Re数据域限制。当前不含下降涡环态、展向气动力和非定常失速。')
+        if spatial:
+            with st.expander('方位、旋向与本次周期变距图'):
+                from .coordinates import canonical_spatial_case
+                from .mounting import azimuth_figure, coordinate_metadata
+                from matplotlib import pyplot as plt
+                try:
+                    flow = canonical_spatial_case(case)['flow_body_m_s']
+                    fig = azimuth_figure(rotor, flow, [collective, case['cyclic_cos_deg'], case['cyclic_sin_deg']])
+                    st.pyplot(fig)
+                    plt.close(fig)
+                    metadata = coordinate_metadata(rotor)
+                    st.caption(f"实际ψ=0°方向（机体系）：{metadata['x_zero_body']}；图中机体方向为在当前桨盘上的投影。")
+                    st.caption('新主桨模板取机尾零方位，旧方案按原值。cos/sin是此实际方位下的谐波系数，不是未经杆系映射的驾驶杆方向。')
+                except (ValueError, TypeError, KeyError) as error:
+                    st.warning('暂不能显示方位图：' + str(error))
         if '反求' in mode:
             thrust=setting(task,'target_thrust_n','目标拉力 / N',2000.,min_value=.1,max_value=1e7)
             case['target']=dict(thrust_n=thrust,solve_for='rpm' if mode.endswith('转速') else 'collective_deg')

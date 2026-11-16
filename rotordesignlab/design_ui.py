@@ -74,6 +74,8 @@ def scalar(path,schema):
     if 'enum' in schema:
         options=schema['enum']
         labels = {'none': '不附加残余比例力', 'legacy_fraction': '历史常比例下载'} if name == 'download_policy' else ENUM_LABELS
+        if name == 'rotation_sign':
+            labels = {1: '逆时针（从正推力轴端看向轮毂）', -1: '顺时针（从正推力轴端看向轮毂）'}
         st.selectbox(label(name),options,index=options.index(value) if value in options else None,
                      format_func=lambda v:labels.get(v,str(v)),**kwargs)
     elif schema.get('type')=='boolean':
@@ -234,6 +236,23 @@ def airfoil_editor(rotor,index):
                    columns={'alpha_deg':st.column_config.NumberColumn('攻角 / °'),'value':st.column_config.NumberColumn(label(coefficient),format='%.9g')},disabled=['alpha_deg'])
 
 
+def rotor_parameters(rotor, index, schema):
+    from .mounting_ui import render_mounting
+    render_mounting(rotor, index, st.session_state['design_epoch'], put_at)
+    schema = deepcopy(schema)
+    properties = schema['properties']
+    raw = {name: properties.pop(name) for name in ('thrust_axis_body', 'rotation_sign')}
+    flight = properties.get('flight', {}).get('properties', {})
+    reference = flight.pop('x_reference_body', None)
+    with st.expander('专业向量设置（与上方安装角为同一组参数）'):
+        st.caption('直接编辑后以上方重新读取的实际基底为准。向量需单位化，方位参考不得平行于正推力轴。')
+        object_editor(['aircraft', 'rotors', index], dict(properties=raw))
+        if reference and 'flight' in rotor:
+            object_editor(['aircraft', 'rotors', index, 'flight'], dict(properties={'x_reference_body': reference}))
+    st.caption('下面“参考工况”用于新建计算输入或整机给定转速；孤立旋翼实际总距/转速取计算页。固定桨叶取旋翼一级预锥；机型挥舞模式取flight.flapping中的预锥和运动参数。')
+    object_editor(['aircraft', 'rotors', index], schema)
+
+
 def details():
     a=current()['aircraft'];props=(SCHEMA_V2 if a['schema_version']==2 else SCHEMA)['properties']
     with st.expander('详细设置：机型、旋翼、气动与动力',expanded=False):
@@ -249,7 +268,8 @@ def details():
             if not indexes:st.info('此模板未配置尾桨。整机任务请从完整直升机模板新建方案。');return
             i=indexes[0];rotor=a['rotors'][i];schema=props['rotors']['items']
             page=st.radio('旋翼设置内容',['参数与操纵','桨叶几何表','翼型气动表'],horizontal=True,key='rotor-page',help='参数与操纵包含桨叶数、半径、安装、参考工况和限位；另两页可直接编辑数值表。')
-            if page=='参数与操纵':object_editor(['aircraft','rotors',i],schema)
+            if page == '参数与操纵':
+                rotor_parameters(rotor, i, schema)
             elif page=='桨叶几何表':
                 st.caption('r/R递增到1；弦长是实际米数；扭转相对总距参考站归零后使用。表格可以直接增加/删除径向站。')
                 csv_editor(rotor,i,'geometry_csv')

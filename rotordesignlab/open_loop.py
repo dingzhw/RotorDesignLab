@@ -78,6 +78,8 @@ def run_open_loop(case,base,output):
         mass_matrix_definition='E*delta_x_dot = F*delta_x + G*delta_u; E=diag(m*I3,I_cg,I3,Mpp/Omega_main,Mpp/Omega_tail), Mpp=diag(128/(75pi),16/(45pi),16/(45pi)). F=E*A, G=E*B. No hidden acceleration coupling in this reduced model.',
         modes=modal,model_scope=WARNINGS,maximum_frequency_rad_s=maximum_frequency,
         download_model=trim['download_model'])
+    from .mounting import coordinate_metadata
+    metadata['rotor_coordinates'] = {role: coordinate_metadata(rotor) for role, rotor in system.selected.items()}
     write_json(output/'linearization.json',metadata)
     for name,matrix,columns in [('A',a,STATES),('B',b,CONTROLS),('E',plant.mass_matrix,STATES),
                                  ('F',plant.mass_matrix@a,STATES),('G',plant.mass_matrix@b,CONTROLS)]:

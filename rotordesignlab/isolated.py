@@ -153,11 +153,18 @@ def run_spatial(case,base,output):
         force_rotor_n=loads['force'].tolist(),moment_hub_rotor_nm=loads['moment'].tolist(),
         rotor_to_body=basis.tolist(),rotor_id=selected['id'],aircraft_id=aircraft['id'],margins=margins,
         within_supplied_limits=within,scope='revolution-mean aerodynamic loads only; no whole-aircraft trim')
+    from .mounting import azimuth_figure, coordinate_metadata
+    installation['coordinate_convention'] = coordinate_metadata(selected)
+    fig = azimuth_figure(selected, flow, [rotor.collective_deg, *cyclic])
+    for extension in ('png', 'svg'):
+        fig.savefig(output / ('azimuth-convention.' + extension), dpi=150)
+    from matplotlib import pyplot as plt
+    plt.close(fig)
     k=model.kernel;force=loads['element_force'];moment=np.cross(loads['position'],force)
     dT=rotor.blades*np.mean(force[:,:,2],axis=0);dQ=-selected['rotation_sign']*rotor.blades*np.mean(moment[:,:,2],axis=0)
     write_csv(output/'radial_loads.csv',('r_m','dr_m','chord_m','dthrust_n','dtorque_nm','thrust_n_per_m','torque_nm_per_m'),
               zip(k.r,k.dr,k.chord,dT,dQ,dT/k.dr,dQ/k.dr))
-    keys=('ut','up','alpha_deg','mach','cl','cd','induced_m_s')
+    keys = ('ut', 'up', 'pitch_deg', 'alpha_deg', 'mach', 'cl', 'cd', 'induced_m_s')
     write_csv(output/'azimuth_loads.csv',('azimuth_deg','r_m',*keys,'fx_rotor_n','fy_rotor_n','fz_rotor_n'),
         ((float(np.rad2deg(psi)),float(radius),*[float(loads[key][i,j]) for key in keys],*force[i,j].tolist())
          for i,psi in enumerate(k.psi) for j,radius in enumerate(k.r)))
