@@ -27,6 +27,8 @@ class TrimSystem:
             self.rotors[role]=SteadyRotor(model,data['flight']['flapping'],data['rotation_sign'],case['azimuth_stations'])
             self.bases[role]=rotor_basis(data['thrust_axis_body'],data['flight']['x_reference_body'])
         self.Rmain=self.selected['main']['radius_m']
+        self.residual_calls = 0
+        self.element_calls = 0
 
     def bounds(self):
         main,tail=self.selected['main'],self.selected['tail'];cfg=self.aircraft['trim']
@@ -43,6 +45,7 @@ class TrimSystem:
         return np.r_[controls,self.rotors['main'].initial(self.weight),self.rotors['tail'].initial()]
 
     def evaluate(self,x,strict=False):
+        self.residual_calls += 1
         x=np.asarray(x,dtype=float)
         roll,pitch=x[4:6];R=body_to_ned(roll,pitch)
         velocity,velocity_valid=flight_velocity(self.case['speed_m_s'],self.case['climb_m_s'],roll,pitch)
@@ -60,6 +63,7 @@ class TrimSystem:
             basis=self.bases[role];model=self.rotors[role];data=self.selected[role]
             try:
                 hub_velocity=velocity+np.cross(body_rates,np.asarray(data['position_m'])-cg)
+                self.element_calls += 1
                 residual,loads,diag=model.evaluate(x[start:start+6],controls,basis.T@hub_velocity,basis.T@gravity,strict,
                     body_rates=basis.T@np.asarray(body_rates),require_equilibrium=require_equilibrium)
             except ValueError as error:
@@ -110,12 +114,19 @@ def run_trim(case,base,output):
             raise ValueError('initial_state需要18个有限数值：6个弧度操纵/姿态及两桨各6个稳态参数。')
         seed=np.asarray(values,dtype=float)
     initial_seed=np.clip(seed,low+1e-8,high-1e-8)
+    solve_started = perf_counter()
     fit=least_squares(lambda x:system.evaluate(x)[0],initial_seed,bounds=(low,high),x_scale='jac',
                       ftol=1e-10,xtol=1e-10,gtol=1e-10,max_nfev=120)
+    solve_elapsed = perf_counter() - solve_started
+    solve_calls = system.residual_calls
+    element_calls = system.element_calls
     residual,data=system.evaluate(fit.x)
     near_limits=[name for name,value,lo,hi in zip(CONTROL_NAMES,fit.x[:6],low[:6],high[:6])
                  if min(value-lo,hi-value)<np.deg2rad(.01)]
-    diagnostic=dict(nfev=fit.nfev,message=str(fit.message),initial_state=initial_seed.tolist(),
+    diagnostic=dict(nfev=fit.nfev,njev=fit.njev,residual_calls=solve_calls,element_calls=element_calls,
+        solve_elapsed_s=solve_elapsed,call_count_scope='least_squares including finite-difference Jacobian; excludes final checks',
+        grid=dict(radial={role:model.rotor.stations for role,model in system.rotors.items()},azimuth=case['azimuth_stations']),
+        message=str(fit.message),initial_state=initial_seed.tolist(),
         solved_state=fit.x.tolist(),scaled_force_moment_residual=residual[:6].tolist(),
         rotor_internal_residual=(residual[6:]/10).tolist(),near_limits=near_limits,elapsed_s=perf_counter()-started)
     diagnostic['rotors']={role:data['components'][role]['diagnostics'] for role in ('main','tail')}

@@ -11,6 +11,15 @@ class SolverError(ValueError):
     """The requested operating point could not be solved."""
 
 
+def validate_local_speed(rotor, speed):
+    """Validate actual element speed; Mach tables enforce their own data domain."""
+    values = np.asarray(speed)
+    if not np.isfinite(values).all():
+        raise SolverError('当地叶素合速度包含非有限值。')
+    if rotor.airfoil_grid is None and np.max(values) > 250:
+        raise SolverError('无Mach维度的翼型表仅支持当地叶素合速度不超过250 m/s。')
+
+
 @dataclass(frozen=True)
 class Rotor:
     geometry: np.ndarray
@@ -79,6 +88,7 @@ def solve(rotor):
         raise SolverError("正诱导速度区间内未找到入流平衡。")
     induced, info = brentq(residual, 0.0, upper, xtol=1e-10, full_output=True)
     thrust, tangent, alpha = axial_loads(rotor, grid, induced)
+    validate_local_speed(rotor, np.hypot(rotor.omega * radius, rotor.axial_speed + induced))
     if alpha.min() < rotor.polar[0, 0] or alpha.max() > rotor.polar[-1, 0]:
         raise SolverError("收敛后的叶素攻角超出翼型表范围，请扩充翼型表或调整工况。")
     torque = tangent * radius

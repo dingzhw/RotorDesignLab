@@ -20,7 +20,7 @@ AXIS_LABELS = {key: DISPLAY_AXIS_LABELS[key] for key in
                 'flow_x_m_s','flow_y_m_s','flow_z_m_s')}
 
 
-def plot_performance(rows, axes, output):
+def plot_performance(rows, axes, output, model='aircraft_rotor'):
     os.environ.setdefault('MPLCONFIGDIR', str(Path(gettempdir()) / 'rotordesignlab-matplotlib'))
     try:
         import matplotlib
@@ -54,7 +54,8 @@ def plot_performance(rows, axes, output):
     panels[0].legend(fontsize=8)
     failures = sum(row['status'] != 'converged' for row in rows)
     violations = sum(row['status'] == 'converged' and not row['feasible'] for row in rows)
-    fig.suptitle(f'孤立旋翼轴流性能｜{len(rows)} 个工况｜{failures} 个失败｜'
+    title = '孤立旋翼三方向性能（模型估算）' if model == 'spatial_rotor' else '孤立旋翼轴流性能'
+    fig.suptitle(f'{title}｜{len(rows)} 个工况｜{failures} 个失败｜'
                  f'{violations} 个超过限制（红色叉号）', fontsize=11)
     fig.savefig(output / 'performance.png', dpi=160)
     fig.savefig(output / 'performance.svg')
@@ -139,6 +140,8 @@ def run_batch(spec, base, output):
             answer = run_case(current, inputs, output / name)
             row = dict(case_id=name, **values, status=answer['status'], feasible=answer.get('feasible', False),
                        error=answer.get('error', ''))
+            for key in ('solver_status', 'support_status', 'design_limits_status', 'evidence_status'):
+                row[key] = answer[key]
             if answer['status'] == 'converged':
                 summary = answer['summary']
                 row.update({key: summary[key] for key in ('thrust_n', 'torque_nm', 'power_w')})
@@ -149,14 +152,22 @@ def run_batch(spec, base, output):
             rows.append(row)
         headers = ['case_id', *axes, 'status', 'feasible', 'thrust_n', 'torque_nm', 'power_w',
                    'solved_rpm', 'solved_collective_deg', 'target_relative_error',
-                   'power_margin_w', 'torque_margin_nm', 'error']
+                   'power_margin_w', 'torque_margin_nm', 'solver_status', 'support_status',
+                   'design_limits_status', 'evidence_status', 'error']
         write_csv(output / 'performance.csv', headers, ([row.get(key, '') for key in headers] for row in rows))
         failed = sum(row['status'] != 'converged' for row in rows)
         result['summary'] = dict(total=len(rows), converged=len(rows)-failed, failed=failed,
                                  limit_violations=sum(row['status'] == 'converged' and not row['feasible'] for row in rows))
-        plot_performance(rows, axes, output)
+        plot_performance(rows, axes, output, model=case['model'])
+        result['analysis_model'] = case['model']
         result['status'] = 'converged' if not failed else ('partial' if failed < len(rows) else 'failed')
+        result.update(solver_status=result['status'], support_status='per_point',
+                      design_limits_status='per_point', evidence_status='model_estimate')
         result['warnings'] = ['失败点保留逐点诊断；图中断线表示求解失败，红叉表示超过给定功率或扭矩限制。']
+        if case['model'] == 'spatial_rotor':
+            from .model_scope import SPATIAL_SCOPE
+            result['model_maturity'] = SPATIAL_SCOPE
+            result['warnings'].append(SPATIAL_SCOPE)
         if failed:
             result['error'] = f'{failed} 个工况求解失败，详见 performance.csv 和逐点 result.json。'
     except (ValueError, OSError, RuntimeError) as error:

@@ -46,6 +46,8 @@ def editor_checks(app):
     assert field(app.number_input,'整机质量 / kg').value==205.
     field(app.number_input,'整机质量 / kg').set_value(-1.).run();ok(app)
     assert any('整机质量' in e.value for e in app.error)
+    assert field(app.button,'运行分析').disabled
+    assert field(app.number_input,'本次总距 θ₀ / °')
     field(app.number_input,'整机质量 / kg').set_value(200.).run();ok(app)
     # Inject a data-editor delta; the resulting widget table is read back into the draft.
     epoch=app.session_state['design_epoch'];key=f'd:{epoch}:aircraft/mass_properties/cg_m'
@@ -70,7 +72,7 @@ def editor_checks(app):
     field(app.button,'重新打开').click().run();ok(app)
     assert app.session_state['design']==saved
     # All four tasks use the same current design.
-    for task in ('整机悬停预算','整机配平','通用开环操稳','孤立旋翼'):
+    for task in ('整机悬停预算','整机配平','开环初评（低频模型·试验性）','孤立旋翼'):
         field(app.radio,'分析任务').set_value(task).run();ok(app)
         assert app.session_state['design_id']==identifier
         assert app.session_state['design']['aircraft']==saved['aircraft']
@@ -93,7 +95,7 @@ def replay(record):
 
 
 def analysis_checks(app,tasks=None):
-    tasks=tasks or ['孤立旋翼','整机悬停预算','整机配平','通用开环操稳']
+    tasks=tasks or ['孤立旋翼','整机悬停预算','整机配平','开环初评（低频模型·试验性）']
     for task in tasks:
         field(app.radio,'分析任务').set_value(task).run();ok(app)
         record=run(app);assert record['answer']['status']=='converged',record['answer']
@@ -101,6 +103,19 @@ def analysis_checks(app,tasks=None):
         print(task+': submitted input and CLI replay passed.',flush=True)
     if '孤立旋翼' in tasks:
         field(app.radio,'分析任务').set_value('孤立旋翼').run()
+        previous = run(app)
+        choose(app,'质量、重心与惯量')
+        old_mass = app.session_state['design']['aircraft']['mass_properties']['mass_kg']
+        field(app.number_input,'整机质量 / kg').set_value(-1.).run()
+        ok(app)
+        assert field(app.button,'运行分析').disabled
+        assert app.session_state['workspace-result']['input_fingerprint'] == previous['input_fingerprint']
+        assert any('上次运行结果' in w.value for w in app.warning)
+        assert field(app.number_input,'本次总距 θ₀ / °')
+        field(app.number_input,'整机质量 / kg').set_value(old_mass).run()
+        ok(app)
+        assert not field(app.button,'运行分析').disabled
+        assert run(app)['answer']['summary'] == previous['answer']['summary']
         field(app.selectbox,'旋翼计算方式').set_value('指定拉力反求总距').run()
         record=run(app);assert record['answer']['status']=='converged',record['answer']
         assert abs(record['answer']['summary']['thrust_n']-2000)<1e-5
@@ -122,8 +137,8 @@ def analysis_checks(app,tasks=None):
         field(app.selectbox,'配平任务').set_value('速度曲线').run()
         field(app.text_input,'速度扫描 / (m/s)').set_value('0,5').run()
         record=run(app);assert record['answer']['summary']['total']==2,record['answer'];replay(record)
-    if '通用开环操稳' in tasks:
-        field(app.radio,'分析任务').set_value('通用开环操稳').run()
+    if '开环初评（低频模型·试验性）' in tasks:
+        field(app.radio,'分析任务').set_value('开环初评（低频模型·试验性）').run()
         field(app.selectbox,'开环任务').set_value('小扰动阶跃响应').run()
         field(app.number_input,'响应时长 / s').set_value(.05).run()
         record=run(app);assert record['answer']['status']=='converged',record['answer']
@@ -134,7 +149,7 @@ def analysis_checks(app,tasks=None):
 def main(tasks=None):
     with TemporaryDirectory(prefix='rdl-ui-library-') as library,patch.object(designs,'LIBRARY',Path(library)):
         app=AppTest.from_file(str(ROOT/'app.py'),default_timeout=120).run();ok(app)
-        assert field(app.radio,'分析任务').options==['孤立旋翼','整机悬停预算','整机配平','通用开环操稳']
+        assert field(app.radio,'分析任务').options==['孤立旋翼','整机悬停预算','整机配平','开环初评（低频模型·试验性）']
         assert not any('JSON' in w.label for w in app.text_input)
         editor_checks(app)
         analysis_checks(app,tasks)

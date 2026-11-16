@@ -60,8 +60,6 @@ def evaluate(rotor,selected,setup_values):
     model=SteadyRotor(rotor,config,selected['rotation_sign'],na)
     controls=np.deg2rad([rotor.collective_deg,*cyclic])
     state,loads,diagnostic=model.solve(controls,velocity,gravity=basis.T@np.array([0,0,9.80665]))
-    if rotor.airfoil_grid is None and np.max(np.hypot(loads['ut'],loads['up']))>250:
-        raise ValueError('无Mach维度的翼型表仅支持当地叶素合速度不超过250 m/s。')
     if not np.isfinite(loads['force']).all() or not np.isfinite(loads['moment']).all():
         raise ValueError('旋翼载荷出现非有限值。')
     return model,state,loads,diagnostic
@@ -111,6 +109,7 @@ def plot_elements(model,loads,output):
     from .presentation import configure_chinese_plots
     configure_chinese_plots()
     fig,panels=plt.subplots(1,2,figsize=(11,4.5),layout='constrained')
+    fig.suptitle('三方向叶素载荷（模型估算·斜流试验验证待补）')
     values=[loads['alpha_deg'],loads['element_force'][:,:,2]/model.kernel.dr]
     for panel,value,title,unit in zip(panels,values,['当地攻角','单片桨叶轴向气动力密度'],['攻角 / °','气动力 / (N/m)']):
         mesh=panel.pcolormesh(model.kernel.r/model.rotor.radius,np.rad2deg(model.kernel.psi),value,shading='auto')
@@ -121,6 +120,7 @@ def plot_elements(model,loads,output):
 
 
 def run_spatial(case,base,output):
+    from .model_scope import SPATIAL_SCOPE, MACH_SCOPE
     unknown=set(case)-(COMMON_KEYS|SPATIAL_KEYS)
     if unknown:raise ValueError('三方向来流工况含未识别或轴流专用字段：'+', '.join(sorted(unknown)))
     rotor,aircraft,selected,snapshot=prepare({k:v for k,v in case.items() if k in COMMON_KEYS},base,output)
@@ -173,14 +173,16 @@ def run_spatial(case,base,output):
         '方位角从旋翼+x向+y增加；旋翼+z为正推力轴。输出为整转平均气动力，不含重力或整机配平。',
         '适用范围：正推力、正轴功率、非负正贯流、μ≤0.25，且所有当地攻角/Mach/Re在所给翼型数据域内。',
         '采用现有稳态三状态Pitt–Peters入流；不含展向气动力、尾流旋转、非定常失速或弹性桨叶。',
-        '验证依据为软件/数值一致性和已有模型基准，当前三方向工况属于模型估算。']
+        SPATIAL_SCOPE, MACH_SCOPE,
+        f'求解：已收敛；数据域：当前稳态模型范围内；设计限制：{"满足" if within else "超过"}给定功率/扭矩限制；验证依据：模型估算。']
     (output/'summary.md').write_text('\n\n'.join(notes)+'\n',encoding='utf-8')
     result=dict(summary=summary,installation=installation,diagnostics=diagnostic,feasible=within,
         backend='Python / azimuth blade elements / steady Pitt-Peters / '+config['mode'],
         solver_status='converged',support_status='within_implemented_steady_domain',
         design_limits_status='satisfied' if within else 'exceeded',evidence_status='model_estimate',
         flow_body_m_s=flow.tolist(),hub_velocity_rotor_m_s=velocity.tolist(),
-        warnings=['整转平均孤立旋翼气动力；机身、尾翼、整机重力和旋翼间干扰未参与求解。',
+        model_maturity=SPATIAL_SCOPE,
+        warnings=[SPATIAL_SCOPE, MACH_SCOPE, '整转平均孤立旋翼气动力；机身、尾翼、整机重力和旋翼间干扰未参与求解。',
                   '方位角模型采用三状态入流；轴流环带/Prandtl选项仅作用于独立的轴流性能模型。'])
     if target_solution:result['target_solution']=target_solution
     return result,snapshot

@@ -88,7 +88,7 @@ def read_rotor(case, base):
     collective = numeric(case, "collective_deg", -20, 55)
     reference = numeric(case, "pitch_reference_r_over_R", float(geometry[0, 0]), 1)
     stations = numeric(case, "radial_stations", 8, 2000, integer=True)
-    if np.hypot(omega * radius, speed) > 250:
+    if airfoil_grid is None and np.hypot(omega * radius, speed) > 250:
         raise ValueError("桨尖合速度超过当前低速翼型模型的 250 m/s 上限。")
     cone = numeric(dict(precone_deg=case.get('precone_deg', 0)), 'precone_deg', 0, 15)
     sound = numeric(dict(speed_of_sound_m_s=case.get('speed_of_sound_m_s', 340.3)), 'speed_of_sound_m_s', 250, 400)
@@ -179,6 +179,10 @@ def run_case(case, base, output):
                 result['warnings'] = [f'固定桨叶，{rotor.inflow_model} 入流，尖损失 {rotor.tip_loss}；未计算尾流旋转和弹性变形。']
                 if rotor.airfoil_grid is not None:
                     result['warnings'].append('使用展向/攻角/Mach表；版本2含Re切片，按log(Re)插值。具体来源和数据维度见翼型文件。')
+                    from .model_scope import MACH_SCOPE
+                    result['warnings'].append(MACH_SCOPE)
+            result.update(solver_status='converged', support_status='within_domain', evidence_status='model_estimate',
+                          design_limits_status=('satisfied' if result['feasible'] else 'exceeded') if 'feasible' in result else 'not_evaluated')
             if case['model'] == 'aircraft_rotor':
                 result['warnings'].append('当前为选定孤立旋翼分析，安装载荷已移算到重心；整机配平尚未计算。')
                 if not result['feasible']:
@@ -189,11 +193,17 @@ def run_case(case, base, output):
             result["status"] = "converged"
     except (ValueError, RuntimeError, OSError, TimeoutExpired) as error:
         result["error"] = str(error)
-        if isinstance(case, dict) and case.get('model') in ('helicopter','spatial_rotor'):
+        if isinstance(case, dict) and case.get('model') in ('helicopter','spatial_rotor','axial_rotor','aircraft_rotor'):
             result.update(solver_status='failed', support_status='not_established',
                           design_limits_status='not_evaluated', evidence_status='model_estimate')
             if (output / 'case.json').exists():
                 snapshot = read_case(output / 'case.json')
+    if isinstance(case, dict):
+        from .model_scope import OPEN_LOOP_LABEL, SPATIAL_SCOPE
+        if case.get('model') == 'spatial_rotor':
+            result['model_maturity'] = SPATIAL_SCOPE
+        elif case.get('model') == 'helicopter' and case.get('analysis') in ('linearize', 'response'):
+            result['model_maturity'] = OPEN_LOOP_LABEL
     try:
         try:
             write_json(output / "case.json", snapshot)

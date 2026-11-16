@@ -32,11 +32,14 @@ class AzimuthTest(unittest.TestCase):
         self.assertAlmostEqual(work,out['power'],places=7)
 
     def test_four_quadrants_and_domain_rejection(self):
-        a=AzimuthRotor(self.rotor,36)
+        # Preserve reverse flow while keeping the advancing-side speed below
+        # the no-Mach-table 250 m/s limit enforced by all kernels.
+        rotor = replace(self.rotor, omega=self.rotor.omega * .75)
+        a = AzimuthRotor(rotor, 36)
         with self.assertRaisesRegex(ValueError,'四象限'):
             a.elements([.1,0,0],[.05,0,0],[0,0,0],[70,0,0])
         alpha=np.arange(-180,181,2);rad=np.deg2rad(alpha)
-        full=replace(self.rotor,polar=np.column_stack((alpha,np.sin(2*rad),.02+2*np.sin(rad)**2)))
+        full = replace(rotor, polar=np.column_stack((alpha,np.sin(2*rad),.02+2*np.sin(rad)**2)))
         out=AzimuthRotor(full,36).elements([.1,0,0],[.05,0,0],[0,0,0],[70,0,0])
         self.assertGreater(out['reverse_flow_fraction'],0)
         self.assertTrue(np.isfinite(out['force']).all())

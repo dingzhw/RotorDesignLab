@@ -8,7 +8,7 @@ from math import pi
 import numpy as np
 from scipy.optimize import brentq
 
-from .rotor import SolverError
+from .rotor import SolverError, validate_local_speed
 
 
 def prandtl_tip(blades, r_over_R, phi):
@@ -28,6 +28,8 @@ def solve_axial(rotor):
         phi = np.arctan2(axial, tangent)
         alpha = np.rad2deg(pitch-phi)
         speed = np.hypot(tangent, axial)
+        if strict:
+            validate_local_speed(rotor, speed)
         mach = speed/rotor.speed_of_sound
         if rotor.airfoil_grid is not None:
             cl, cd = rotor.airfoil_grid.coefficients(span, alpha, mach,

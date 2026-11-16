@@ -108,17 +108,53 @@ def derivative_check(a,b,refa,refb):
 
 
 def modes(a):
-    values,right=np.linalg.eig(a);left=np.linalg.inv(right);answer=[]
-    for i,value in enumerate(values):
-        weights=abs(right[:,i]*left[i,:]);weights/=max(weights.sum(),1e-30)
-        wn=abs(value);neutral=wn<1e-7
-        answer.append(dict(real=float(value.real),imag=float(value.imag),
-            damping_ratio=float(-value.real/wn) if wn>1e-7 else None,
-            period_s=float(2*np.pi/abs(value.imag)) if abs(value.imag)>1e-7 else None,
-            e_folding_time_s=float(1/abs(value.real)) if abs(value.real)>1e-7 else None,
-            behavior=('kinematic_neutral' if weights[8]>.9 else 'near_neutral') if neutral else ('unstable' if value.real>0 else 'stable'),
-            participation={STATES[j]:float(weights[j]) for j in np.argsort(weights)[-4:][::-1]}))
-    return sorted(answer,key=lambda x:(-x['real'],-x['imag']))
+    """Keep eigenvalues even when an eigenvector basis cannot support attribution."""
+    values, right = np.linalg.eig(a)
+    condition = float(np.linalg.cond(right))
+    limit = 1e8
+    left = None
+    reason = ''
+    if not np.isfinite(condition) or condition > limit:
+        reason = '特征向量基病态；参与因子不可用。'
+    else:
+        try:
+            left = np.linalg.inv(right)
+        except np.linalg.LinAlgError:
+            reason = '特征向量基不可逆；参与因子不可用。'
+    answer = []
+    scale = np.linalg.norm(a, 2)
+    for i, value in enumerate(values):
+        vector = right[:, i]
+        denominator = max((scale + abs(value)) * np.linalg.norm(vector), np.finfo(float).tiny)
+        residual = float(np.linalg.norm(a @ vector - value * vector) / denominator)
+        available = left is not None and np.isfinite(residual) and residual <= 1e-10
+        repeated = np.count_nonzero(np.isclose(values, value, rtol=1e-8, atol=1e-10)) > 1
+        weights = np.zeros(len(values))
+        note = reason
+        if available:
+            weights = abs(vector * left[i, :])
+            available = bool(np.isfinite(weights).all() and weights.sum() > 0)
+            if available:
+                weights /= weights.sum()
+                note = '重根的单根参与因子依赖所选特征向量基。' if repeated else ''
+        if not available and not note:
+            note = '特征残差或参与因子数值检查失败；参与因子不可用。'
+        wn = abs(value)
+        behavior = 'unstable' if value.real > 0 else 'stable'
+        if wn < 1e-7:
+            behavior = 'kinematic_neutral' if available and weights[8] > .9 else 'near_neutral'
+        answer.append(dict(
+            real=float(value.real), imag=float(value.imag),
+            damping_ratio=float(-value.real / wn) if wn > 1e-7 else None,
+            period_s=float(2 * np.pi / abs(value.imag)) if abs(value.imag) > 1e-7 else None,
+            e_folding_time_s=float(1 / abs(value.real)) if abs(value.real) > 1e-7 else None,
+            behavior=behavior,
+            participation={STATES[j]: float(weights[j]) for j in np.argsort(weights)[-4:][::-1]} if available else {},
+            participation_status='available' if available else 'unavailable',
+            participation_note=note, repeated_eigenvalue=bool(repeated),
+            eigenvector_condition=condition if np.isfinite(condition) else None,
+            eigenvector_condition_limit=limit, eigenpair_relative_residual=residual))
+    return sorted(answer, key=lambda item: (-item['real'], -item['imag']))
 
 
 def frequency_response(a,b,frequencies):

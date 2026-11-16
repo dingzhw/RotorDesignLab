@@ -9,8 +9,9 @@ import streamlit as st
 from . import designs
 from .design_ui import current,edit_table,key_for,details
 from .parameter_fields import label,help_text,location
+from .model_scope import OPEN_LOOP_LABEL, SPATIAL_SCOPE, RESPONSE_DURATION_BOUNDS
 
-TASKS={'孤立旋翼':'rotor','整机悬停预算':'hover_budget','整机配平':'trim','通用开环操稳':'open_loop'}
+TASKS={'孤立旋翼':'rotor','整机悬停预算':'hover_budget','整机配平':'trim',OPEN_LOOP_LABEL:'open_loop'}
 
 
 def setting(task,name,title,default,options=None,help=None,**kwargs):
@@ -51,6 +52,7 @@ def case_controls(task):
                                   min_value=-20.,max_value=55.,disabled='反求总距' in mode,
                                   help='总距参考站的桨距角，增加为正；参考站在下方桨叶参数中设置。反求总距时，本项作为初始参考，结果给出求得总距。')
         if spatial:
+            st.caption(SPATIAL_SCOPE)
             st.caption('来流为“空气相对轮毂”的速度，采用机体系：X向前、Y向右、Z向下。常规向上主桨：悬停填[0,0,0]；前飞20 m/s填[-20,0,0]；上升3 m/s填[0,0,3]。')
             flow=[]
             for column,axis in zip(st.columns(3),'xyz'):
@@ -149,7 +151,8 @@ def case_controls(task):
             from .presentation import CONTROL_LABELS
             case['control']=setting(task,'control','阶跃操纵','main_collective',list(CONTROL_LABELS),format_func=lambda v:CONTROL_LABELS[v])
             case['amplitude_deg']=setting(task,'amplitude_deg','阶跃幅值 / °',.05,min_value=-2.,max_value=2.,format='%.3f')
-            case['duration_s']=setting(task,'duration_s','响应时长 / s',.1,min_value=.01,max_value=10.)
+            case['duration_s'] = setting(task, 'duration_s', '响应时长 / s', .1,
+                                        min_value=RESPONSE_DURATION_BOUNDS[0], max_value=RESPONSE_DURATION_BOUNDS[1])
             case['time_step_s']=setting(task,'time_step_s','响应时间步 / s',.001,options=[.01,.005,.002,.001,.0005])
     return case,batch
 
@@ -200,9 +203,11 @@ def show_result(record,is_current):
             'within_implemented_steady_domain':'在当前稳态模型范围内','within_implemented_reduced_domain':'在当前低频模型范围内',
             'outside_implemented_domain':'超出当前模型范围','outside_implemented_reduced_domain':'超出当前低频模型范围',
             'derivative_step_sensitive':'导数对差分步长敏感','response_stopped':'响应积分已停止',
-            'not_evaluated':'未检查','unknown':'待检查'}
+            'not_evaluated':'未检查','unknown':'待检查','per_point':'见逐点状态'}
     text=lambda value:states.get(str(value),str(value))
-    st.caption('求解：'+text(answer.get('solver_status',answer['status']))+'；数据域：'+text(answer.get('support_status','见诊断'))+'；设计限制：'+text(answer.get('design_limits_status','见诊断')))
+    st.caption('求解：'+text(answer.get('solver_status',answer['status']))+'；数据域：'+text(answer.get('support_status','见诊断'))+'；设计限制：'+text(answer.get('design_limits_status','见诊断'))+'；验证依据：'+{'model_estimate':'模型估算'}.get(answer.get('evidence_status'), '见逐项验证记录'))
+    if answer.get('model_maturity'):
+        st.info(answer['model_maturity'])
     installation=answer.get('installation',{})
     if 'moment_hub_body_nm' in installation:
         st.caption('整转平均气动力：机体系X向前、Y向右、Z向下；力矩按右手定则。轮毂力矩与移轴到重心的力矩分别列出。')
@@ -231,31 +236,45 @@ def show_result(record,is_current):
 
 
 def render(task_label):
-    task=TASKS[task_label]
-    base_errors=designs.issues(current())
-    if base_errors:
+    task = TASKS[task_label]
+    case, batch = None, None
+    input_errors = []
+    if task == 'open_loop':
+        st.info(OPEN_LOOP_LABEL + '：动态入流、准定常挥舞；独立动态验证尚未完成。')
+    try:
+        case, batch = case_controls(task)
+    except (ValueError, KeyError, TypeError, StopIteration, IndexError) as error:
+        input_errors.append('任务输入暂不完整，请在详细设置补齐：' + str(error))
+    try:
         details()
-        st.warning('请先修正详细设置中的参数：')
-        for error in base_errors:st.error(error)
-        return
-    case,batch=case_controls(task)
-    details()
-    if case is None:return
+    except (ValueError, KeyError, TypeError, IndexError) as error:
+        input_errors.append('详细设置存在结构缺项，请补齐或重新载入完整方案：' + str(error))
+    errors = input_errors + designs.issues(current(), case.get('analysis') if case else None)
+    if errors:
+        st.warning('暂不能运行；草稿和上次结果已保留。请修正以下参数：')
+        for error in errors:
+            st.error(error)
     if st.button('检查当前方案参数'):
-        errors=designs.issues(current(),case.get('analysis'))
-        if errors:
-            for error in errors:st.error(error)
-        else:st.success('当前分析所需的机型和数据表检查通过；实际工况的数据域在求解时继续检查。')
-    if st.button('运行分析',type='primary'):
-        st.session_state.pop('workspace-result',None)
+        if not errors and case is not None:
+            st.success('当前分析所需的机型和数据表检查通过；实际工况的数据域在求解时继续检查。')
+    disabled = bool(errors) or case is None
+    if st.button('运行分析', type='primary', disabled=disabled,
+                 help='先修正上方错误，补齐当前任务所需参数。' if disabled else '使用当前草稿和工况计算。'):
         try:
-            submitted=deepcopy(current());spec=batch() if batch else None
-            with st.spinner('计算中，请等待结果…'):answer,files=designs.execute(submitted,case,spec)
-            st.session_state['workspace-result']=dict(answer=answer,files=files,design=submitted,
-                 fingerprint=designs.digest(submitted),input_fingerprint=input_fingerprint(submitted,case,spec),case=deepcopy(case),task=task)
-        except (ValueError,OSError,KeyError,TypeError) as e:st.error(str(e))
-    record=st.session_state.get('workspace-result')
-    if record and record['task']==task:
-        try:same=record['input_fingerprint']==input_fingerprint(current(),case,batch() if batch else None)
-        except (ValueError,KeyError,TypeError):same=False
-        show_result(record,same)
+            submitted = deepcopy(current())
+            spec = batch() if batch else None
+            with st.spinner('计算中，请等待结果…'):
+                answer, files = designs.execute(submitted, case, spec)
+            st.session_state['workspace-result'] = dict(
+                answer=answer, files=files, design=submitted,
+                fingerprint=designs.digest(submitted), input_fingerprint=input_fingerprint(submitted, case, spec),
+                case=deepcopy(case), task=task)
+        except (ValueError, OSError, KeyError, TypeError) as error:
+            st.error(str(error))
+    record = st.session_state.get('workspace-result')
+    if record and record['task'] == task:
+        try:
+            same = not disabled and record['input_fingerprint'] == input_fingerprint(current(), case, batch() if batch else None)
+        except (ValueError, KeyError, TypeError):
+            same = False
+        show_result(record, same)

@@ -162,20 +162,35 @@ def save_design(design,identifier=None,expected=None,library=None):
 
 def execute(design,case,batch=None):
     """Same CLI solver, with an immutable submitted design and portable exports."""
+    from time import perf_counter
     from .cases import run_case
     from .batch import run_batch
-    design=deepcopy(design);case=deepcopy(case)
-    errors=issues(design,case.get('analysis'))
-    if errors:raise ValueError('\n'.join(errors))
+    started = perf_counter()
+    design = deepcopy(design)
+    case = deepcopy(case)
+    errors = issues(design, case.get('analysis'))
+    if errors:
+        raise ValueError('\n'.join(errors))
     with TemporaryDirectory(prefix='rdl-design-run-') as directory:
-        root=Path(directory);path=materialize(design,root/'inputs');out=root/'output'
-        case['aircraft_json']=str(path)
-        if batch is None:answer=run_case(case,root,out)
+        root = Path(directory)
+        path = materialize(design, root / 'inputs')
+        out = root / 'output'
+        case['aircraft_json'] = str(path)
+        prepared = perf_counter()
+        if batch is None:
+            answer = run_case(case, root, out)
         else:
-            write_json(root/'case.json',case)
-            answer=run_batch(dict(batch,case_json='case.json'),root,out)
-        files={p.relative_to(out).as_posix():p.read_bytes() for p in out.rglob('*') if p.is_file()}
-    files['design.rdl']=pack(design)
+            write_json(root / 'case.json', case)
+            answer = run_batch(dict(batch, case_json='case.json'), root, out)
+        analyzed = perf_counter()
+        files = {p.relative_to(out).as_posix(): p.read_bytes() for p in out.rglob('*') if p.is_file()}
+    collected = perf_counter()
+    files['design.rdl'] = pack(design)
+    packed = perf_counter()
+    answer['workflow_timings_s'] = dict(
+        validation_and_materialize=prepared - started, analysis_and_exports=analyzed - prepared,
+        artifact_read_and_cleanup=collected - analyzed, design_pack=packed - collected)
+    files['result.json'] = (json.dumps(answer, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode('utf-8')
     notes=['# 本次实际方案',design['aircraft']['name'],'',
            '方案指纹：'+digest(design),'', '模板来源：'+design['template'],
            '参数来源：'+design['aircraft'].get('provenance','未填写'),'',

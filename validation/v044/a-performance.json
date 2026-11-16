@@ -1,0 +1,298 @@
+{
+  "solver_version": "0.4.4.dev1",
+  "python": "3.14.3",
+  "platform": "Windows-11-10.0.26320-SP0",
+  "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+  "logical_cpu_count": 24,
+  "cases": [
+    {
+      "template": "200 kg 合成无人直升机",
+      "case": {
+        "schema_version": 3,
+        "model": "helicopter",
+        "analysis": "linearize",
+        "altitude_m": 0.0,
+        "speed_m_s": 20.0,
+        "climb_m_s": 0.0,
+        "requested_duration_s": 600.0,
+        "radial_stations": 24,
+        "azimuth_stations": 24
+      },
+      "status": "converged",
+      "error": null,
+      "solver_status": "converged",
+      "support_status": "within_implemented_reduced_domain",
+      "trim_diagnostics": {
+        "nfev": 7,
+        "njev": 7,
+        "residual_calls": 133,
+        "element_calls": 266,
+        "solve_elapsed_s": 0.3240143998991698,
+        "call_count_scope": "least_squares including finite-difference Jacobian; excludes final checks",
+        "grid": {
+          "radial": {
+            "main": 24,
+            "tail": 24
+          },
+          "azimuth": 24
+        },
+        "message": "`gtol` termination condition is satisfied.",
+        "initial_state": [
+          0.22689280275926285,
+          0.0,
+          0.0,
+          0.20943951023931956,
+          -0.03490658503988659,
+          0.0,
+          0.07410618293986378,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.05916079783099616,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "solved_state": [
+          0.2049127869567539,
+          -0.03782543140068607,
+          0.06278306512922266,
+          0.194346341358445,
+          -0.03171818529744588,
+          -0.028825834863924635,
+          0.0493492804993766,
+          -0.03798593328483158,
+          0.0009520069497859074,
+          0.011528663260607993,
+          -0.005577876317707438,
+          0.004322118384961183,
+          0.05718519987702787,
+          -0.029272161207069144,
+          -0.02045741023033266,
+          1.0285599371477065e-18,
+          -1.1312543730376608e-18,
+          -4.295565529223609e-18
+        ],
+        "scaled_force_moment_residual": [
+          -6.411152624445924e-16,
+          6.303601944713915e-16,
+          -1.4961997719349695e-15,
+          -2.1456617904812516e-15,
+          1.9408999622732895e-14,
+          4.874258557041062e-15
+        ],
+        "rotor_internal_residual": [
+          -2.706168622523819e-16,
+          4.718447854656915e-16,
+          5.362463945113305e-16,
+          -9.186806408193841e-17,
+          5.5120838449163045e-15,
+          7.682837294594366e-16,
+          -2.0816681711721685e-16,
+          2.3592239273284576e-16,
+          -4.85722573273506e-17,
+          1.0285599371477065e-18,
+          -1.1312543730376608e-18,
+          -4.295565529223609e-18
+        ],
+        "near_limits": [],
+        "elapsed_s": 0.35159940004814416,
+        "rotors": {
+          "main": {
+            "momentum_induced": 0.04967767153732085,
+            "total_axial_ratio": 0.052622770100001576,
+            "mu": 0.10208904252813325,
+            "mass_flow_mean": 0.11485350903350154,
+            "mass_flow_harmonic": 0.13761447393923462,
+            "wake_skew_rad": 1.0948577200904634,
+            "internal_max_residual": 5.5120838449163045e-15,
+            "omitted_flap_harmonics_rms": 0.0004222707584468474,
+            "alpha_min_deg": 2.8793685318697158,
+            "alpha_max_deg": 15.785446181234192,
+            "mach_max": 0.6251666788162725,
+            "flap_peak_deg": 1.0616344524910348,
+            "reverse_flow_fraction": 0.0
+          },
+          "tail": {
+            "momentum_induced": 0.052611307976809976,
+            "total_axial_ratio": 0.052611307976809976,
+            "mu": 0.10610329539459688,
+            "mass_flow_mean": 0.11843081955565381,
+            "mass_flow_harmonic": 0.14180268962643394,
+            "wake_skew_rad": 1.1104743094494731,
+            "internal_max_residual": 2.3592239273284576e-16,
+            "omitted_flap_harmonics_rms": 0.0,
+            "alpha_min_deg": -11.63738021849582,
+            "alpha_max_deg": 8.846195428038271,
+            "mach_max": 0.604953294473804,
+            "flap_peak_deg": 3.1343930038922486e-16,
+            "reverse_flow_fraction": 0.0
+          }
+        }
+      },
+      "measured": {
+        "element_calls": 1106,
+        "element_elapsed_s": 0.49527780164498836,
+        "plot_elapsed_s": 1.2320960001088679
+      },
+      "workflow_elapsed_s": 2.4434383999323472,
+      "workflow_timings_s": {
+        "validation_and_materialize": 0.04765459999907762,
+        "analysis_and_exports": 2.3207689999835566,
+        "artifact_read_and_cleanup": 0.03235840005800128,
+        "design_pack": 0.02574149996507913
+      },
+      "result_zip_elapsed_s": 0.014471700065769255,
+      "result_zip_bytes": 445158
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "case": {
+        "schema_version": 3,
+        "model": "helicopter",
+        "analysis": "trim",
+        "altitude_m": 0.0,
+        "speed_m_s": 40.0,
+        "climb_m_s": 0.0,
+        "requested_duration_s": 600.0,
+        "radial_stations": 24,
+        "azimuth_stations": 24
+      },
+      "status": "failed",
+      "error": "tail: Element outside Reynolds table domain.",
+      "solver_status": "converged",
+      "support_status": "outside_implemented_domain",
+      "trim_diagnostics": {
+        "nfev": 11,
+        "njev": 11,
+        "residual_calls": 209,
+        "element_calls": 418,
+        "solve_elapsed_s": 0.6832600999623537,
+        "call_count_scope": "least_squares including finite-difference Jacobian; excludes final checks",
+        "grid": {
+          "radial": {
+            "main": 24,
+            "tail": 24
+          },
+          "azimuth": 24
+        },
+        "message": "`gtol` termination condition is satisfied.",
+        "initial_state": [
+          0.13962634015954636,
+          0.0,
+          0.0,
+          0.20943951023931956,
+          -0.03490658503988659,
+          0.0,
+          0.05391655256162656,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.05916079783099616,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "solved_state": [
+          0.09066654800950227,
+          -0.030333430388464477,
+          0.08774621279226369,
+          0.061318415074414254,
+          -0.01719821124801814,
+          0.056944613408191486,
+          0.01570975424315903,
+          -0.02170799111320985,
+          -0.00034898211098460623,
+          0.05246777835337332,
+          -0.05049993451440618,
+          0.0060802176296698325,
+          0.01874576026041481,
+          -0.025319083059176958,
+          0.0013181247657205477,
+          0.010111487725099979,
+          0.028036397495125796,
+          0.006592006233199253
+        ],
+        "scaled_force_moment_residual": [
+          2.045404628366771e-15,
+          1.4181472090009613e-16,
+          -6.233614105498731e-16,
+          8.824135644666048e-16,
+          1.3015028379371591e-16,
+          -7.64243895677977e-15
+        ],
+        "rotor_internal_residual": [
+          8.326672684688674e-17,
+          -6.938893903907228e-18,
+          8.294146619514109e-17,
+          -4.474140965123515e-17,
+          6.3028286293824e-17,
+          7.228014483236696e-17,
+          2.1510571102112408e-16,
+          -1.5890067039947553e-15,
+          -1.0743223801887303e-15,
+          -3.754050022231059e-17,
+          -2.2876665839444144e-16,
+          -4.604245225821776e-17
+        ],
+        "near_limits": [],
+        "elapsed_s": 0.7173362999456003,
+        "rotors": {
+          "main": {
+            "momentum_induced": 0.016037982366431683,
+            "total_axial_ratio": 0.015205895312674614,
+            "mu": 0.18115737150167036,
+            "mass_flow_mean": 0.1817944237364123,
+            "mass_flow_harmonic": 0.1831358943705395,
+            "wake_skew_rad": 1.487055133515645,
+            "internal_max_residual": 8.326672684688674e-17,
+            "omitted_flap_harmonics_rms": 0.006759879415402795,
+            "alpha_min_deg": -128.7912481150611,
+            "alpha_max_deg": 9.985221603895326,
+            "mach_max": 0.7542745988631288,
+            "flap_peak_deg": 5.899615373438664,
+            "reverse_flow_fraction": 0.008680555555555556
+          },
+          "tail": {
+            "momentum_induced": 0.018759481979955663,
+            "total_axial_ratio": 0.015031891367549547,
+            "mu": 0.19143100198752286,
+            "mass_flow_mean": 0.19202027570033534,
+            "mass_flow_harmonic": 0.1934888211141242,
+            "wake_skew_rad": 1.4924333159886605,
+            "internal_max_residual": 1.5890067039947553e-15,
+            "omitted_flap_harmonics_rms": 0.0014457228366502473,
+            "alpha_min_deg": -8.229900521164808,
+            "alpha_max_deg": 10.207391421828106,
+            "mach_max": 0.7214828652997295,
+            "flap_peak_deg": 2.2287316193140274,
+            "reverse_flow_fraction": 0.0
+          }
+        }
+      },
+      "measured": {
+        "element_calls": 422,
+        "element_elapsed_s": 0.4574080997845158,
+        "plot_elapsed_s": 0.0
+      },
+      "workflow_elapsed_s": 0.810249499976635,
+      "workflow_timings_s": {
+        "validation_and_materialize": 0.030081700067967176,
+        "analysis_and_exports": 0.7277176999486983,
+        "artifact_read_and_cleanup": 0.01585169997997582,
+        "design_pack": 0.02928120002616197
+      },
+      "result_zip_elapsed_s": 0.001855099922977388,
+      "result_zip_bytes": 32674
+    }
+  ],
+  "timing_scope": "Wall clock, warm dependency imports; element timer nested in solver timer, not additive."
+}

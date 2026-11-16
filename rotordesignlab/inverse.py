@@ -25,7 +25,8 @@ def solve_target(rotor, target, limits):
     low, high = bounds
     if not limits[variable][0] <= low < high <= limits[variable][1]:
         raise ValueError('反求区间必须在机型限制内，且下限小于上限。')
-    if variable == 'rpm' and np.hypot(high * pi / 30 * rotor.radius, rotor.axial_speed) > 250:
+    if (variable == 'rpm' and rotor.airfoil_grid is None and
+            np.hypot(high * pi / 30 * rotor.radius, rotor.axial_speed) > 250):
         raise ValueError('反求转速上限使桨尖合速度超过当前模型的 250 m/s 上限。')
     # From T = 2 rho A vi (V + vi), avoiding cancellation for small T / large V.
     rho_area = rotor.density * pi * rotor.radius**2

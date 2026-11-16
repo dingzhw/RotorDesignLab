@@ -9,6 +9,7 @@ import streamlit as st
 from . import designs
 from .aircraft import SCHEMA, SCHEMA_V2
 from .parameter_fields import FIELDS, INTERNAL, ENUM_LABELS, label, help_text, location
+from .model_scope import OPEN_LOOP_LABEL
 
 
 def current():return st.session_state['design']
@@ -22,7 +23,9 @@ def replace_design(design,identifier=None,version=None):
     st.session_state['table_bases']={}
     st.session_state['_reset_consent']=True
     task=design['settings'].get('_active_task','孤立旋翼')
-    st.session_state['analysis-task']=task if task in ('孤立旋翼','整机悬停预算','整机配平','通用开环操稳') else '孤立旋翼'
+    if task == '通用开环操稳':
+        task = OPEN_LOOP_LABEL
+    st.session_state['analysis-task'] = task if task in ('孤立旋翼','整机悬停预算','整机配平',OPEN_LOOP_LABEL) else '孤立旋翼'
 
 
 def key_for(path):return 'd:'+str(st.session_state['design_epoch'])+':'+ '/'.join(map(str,path))

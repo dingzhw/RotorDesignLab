@@ -7,6 +7,7 @@ Velocities are aircraft relative to still air, expressed in this frame.
 from dataclasses import dataclass
 from math import pi
 import numpy as np
+from .rotor import validate_local_speed
 
 
 @dataclass
@@ -61,7 +62,10 @@ class AzimuthRotor:
         phi=np.arctan2(up,ut)
         pitch=(self.harmonics@controls)[:,None]+self.twist-self.pitch_flap_coupling*beta[:,None]
         alpha=(np.rad2deg(pitch-phi)+180)%360-180
-        speed=np.hypot(ut,up);mach=speed/model.speed_of_sound
+        speed = np.hypot(ut, up)
+        mach = speed / model.speed_of_sound
+        if strict:
+            validate_local_speed(model, speed)
         if model.airfoil_grid is not None:
             cl,cd=model.airfoil_grid.coefficients(self.r/model.radius,alpha,mach,
                 reynolds=model.density*speed*self.chord/model.dynamic_viscosity,strict=strict)
