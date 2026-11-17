@@ -28,6 +28,11 @@ def main():
         print(error, file=sys.stderr)
         return 2
     print(json.dumps(result, ensure_ascii=True))
+    restriction = result.get('evaluation_restriction', {})
+    if restriction.get('issue'):
+        print(restriction['note'], file=sys.stderr)
+        if result['status'] == 'converged' and not result.get('diagnostic_only', False):
+            return 3
     return 0 if result["status"] == "converged" else 2
 
 

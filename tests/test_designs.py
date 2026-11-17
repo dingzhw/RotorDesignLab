@@ -29,7 +29,10 @@ class DesignTests(unittest.TestCase):
 
     def test_old_scheme_keeps_axial_method(self):
         d=designs.from_template(next(iter(designs.TEMPLATES)))
-        d['settings'].pop('_workspace_revision')
+        # A genuinely old package has neither widget revision nor an explicit
+        # solver selection. Removing only the revision from a modern package
+        # must not override its explicit model.
+        d['settings'] = {}
         restored=designs.unpack(designs.pack(d))
         self.assertEqual(restored['settings']['rotor']['flow_model'],'轴流性能（原均匀/环带模型）')
         self.assertEqual(restored['aircraft'],d['aircraft']);self.assertEqual(restored['assets'],d['assets'])

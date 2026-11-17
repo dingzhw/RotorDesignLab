@@ -4,6 +4,7 @@ from .parameter_fields import FIELDS
 from .presentation import AXIS_LABELS, CONTROL_LABELS, STATE_LABELS
 
 NAMES = {
+    'lambda0': '均匀入流 λ₀', 'lambdac': 'cos入流 λc', 'lambdas': 'sin入流 λs',
     'weight_n': '重量 / N', 'continuous_available_w': '连续可用轴功率 / W',
     'short_time_available_w': '短时可用轴功率 / W', 'max_scaled_balance_residual': '预算最大归一化残差',
     'within_budget_input_domain': '在预算输入范围内',
@@ -77,6 +78,8 @@ def result_table(frame):
     for key in output.columns:
         if is_power(key) and pd.api.types.is_numeric_dtype(output[key]):
             output[key] = output[key] / 1000.
+        elif key == 'dominant_states':
+            output[key] = output[key].map(dominant_states)
         elif output[key].dtype == object or pd.api.types.is_string_dtype(output[key]):
             output[key] = output[key].map(lambda value: label(value) if isinstance(value, str) else value)
     # Vertical quantity/value CSVs need row-specific conversion before renaming.
@@ -90,3 +93,14 @@ def result_table(frame):
                     if 'unit' in output:
                         output.loc[index, 'unit'] = 'kW'
     return output.rename(columns={key: display_label(key) for key in output.columns})
+
+
+def dominant_states(value):
+    """Translate identifiers, retaining exact participation values and unknowns."""
+    if not isinstance(value, str):
+        return value
+    parts = []
+    for part in value.split(';'):
+        name, separator, weight = part.strip().partition(':')
+        parts.append(label(name) + separator + weight if separator else part.strip())
+    return '; '.join(parts)

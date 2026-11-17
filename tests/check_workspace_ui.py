@@ -13,7 +13,13 @@ ROOT=Path(__file__).resolve().parents[1]
 def field(items,label):return next(i for i in items if i.label==label)
 def ok(app):assert not app.exception,[e.value for e in app.exception]
 def choose(app,group):field(app.selectbox,'参数分组').set_value(group).run();ok(app)
-def run(app):field(app.button,'运行分析').click().run();ok(app);return app.session_state['workspace-result']
+def run(app):
+    for checkbox in app.checkbox:
+        if checkbox.label == '仅作故障诊断，查看矩阵与响应' and not checkbox.value:
+            checkbox.check().run()
+    field(app.button, '运行分析').click().run()
+    ok(app)
+    return app.session_state['workspace-result']
 
 
 def editor_checks(app):

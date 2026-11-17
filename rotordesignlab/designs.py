@@ -13,6 +13,8 @@ from zipfile import ZipFile, ZIP_DEFLATED, BadZipFile
 import jsonschema
 from .aircraft import ROOT, SCHEMA, SCHEMA_V2, read_aircraft, require_analysis
 from .cases import read_rotor, write_json
+from .design_models import rotor_model, stamp, SPATIAL
+from . import __version__
 
 LIBRARY = ROOT / 'private/designs'
 TEMPLATES = {
@@ -36,7 +38,9 @@ def from_template(name):
             target=f'rotor-{i}-{key.replace("_", ".")}'
             assets[target]=(path.parent/rotor[key]).read_text(encoding='utf-8-sig')
             rotor[key]=target
-    return dict(format_version=1,template=name,aircraft=aircraft,assets=assets,settings={'_workspace_revision':6})
+    settings = {'_workspace_revision': 6, 'rotor': {'flow_model': SPATIAL}}
+    stamp(settings, __version__)
+    return dict(format_version=1, template=name, aircraft=aircraft, assets=assets, settings=settings)
 
 
 def materialize(design, directory):
@@ -81,6 +85,7 @@ def pack(design):
     errors=issues(design)
     if errors:raise ValueError('\n'.join(errors))
     manifest={k:deepcopy(v) for k,v in design.items() if k!='assets'}
+    stamp(manifest['settings'], __version__)
     manifest['asset_hashes']={k:sha256(v.encode('utf-8')).hexdigest() for k,v in design['assets'].items()}
     stream=BytesIO()
     with ZipFile(stream,'w',ZIP_DEFLATED) as z:
@@ -109,10 +114,11 @@ def unpack(data):
             manifest['assets']=assets
         errors=issues(manifest)
         if errors:raise ValueError('\n'.join(errors))
-        # Old saved schemes keep the axial method they originally used.
+        choice = rotor_model(manifest['settings'])
+        if choice is not None:
+            manifest['settings'].setdefault('rotor', {})['flow_model'] = choice
         if '_workspace_revision' not in manifest['settings']:
-            manifest['settings'].setdefault('rotor',{}).setdefault('flow_model','轴流性能（原均匀/环带模型）')
-            manifest['settings']['_workspace_revision']=3
+            manifest['settings']['_workspace_revision'] = 3
         return manifest
     except (BadZipFile,KeyError,TypeError,UnicodeError,RuntimeError) as error:
         raise ValueError('无法读取方案包：'+str(error)) from error
@@ -168,6 +174,11 @@ def execute(design,case,batch=None):
     started = perf_counter()
     design = deepcopy(design)
     case = deepcopy(case)
+    if case.get('model') in ('spatial_rotor', 'aircraft_rotor'):
+        from .design_models import MODELS
+        design['settings'].setdefault('rotor', {})['flow_model'] = next(
+            label for label, model in MODELS.items() if model == case['model'])
+        design['settings']['_last_rotor_case'] = deepcopy(case)
     errors = issues(design, case.get('analysis'))
     if errors:
         raise ValueError('\n'.join(errors))

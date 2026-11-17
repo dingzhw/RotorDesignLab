@@ -11,11 +11,12 @@ from .presentation import configure_chinese_plots, CONTROL_LABELS, STATE_LABELS
 def save_figures(output,result):
     configure_chinese_plots()
     out=Path(output);meta=result['linearization']
+    caution = '\n交叉耦合待修复·仅故障诊断' if result.get('evaluation_restriction', {}).get('issue') else ''
     fig,ax=plt.subplots(figsize=(7,4.5))
     roots=[m for m in meta['modes'] if m['within_low_frequency_band']]
     ax.scatter([m['real'] for m in roots],[m['imag'] for m in roots],c=['#cf4e33' if m['real']>1e-7 else '#087e8b' for m in roots])
     ax.axvline(0,color='grey',lw=.8);ax.axhline(0,color='grey',lw=.8);ax.grid(alpha=.2)
-    ax.set(xlabel='特征根实部 / (1/s)',ylabel='特征根虚部 / (rad/s)',title='低频特征根（试验性·模型估算）')
+    ax.set(xlabel='特征根实部 / (1/s)',ylabel='特征根虚部 / (rad/s)',title='低频特征根（试验性·模型估算）' + caution)
     fig.tight_layout()
     for suffix in ('png','svg'):fig.savefig(out/f'modes.{suffix}',dpi=160)
     plt.close(fig)
@@ -30,7 +31,7 @@ def save_figures(output,result):
         pair[0].set_ylabel(f'{CONTROL_LABELS[control]} → {state}\n幅值 / dB（基准：1 {unit}）');pair[1].set_ylabel('相位 / °')
         for ax in pair:ax.grid(alpha=.25)
     for ax in axes[-1]:ax.set_xlabel('角频率 / (rad/s)')
-    fig.suptitle('低频开环频率响应（试验性·桨叶变距角输入）')
+    fig.suptitle('低频开环频率响应（试验性·桨叶变距角输入）' + caution)
     fig.tight_layout()
     for suffix in ('png','svg'):fig.savefig(out/f'frequency.{suffix}',dpi=160)
     plt.close(fig)
@@ -51,7 +52,7 @@ def save_figures(output,result):
             axes[0,0].text(.5, .5, '无有效时程点，请查看中止原因', transform=axes[0,0].transAxes, ha='center')
         axes[-1,0].set_xlabel('时间 / s')
         axes[-1,1].set_xlabel('时间 / s')
-        fig.suptitle('开环小扰动响应（低频模型·试验性）' + ('\n仅最后有效段，积分已中止' if partial else ''))
+        fig.suptitle('开环小扰动响应（低频模型·试验性）' + caution + ('\n仅最后有效段，积分已中止' if partial else ''))
         fig.tight_layout()
         for suffix in ('png','svg'):fig.savefig(out/f'response.{suffix}',dpi=160)
         plt.close(fig)

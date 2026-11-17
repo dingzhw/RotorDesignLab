@@ -145,7 +145,8 @@ def column_table(path,data,dynamic=True):
     names=list(data);length=max((len(v) for v in data.values()),default=0)
     rows=[{k:data[k][i] if i<len(data[k]) else None for k in names} for i in range(length)]
     config={k:st.column_config.NumberColumn(label(k),help=help_text(k),format='%.9g') for k in names}
-    if 'beta_table' in path and 'cl' in names:config['cl']=st.column_config.NumberColumn('滚转力矩系数 Cl',format='%.9g')
+    if 'beta_table' in path and 'cl' in names:
+        config['cl'] = st.column_config.NumberColumn('滚转力矩系数 Cl', format='%.9g', help=help_text('beta_table'))
     def apply(values):put_at(path,{k:[r.get(k) for r in values] for k in names})
     edit_table(rows,path,apply,columns=config,dynamic=dynamic)
 
@@ -186,7 +187,8 @@ def object_editor(path,schema):
                     converted.append(value)
                 put_at(path + [k], converted)
         config = {k: st.column_config.NumberColumn(display_label(k), help=help_text(k) + (' 本列单位kW。' if is_power(k) else ''), format='%.9g') for k in names}
-        if path[-1]=='beta_table' and 'cl' in names:config['cl']=st.column_config.NumberColumn('滚转力矩系数 Cl',format='%.9g')
+        if path[-1] == 'beta_table' and 'cl' in names:
+            config['cl'] = st.column_config.NumberColumn('滚转力矩系数 Cl', format='%.9g', help=help_text('beta_table'))
         table_key = '_table_kw' if any(is_power(k) for k in names) else '_table'
         edit_table(rows, path + [table_key], apply, columns=config, dynamic=True)
     for name,child in properties.items():

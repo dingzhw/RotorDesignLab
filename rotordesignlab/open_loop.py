@@ -4,13 +4,13 @@ import numpy as np
 from .aircraft import read_aircraft,require_analysis
 from .cases import run_case,read_case,write_json,write_csv,numeric
 from .trim import TrimSystem
-from .model_scope import OPEN_LOOP_LABEL, RESPONSE_DURATION_BOUNDS, MACH_SCOPE
+from .model_scope import OPEN_LOOP_LABEL, RESPONSE_DURATION_BOUNDS, MACH_SCOPE, open_loop_restriction
 from .perturbation import from_case as perturbation_from_case
 from .dynamics import (ReducedDynamics,STATES,UNITS,CONTROLS,central_derivatives,
                        derivative_check,modes,frequency_response,step_response,STATE_STEPS,CONTROL_STEPS,STATE_SCALE,ResponseDomainError)
 
 OPTIONS = {'frequencies_rad_s', 'control', 'amplitude_deg', 'duration_s', 'time_step_s',
-           'input_type', 'input_start_s', 'input_duration_s'}
+           'input_type', 'input_start_s', 'input_duration_s', 'diagnostic_only'}
 WARNINGS=[OPEN_LOOP_LABEL, MACH_SCOPE, '低频降阶模型：6自由度机体、动态PP入流、准定常一阶挥舞；转速固定。',
           '暂未计动态挥舞、旋翼角动量反作用、桨毂加速度耦合、尾迹曲率和发动机/传动动态。',
           '模态和响应为模型估算；未据此自动评定飞行品质等级。']
@@ -19,7 +19,9 @@ WARNINGS=[OPEN_LOOP_LABEL, MACH_SCOPE, '低频降阶模型：6自由度机体、
 def run_open_loop(case,base,output):
     started = perf_counter()
     analysis = case['analysis']
-    if analysis == 'linearize' and set(case) & (OPTIONS - {'frequencies_rad_s'}):
+    if type(case.get('diagnostic_only', False)) is not bool:
+        raise ValueError('diagnostic_only必须是布尔值。')
+    if analysis == 'linearize' and set(case) & (OPTIONS - {'frequencies_rad_s', 'diagnostic_only'}):
         raise ValueError('linearize仅接受frequencies_rad_s附加设置。')
     if not isinstance(case.get('aircraft_json'), str):
         raise ValueError('开环分析需要aircraft_json路径。')
@@ -37,6 +39,7 @@ def run_open_loop(case,base,output):
     trim_case['analysis'] = 'trim'
     aircraft = read_aircraft((base / case['aircraft_json']).resolve())
     require_analysis(aircraft, analysis)
+    restriction = open_loop_restriction(aircraft)
     trim=run_case(trim_case,base,output/'trim')
     snapshot=dict(case,aircraft_json='trim/aircraft.json')
     if analysis == 'response':
@@ -47,7 +50,8 @@ def run_open_loop(case,base,output):
     if trim['status']!='converged':
         return dict(status='failed',analysis=analysis,solver_status='trim_failed',support_status=trim['support_status'],
             design_limits_status=trim['design_limits_status'],evidence_status='model_estimate',error='开环基点未通过配平：'+trim['error'],
-            trim=trim,download_model=trim.get('download_model'),warnings=WARNINGS),snapshot
+            trim=trim,download_model=trim.get('download_model'),warnings=WARNINGS + [restriction['note']],
+            evaluation_restriction=restriction),snapshot
     saved = read_case(output / 'trim/case.json')
     aircraft = read_aircraft(output / 'trim/aircraft.json')
     system=TrimSystem(aircraft,output/'trim',saved)
@@ -80,6 +84,7 @@ def run_open_loop(case,base,output):
         download_model=trim['download_model'])
     from .mounting import coordinate_metadata
     metadata['rotor_coordinates'] = {role: coordinate_metadata(rotor) for role, rotor in system.selected.items()}
+    metadata['evaluation_restriction'] = restriction
     write_json(output/'linearization.json',metadata)
     for name,matrix,columns in [('A',a,STATES),('B',b,CONTROLS),('E',plant.mass_matrix,STATES),
                                  ('F',plant.mass_matrix@a,STATES),('G',plant.mass_matrix@b,CONTROLS)]:
@@ -96,7 +101,9 @@ def run_open_loop(case,base,output):
         support_status='within_implemented_reduced_domain',design_limits_status=trim['design_limits_status'],
         feasible=trim['feasible'],violations=trim['violations'],evidence_status='model_estimate',
         model_maturity=OPEN_LOOP_LABEL,download_model=trim['download_model'],
-        warnings=WARNINGS + modal_warnings + [trim['download_model']['note'], trim['download_model']['comparison_note']],
+        evaluation_restriction=restriction,
+        diagnostic_only=case.get('diagnostic_only', False),
+        warnings=WARNINGS + [restriction['note']] + modal_warnings + [trim['download_model']['note'], trim['download_model']['comparison_note']],
         design_limit_scope='trim base point; response checks control/attitude/data limits, transient power limits not evaluated',
         summary=dict(states=15,controls=4,unstable_modes=sum(m['real']>1e-7 for m in modal),
                      neutral_modes=sum(m['behavior']=='kinematic_neutral' for m in modal),

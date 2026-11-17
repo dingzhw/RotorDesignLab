@@ -20,6 +20,10 @@ def setting(task,name,title,default,options=None,help=None,**kwargs):
     key = f'a:{st.session_state["design_epoch"]}:{task}:{name}'
     def changed():
         current()['settings'].setdefault(task, {})[name] = st.session_state[key]
+        if task == 'rotor' and name == 'flow_model':
+            from .design_models import stamp
+            from . import __version__
+            stamp(current()['settings'], __version__)
     common=dict(key=key,on_change=changed,help=help or help_text(name))
     if options is not None:
         return st.selectbox(title,options,index=options.index(value) if value in options else 0,**common,**kwargs)
@@ -52,9 +56,17 @@ def case_controls(task):
                          format_func=lambda v:('主旋翼' if v==main['id'] else '尾桨')+' · '+v)
         rotor=next(r for r in aircraft['rotors'] if r['id']==selected)
         mode=setting(task,'mode','旋翼计算方式','固定总距正算',['固定总距正算','指定拉力反求总距','指定拉力反求转速','批量正算','批量反求总距'],help='正算：给总距与转速求拉力；反求：给目标拉力求总距或转速；批量：按扫描值逐点计算。')
-        flow_model=setting(task,'flow_model','来流与旋翼模型','三方向来流（方位角叶素）',
-             ['三方向来流（方位角叶素）','轴流性能（原均匀/环带模型）'],
+        from .design_models import rotor_model, AXIAL, SPATIAL
+        resolved = rotor_model(current()['settings'])
+        pending = '请选择原方案使用的模型'
+        choices = [SPATIAL, AXIAL] if resolved else [pending, AXIAL, SPATIAL]
+        if resolved is None:
+            st.warning('此历史方案未保存求解模型，修订号不足以判断。请依据原计算记录选择轴流或三方向模型；选择前不会启动计算。原方案文件保持不变。')
+        flow_model=setting(task,'flow_model','来流与旋翼模型',resolved or pending,
+             choices,
              help='三方向模型按方位角分解相对速度，支持盘面内来流与周期变距。轴流模型保留原悬停/轴流验证口径，两者的入流分布和挥舞假设不同。')
+        if flow_model == pending:
+            return None, None
         spatial=flow_model.startswith('三方向')
         a,b=st.columns(2)
         with a:rpm=setting(task,'rpm-'+selected,'本次旋翼转速 / rpm',float(rotor['defaults']['rpm']),
@@ -84,7 +96,7 @@ def case_controls(task):
                 a,b=st.columns(2)
                 for col,key,symbol in ((a,'cyclic_cos_deg','cos'),(b,'cyclic_sin_deg','sin')):
                     with col:case[key]=setting(task,key+'-'+selected,symbol+' 周期变距 / °',0.,min_value=-30.,max_value=30.,
-                        help='桨距=总距+θcos·cosψ+θsin·sinψ，再计几何扭转和挥舞耦合。ψ从旋翼+x向+y增加；默认两项为0。')
+                        help=help_text('cyclic_cos_deg'))
                 choices=['fixed','aircraft'] if 'flight' in rotor else ['fixed']
                 case['flapping_model']=setting(task,'flapping-'+selected,'桨叶运动模型','fixed',choices,
                     format_func=lambda v:{'fixed':'固定桨叶（保留预锥）','aircraft':'使用机型挥舞参数'}[v],
@@ -143,6 +155,16 @@ def case_controls(task):
                        format_func=lambda value: '小扰动响应' if value == '小扰动阶跃响应' else value,
                        help='先配平，再计算矩阵/频响或响应。响应可选平滑脉冲、正负双脉冲和阶跃；使用当前重心惯量。')
         case['analysis']='linearize' if mode.startswith('线化') else 'response'
+        from .model_scope import open_loop_restriction
+        restriction = open_loop_restriction(aircraft)
+        if restriction['issue']:
+            st.warning(restriction['note'])
+            acknowledged = st.checkbox('仅作故障诊断，查看矩阵与响应', value=False,
+                                        key=f'diagnostic:{st.session_state["design_epoch"]}',
+                                        help='允许计算和导出诊断数据，不恢复工程评价资格。')
+            if not acknowledged:
+                return None, None
+            case['diagnostic_only'] = True
         st.caption('低频模型估算：六自由度机体、动态入流、准定常挥舞；桨叶变距角输入。完整动态挥舞和惯性耦合仍待补充。')
     from .download import settings as download_settings
     download = download_settings(aircraft, case['analysis'])
@@ -240,6 +262,12 @@ def input_fingerprint(design,case,batch):
 
 def show_result(record,is_current):
     answer,files=record['answer'],record['files']
+    from .model_scope import open_loop_restriction
+    restriction = answer.get('evaluation_restriction')
+    if record.get('task') == 'open_loop' and restriction is None:
+        restriction = open_loop_restriction(record['design']['aircraft'])
+    if restriction:
+        st.warning(restriction['note'])
     if not is_current:st.warning('参数或工况已修改；以下仍是上次运行结果，点击运行后才会更新。')
     st.subheader('计算结果 · '+record['design']['aircraft']['name'])
     with st.expander('本次实际输入与来源'):
@@ -253,7 +281,7 @@ def show_result(record,is_current):
            ('collective_deg','计算总距','°',1),('rpm','计算转速','rpm',1),
            ('required_power_w','整机需用轴功率','kW',.001),('duration_margin_w','功率余量','kW',.001),
            ('tail_thrust_n','尾桨推力','N',1),('states','动态状态数','',1),('unstable_modes','不稳定特征根数','',1)]
-    chosen=[v for v in specs if v[0] in summary]
+    chosen=[v for v in specs if v[0] in summary and not (restriction and v[0] == 'unstable_modes')]
     if chosen:
         cols=st.columns(min(3,len(chosen)))
         for i,(key,title,unit,factor) in enumerate(chosen):cols[i%len(cols)].metric(title,f'{summary[key]*factor:.5g} {unit}')
