@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "name",
+    "axes",
+    "rotor",
+    "blade_mass",
+    "hub",
+    "flapping",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "const": "rotor_module"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "axes": {
+      "const": "right_handed_z_thrust_x_zero"
+    },
+    "provenance": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rotor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "blade_count": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 12
+        },
+        "radius_m": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 30
+        },
+        "pitch_reference_r_over_R": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "geometry_csv": {
+          "type": "string",
+          "minLength": 1
+        },
+        "polar_csv": {
+          "type": "string",
+          "minLength": 1
+        },
+        "polar_json": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rotation_sign": {
+          "enum": [
+            -1,
+            1
+          ]
+        },
+        "precone_deg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "inflow_model": {
+          "enum": [
+            "uniform",
+            "annular"
+          ]
+        },
+        "tip_loss": {
+          "enum": [
+            "none",
+            "prandtl"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rpm",
+            "collective_deg"
+          ],
+          "properties": {
+            "rpm": {
+              "$ref": "#/$defs/range"
+            },
+            "collective_deg": {
+              "$ref": "#/$defs/range"
+            },
+            "power_w": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "torque_nm": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "cyclic_cos_deg": {
+          "$ref": "#/$defs/range"
+        },
+        "cyclic_sin_deg": {
+          "$ref": "#/$defs/range"
+        }
+      },
+      "required": [
+        "blade_count",
+        "radius_m",
+        "pitch_reference_r_over_R",
+        "geometry_csv",
+        "rotation_sign",
+        "limits"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "polar_csv"
+          ]
+        },
+        {
+          "required": [
+            "polar_json"
+          ]
+        }
+      ]
+    },
+    "flapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "fixed",
+            "hinged"
+          ]
+        },
+        "hinge_offset_m": {
+          "type": "number",
+          "minimum": 0
+        },
+        "precone_deg": {
+          "type": "number"
+        },
+        "max_flap_deg": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 20
+        },
+        "spring_nm_rad": {
+          "type": "number",
+          "minimum": 0
+        },
+        "damper_nms_rad": {
+          "type": "number",
+          "minimum": 0
+        },
+        "delta3_deg": {
+          "type": "number",
+          "minimum": -60,
+          "maximum": 60
+        }
+      },
+      "required": [
+        "mode",
+        "hinge_offset_m",
+        "precone_deg",
+        "max_flap_deg"
+      ]
+    },
+    "blade_mass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provenance"
+      ],
+      "properties": {
+        "provenance": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mass_kg": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "first_mass_moment_kg_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "inertia_kg_m2": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "hub": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provenance"
+      ],
+      "properties": {
+        "provenance": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mass_kg": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "inertia_cg_kg_m2": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/vector"
+          }
+        },
+        "cg_rotor_m": {
+          "$ref": "#/$defs/vector"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "vector": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      }
+    },
+    "range": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "number"
+      }
+    }
+  }
+}

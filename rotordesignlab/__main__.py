@@ -17,9 +17,21 @@ def main():
     batch = commands.add_parser('batch', help='Run an aircraft rotor performance sweep')
     batch.add_argument('case', type=Path)
     batch.add_argument('--out', type=Path, required=True)
+    extract = commands.add_parser('extract-rotor', help='从旧机型或方案包另存独立旋翼模块')
+    extract.add_argument('source', type=Path)
+    extract.add_argument('--rotor-id', required=True)
+    extract.add_argument('--out', type=Path, required=True)
+    extract.add_argument('--case', type=Path, help='可选：将同一旋翼的旧孤立工况转换到模块局部系')
     args = parser.parse_args()
     try:
-        if args.command == 'batch':
+        if args.command == 'extract-rotor':
+            from .rotor_module import extract, convert_case
+            result = extract(args.source, args.rotor_id, args.out)
+            if args.case:
+                from .cases import write_json
+                converted = convert_case(read_case(args.case), read_case(args.out/'migration.json'), read_case(args.out/'case.json'))
+                write_json(args.out/'converted-case.json', converted)
+        elif args.command == 'batch':
             from .batch import run_batch
             result = run_batch(read_case(args.case), args.case.resolve().parent, args.out)
         else:

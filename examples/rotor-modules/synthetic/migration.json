@@ -1,0 +1,58 @@
+{
+  "source_sha256": "3cf0addad307b18bd60cdde3e0c301e7d2526fbc3c807d07e6d37e4f9931db11",
+  "rotor_id": "main",
+  "rotor_to_body": [
+    [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0
+    ]
+  ],
+  "original_position_m": [
+    0,
+    0,
+    -0.6
+  ],
+  "original_defaults": {
+    "rpm": 1700,
+    "collective_deg": 13,
+    "radial_stations": 80
+  },
+  "original_flight": {
+    "x_reference_body": [
+      -1,
+      0,
+      0
+    ],
+    "cyclic_cos_deg": [
+      -15,
+      15
+    ],
+    "cyclic_sin_deg": [
+      -15,
+      15
+    ],
+    "flapping": {
+      "mode": "hinged",
+      "hinge_offset_m": 0.04,
+      "precone_deg": 0,
+      "max_flap_deg": 15,
+      "inertia_kg_m2": 1.2,
+      "first_mass_moment_kg_m": 1.5,
+      "spring_nm_rad": 0,
+      "damper_nms_rad": 0
+    },
+    "provenance": "All flap mass/hinge/limits synthetic"
+  },
+  "note": "旧安装信息仅用于复算映射，不属于独立模块。局部来流/重力=基底转置乘原机体系向量。"
+}

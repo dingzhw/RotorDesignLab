@@ -114,13 +114,13 @@ def run_case(case, base, output):
                   scipy_version=scipy.__version__, status="failed", warnings=[])
     snapshot = case.copy() if isinstance(case, dict) else case
     try:
-        if not isinstance(case, dict) or type(case.get("schema_version")) is not int or case["schema_version"] not in (1, 2, 3):
-            raise ValueError("工况 JSON 必须是 schema_version 为 1、2 或 3 的对象。")
+        if not isinstance(case, dict) or type(case.get("schema_version")) is not int or case["schema_version"] not in (1, 2, 3, 4):
+            raise ValueError("工况 JSON 必须是 schema_version 为 1、2、3 或 4 的对象。")
         result["model"] = case.get("model")
-        expected = {'aircraft_rotor': 2, 'spatial_rotor': 2, 'helicopter': 3}.get(case.get('model'), 1)
+        expected = {'aircraft_rotor': 2, 'spatial_rotor': 2, 'helicopter': 3, 'rotor_module': 4}.get(case.get('model'), 1)
         if case['schema_version'] != expected:
-            raise ValueError('工况版本：旧算例1，aircraft_rotor/spatial_rotor为2，helicopter为3。')
-        if 'environment' in case and case.get('model') not in ('helicopter', 'aircraft_rotor', 'spatial_rotor'):
+            raise ValueError('工况版本：旧算例1，aircraft_rotor/spatial_rotor为2，helicopter为3，rotor_module为4。')
+        if 'environment' in case and case.get('model') not in ('helicopter', 'aircraft_rotor', 'spatial_rotor', 'rotor_module'):
             raise ValueError('显式环境设置用于统一机型入口；历史原始算例按其原输入复算。')
         if case.get("model") == "uh60":
             duration = numeric(case, "duration_s", 0.1, 3)
@@ -142,6 +142,10 @@ def run_case(case, base, output):
             else:
                 from .hover import run_budget
                 payload, snapshot = run_budget(case, base, output)
+            result.update(payload)
+        elif case.get('model') == 'rotor_module':
+            from .rotor_module import run
+            payload, snapshot = run(case, base, output)
             result.update(payload)
         elif case.get('model') == 'spatial_rotor':
             from .isolated import run_spatial
@@ -198,7 +202,7 @@ def run_case(case, base, output):
             result['atmosphere'] = from_case(case)
     except (ValueError, RuntimeError, OSError, TimeoutExpired) as error:
         result["error"] = str(error)
-        if isinstance(case, dict) and case.get('model') in ('helicopter','spatial_rotor','axial_rotor','aircraft_rotor'):
+        if isinstance(case, dict) and case.get('model') in ('helicopter','spatial_rotor','axial_rotor','aircraft_rotor','rotor_module'):
             result.update(solver_status='failed', support_status='not_established',
                           design_limits_status='not_evaluated', evidence_status='model_estimate')
             if (output / 'case.json').exists():

@@ -1,0 +1,67 @@
+{
+  "unit_regression": {
+    "tests": 99,
+    "passed": true,
+    "elapsed_s": 171.349
+  },
+  "module_final_checks": {
+    "tests": 4,
+    "passed": true,
+    "elapsed_s": 21.076
+  },
+  "examples": {
+    "demo-synthetic": {
+      "status": "converged",
+      "summary": {
+        "thrust_n": 2011.006197901324,
+        "torque_nm": 205.9700472032404,
+        "power_w": 36667.525938683764,
+        "rpm": 1699.9999999999998,
+        "collective_deg": 13,
+        "flap_coning_deg": 0.6592672507318535,
+        "flap_cos_deg": 3.8915567220206525e-15,
+        "flap_sin_deg": -2.062794984192646e-14
+      },
+      "missing_mass_data": []
+    },
+    "demo-public": {
+      "status": "converged",
+      "summary": {
+        "thrust_n": 81384.14251722406,
+        "torque_nm": 49471.95104990223,
+        "power_w": 1335742.6783473603,
+        "rpm": 257.8310078088705,
+        "collective_deg": 8,
+        "flap_coning_deg": 3.8586301824779357,
+        "flap_cos_deg": -7.065147851767495e-05,
+        "flap_sin_deg": -0.0007385995674168836
+      },
+      "missing_mass_data": [
+        "blade_mass/mass_kg",
+        "hub/mass_kg",
+        "hub/cg_rotor_m",
+        "hub/inertia_cg_kg_m2"
+      ]
+    },
+    "demo-public-replay": {
+      "status": "converged",
+      "summary": {
+        "thrust_n": 81384.14251722406,
+        "torque_nm": 49471.95104990223,
+        "power_w": 1335742.6783473603,
+        "rpm": 257.8310078088705,
+        "collective_deg": 8,
+        "flap_coning_deg": 3.8586301824779357,
+        "flap_cos_deg": -7.065147851767495e-05,
+        "flap_sin_deg": -0.0007385995674168836
+      },
+      "missing_mass_data": [
+        "blade_mass/mass_kg",
+        "hub/mass_kg",
+        "hub/cg_rotor_m",
+        "hub/inertia_cg_kg_m2"
+      ]
+    }
+  },
+  "scope": "software equivalence and isolated module independence; not new physical validation"
+}

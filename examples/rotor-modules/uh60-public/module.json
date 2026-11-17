@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "rotor_module",
+  "id": "main",
+  "name": "UH-60 公开部件模型（含显式假设） / main",
+  "axes": "right_handed_z_thrust_x_zero",
+  "rotor": {
+    "blade_count": 4,
+    "radius_m": 8.177783999999999,
+    "pitch_reference_r_over_R": 0.75,
+    "geometry_csv": "geometry.csv",
+    "rotation_sign": 1,
+    "limits": {
+      "rpm": [
+        200,
+        300
+      ],
+      "collective_deg": [
+        2,
+        24
+      ]
+    },
+    "polar_json": "polar.json",
+    "cyclic_cos_deg": [
+      -15,
+      15
+    ],
+    "cyclic_sin_deg": [
+      -15,
+      15
+    ]
+  },
+  "blade_mass": {
+    "provenance": "从旧旋翼字段原值提取；单片质量未提供，不由质量矩反推。",
+    "inertia_kg_m2": 2050.8102290386523,
+    "first_mass_moment_kg_m": 385.6608141169104
+  },
+  "flapping": {
+    "mode": "hinged",
+    "hinge_offset_m": 0.381,
+    "precone_deg": 0,
+    "max_flap_deg": 15,
+    "spring_nm_rad": 0,
+    "damper_nms_rad": 0
+  },
+  "hub": {
+    "provenance": "旧文件未提供桨毂独立质量/重心惯量。"
+  },
+  "provenance": "H60_constants: R, NB, chord, twist, OMEGA, ITHSH, FS/WL; limits and efficiency estimated"
+}

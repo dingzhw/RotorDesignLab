@@ -1,0 +1,26 @@
+{
+  "schema_version": 4,
+  "model": "rotor_module",
+  "module_file": "module.json",
+  "method": "spatial",
+  "flapping_model": "module",
+  "rpm": 257.8310078088705,
+  "collective_deg": 8,
+  "radial_stations": 80,
+  "flow_rotor_m_s": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "gravity_rotor_m_s2": [
+    0.5132404052898651,
+    0.0,
+    -9.79321032700094
+  ],
+  "environment": {
+    "mode": "custom",
+    "density_kg_m3": 1.225,
+    "speed_of_sound_m_s": 340.3,
+    "dynamic_viscosity_pa_s": 1.7894e-05
+  }
+}

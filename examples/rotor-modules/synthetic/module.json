@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "kind": "rotor_module",
+  "id": "main",
+  "name": "200 kg 合成无人直升机 · 六分量配平 / main",
+  "axes": "right_handed_z_thrust_x_zero",
+  "rotor": {
+    "blade_count": 3,
+    "radius_m": 1.1,
+    "pitch_reference_r_over_R": 0.75,
+    "geometry_csv": "geometry.csv",
+    "polar_csv": "polar.csv",
+    "rotation_sign": 1,
+    "limits": {
+      "rpm": [
+        800,
+        2100
+      ],
+      "collective_deg": [
+        2,
+        24
+      ],
+      "power_w": 80000,
+      "torque_nm": 450
+    },
+    "cyclic_cos_deg": [
+      -15,
+      15
+    ],
+    "cyclic_sin_deg": [
+      -15,
+      15
+    ]
+  },
+  "blade_mass": {
+    "provenance": "合成验证分布：m0=2.5 kg，m1=1.5 kg m，Iβ=1.2 kg m²；不是实测桨叶。",
+    "inertia_kg_m2": 1.2,
+    "first_mass_moment_kg_m": 1.5,
+    "mass_kg": 2.5
+  },
+  "flapping": {
+    "mode": "hinged",
+    "hinge_offset_m": 0.04,
+    "precone_deg": 0,
+    "max_flap_deg": 15,
+    "spring_nm_rad": 0,
+    "damper_nms_rad": 0
+  },
+  "hub": {
+    "mass_kg": 2.0,
+    "cg_rotor_m": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "inertia_cg_kg_m2": [
+      [
+        0.02,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.02,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.03
+      ]
+    ],
+    "provenance": "合成桨毂，用于字段及质量归属检查；当前稳态气动不使用这些质量属性。"
+  },
+  "provenance": "Same synthetic geometry and polar as v0.1.0"
+}

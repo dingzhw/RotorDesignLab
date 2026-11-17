@@ -1,0 +1,58 @@
+{
+  "source_sha256": "533e1202a4c0bd3d9cc7e5398aa68b74c03335d990fb82b762a67371e8e20f15",
+  "rotor_id": "main",
+  "rotor_to_body": [
+    [
+      0.9986295347545739,
+      0.0,
+      0.052335956242943835
+    ],
+    [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    [
+      0.052335956242943835,
+      0.0,
+      -0.9986295347545738
+    ]
+  ],
+  "original_position_m": [
+    0.42545,
+    0,
+    -1.6967200000000002
+  ],
+  "original_defaults": {
+    "rpm": 257.8310078088705,
+    "collective_deg": 8,
+    "radial_stations": 80
+  },
+  "original_flight": {
+    "x_reference_body": [
+      1,
+      0,
+      0
+    ],
+    "cyclic_cos_deg": [
+      -15,
+      15
+    ],
+    "cyclic_sin_deg": [
+      -15,
+      15
+    ],
+    "flapping": {
+      "mode": "hinged",
+      "hinge_offset_m": 0.381,
+      "precone_deg": 0,
+      "max_flap_deg": 15,
+      "inertia_kg_m2": 2050.8102290386523,
+      "first_mass_moment_kg_m": 385.6608141169104,
+      "spring_nm_rad": 0,
+      "damper_nms_rad": 0
+    },
+    "provenance": "UH-60 H60_constants IBETA/MBETA/HOFFSET converted SI; control/flap limits estimated"
+  },
+  "note": "旧安装信息仅用于复算映射，不属于独立模块。局部来流/重力=基底转置乘原机体系向量。"
+}
