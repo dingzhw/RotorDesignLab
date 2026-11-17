@@ -1,0 +1,100 @@
+{
+  "package_sha256": "3bd8c41758ee2413c34c22e19254c793e1776d330f31772741c9da44f9068ba5",
+  "checks": [
+    {
+      "speed_m_s": 0.0,
+      "inflow": "frozen",
+      "mass_factor": 1.0,
+      "derivative_halving_change": 2.336261061372286e-08,
+      "passed": true
+    },
+    {
+      "speed_m_s": 0.0,
+      "inflow": "frozen",
+      "mass_factor": 1.5,
+      "derivative_halving_change": 2.9443598549265393e-08,
+      "passed": true
+    },
+    {
+      "speed_m_s": 0.0,
+      "inflow": "frozen",
+      "mass_factor": 2.0,
+      "derivative_halving_change": 3.316608945786494e-08,
+      "passed": true
+    },
+    {
+      "speed_m_s": 0.0,
+      "inflow": "quasisteady",
+      "mass_factor": 1.0,
+      "derivative_halving_change": 1.1335767893532292e-08,
+      "passed": true
+    },
+    {
+      "speed_m_s": 0.0,
+      "inflow": "quasisteady",
+      "mass_factor": 1.5,
+      "derivative_halving_change": 5.3571396045938115e-08,
+      "passed": true
+    },
+    {
+      "speed_m_s": 0.0,
+      "inflow": "quasisteady",
+      "mass_factor": 2.0,
+      "derivative_halving_change": 1.1674357003413202e-08,
+      "passed": true
+    },
+    {
+      "speed_m_s": 20.58,
+      "inflow": "frozen",
+      "mass_factor": 1.0,
+      "derivative_halving_change": 0.001210507146715287,
+      "passed": true
+    },
+    {
+      "speed_m_s": 20.58,
+      "inflow": "frozen",
+      "mass_factor": 1.5,
+      "derivative_halving_change": 0.001210507146715287,
+      "passed": true
+    },
+    {
+      "speed_m_s": 20.58,
+      "inflow": "frozen",
+      "mass_factor": 2.0,
+      "derivative_halving_change": 0.0012105085250621141,
+      "passed": true
+    },
+    {
+      "speed_m_s": 20.58,
+      "inflow": "quasisteady",
+      "mass_factor": 1.0,
+      "derivative_halving_change": 0.0001349965813535473,
+      "passed": true
+    },
+    {
+      "speed_m_s": 20.58,
+      "inflow": "quasisteady",
+      "mass_factor": 1.5,
+      "derivative_halving_change": 0.0001349965813535473,
+      "passed": true
+    },
+    {
+      "speed_m_s": 20.58,
+      "inflow": "quasisteady",
+      "mass_factor": 2.0,
+      "derivative_halving_change": 0.0001349965813535473,
+      "passed": true
+    }
+  ],
+  "scope": "Main rotor only; body-axis forces and shaft-origin moments; frozen vs quasi-steady inflow; prescribed zero hub/angular acceleration.",
+  "mass_assumption": "m1²/I is only a lower bound; 1/1.5/2 times that bound are sensitivity cases, not measured blade mass.",
+  "engineering_use_allowed": false,
+  "missing": [
+    "main blade mass provenance",
+    "tail blade mass moments",
+    "whole-aircraft vs nonrotating mass/inertia partition",
+    "implicit acceleration/flap coupling",
+    "slow harmonic-amplitude derivatives",
+    "full aircraft signed derivative comparison"
+  ]
+}

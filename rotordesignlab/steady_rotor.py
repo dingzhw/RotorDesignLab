@@ -8,6 +8,7 @@ import numpy as np
 from scipy.optimize import brentq,least_squares
 
 from .azimuth import AzimuthRotor
+from .hub_loads import blade_motion, flap_inertial_moment
 
 
 def pitt_peters(inflow, velocity, thrust_coefficient, pressure_moments, *, dynamic=False, omega=1.):
@@ -54,7 +55,8 @@ class SteadyRotor:
         limit=np.deg2rad(self.config['max_flap_deg'])
         return np.r_[1e-6,-.5,-.5,-limit,-limit,-limit],np.r_[.5,.5,.5,limit,limit,limit]
 
-    def evaluate(self, state, controls, velocity, gravity=(0,0,-9.80665), strict=False, *, body_rates=(0,0,0), require_equilibrium=True):
+    def evaluate(self, state, controls, velocity, gravity=(0,0,-9.80665), strict=False, *, body_rates=(0,0,0), require_equilibrium=True,
+                 hub_acceleration=(0,0,0), body_acceleration=(0,0,0)):
         state=np.asarray(state,dtype=float);inflow,flap=state[:3],state[3:]
         data=self.kernel.elements(controls,inflow,flap,velocity,strict=strict,body_rates=body_rates)
         thrust=data['force'][2];ct=thrust/self.scale
@@ -65,21 +67,26 @@ class SteadyRotor:
             residual_flap=flap-np.deg2rad([cfg['precone_deg'],0,0])
             harmonic_defect=0.
         else:
-            inertia=cfg['inertia_kg_m2'];m1=cfg['first_mass_moment_kg_m'];omega=self.rotor.omega
-            beta=data['beta']
-            centrifugal=omega**2*np.sin(beta)*(inertia*np.cos(beta)+cfg['hinge_offset_m']*m1)
-            spring=cfg['spring_nm_rad']*(beta-np.deg2rad(cfg['precone_deg']))
-            damping=cfg['damper_nms_rad']*data['beta_dot']
-            gravity_moment=m1*(data['normal']@np.asarray(gravity))
-            # Constant body-rate Coriolis/centripetal terms projected at the hinge.
-            # Hub/shaft acceleration coupling is omitted in the reduced model.
-            n=data['normal'];er=self.kernel.er;et=self.kernel.et
-            b=np.cos(beta)[:,None]*er;b[:,2]=np.sin(beta)
-            weighted_position=cfg['hinge_offset_m']*m1*er+inertia*b
-            weighted_velocity=omega*(cfg['hinge_offset_m']*m1+inertia*np.cos(beta))[:,None]*et+inertia*data['beta_dot'][:,None]*n
-            rate_accel=2*np.cross(body_rates,weighted_velocity)+np.cross(body_rates,np.cross(body_rates,weighted_position))
-            rate_moment=np.einsum('ij,ij->i',n,rate_accel)
-            defect=(inertia*data['beta_ddot']+centrifugal+spring+damping+rate_moment-data['flap_moment']-gravity_moment)/(inertia*omega**2)
+            inertia = cfg['inertia_kg_m2']
+            first_moment = cfg['first_mass_moment_kg_m']
+            omega = self.rotor.omega
+            beta = data['beta']
+            spring = cfg['spring_nm_rad'] * (beta - np.deg2rad(cfg['precone_deg']))
+            damping = cfg['damper_nms_rad'] * data['beta_dot']
+            gravity_moment = first_moment * (data['normal'] @ np.asarray(gravity))
+            # Same Newton--Euler acceleration field as the hub-load kernel.
+            # Existing callers prescribe zero hub/angular acceleration, retaining
+            # their historical reduced-model equations. No reaction is silently
+            # inserted into the aircraft's whole-vehicle mass/inertia equation.
+            motion = blade_motion(
+                self.kernel.psi, beta, data['beta_dot'], data['beta_ddot'],
+                omega, self.kernel.rotation_sign, cfg['hinge_offset_m'],
+                body_rates=body_rates, hub_acceleration=hub_acceleration,
+                body_acceleration=body_acceleration,
+            )
+            inertial_moment = flap_inertial_moment(motion, first_moment, inertia)
+            defect = (inertial_moment + spring + damping - data['flap_moment']
+                      - gravity_moment) / (inertia * omega**2)
             residual_flap=np.array([1,2,2])*np.mean(defect[:,None]*self.kernel.harmonics,axis=0)
             harmonic_defect=float(np.sqrt(np.mean(defect**2)))
         residual=np.r_[ir,residual_flap]
