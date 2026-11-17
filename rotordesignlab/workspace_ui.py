@@ -306,10 +306,10 @@ def show_result(record,is_current):
         st.caption(download['comparison_note'])
     installation=answer.get('installation',{})
     if 'moment_hub_body_nm' in installation:
-        st.caption('整转平均气动力：机体系X向前、Y向右、Z向下；力矩按右手定则。轮毂力矩与移轴到重心的力矩分别列出。')
+        st.caption('整转平均气动力：机体系X向前、Y向右、Z向下；力矩按右手定则。桨毂力矩与移轴到重心的力矩分别列出。')
         st.dataframe(pd.DataFrame([
             {'载荷':'气动力 / N',**dict(zip(('X','Y','Z'),installation['force_body_n']))},
-            {'载荷':'关于轮毂的气动力矩 / (N·m)',**dict(zip(('X','Y','Z'),installation['moment_hub_body_nm']))},
+            {'载荷':'关于桨毂的气动力矩 / (N·m)',**dict(zip(('X','Y','Z'),installation['moment_hub_body_nm']))},
             {'载荷':'关于重心的气动力矩 / (N·m)',**dict(zip(('X','Y','Z'),installation['moment_cg_body_nm']))},
         ]),hide_index=True)
     for name in ('performance.png','azimuth.png','controls.png','modes.png','frequency.png','input.png','response.png'):
@@ -350,6 +350,11 @@ def render(task_label):
     task = TASKS[task_label]
     case, batch = None, None
     input_errors = []
+    if task == 'rotor':
+        st.info('孤立旋翼：从当前方案中取出所选主旋翼或尾桨，给定总距、转速与来流，单独计算气动力和功率。不会自动加入另一旋翼、机身、尾翼或整机重量，也不求整机平衡。安装确定来流投影和载荷方向，重心仅用于力矩移轴。')
+    else:
+        st.info('整机任务：共用当前方案的主尾桨、机身、尾翼、质量与动力参数。悬停预算求功率和载荷需求；配平联立求姿态与操纵量。孤立旋翼页填写的总距和来流不会自动作为整机配平条件。')
+    st.caption('上方任务区填写本次工况，下方详细设置编辑方案参数。各任务分别保存工况；切换任务时请核对本页环境与速度，结果对应实际提交的输入。')
     if task == 'open_loop':
         st.info(OPEN_LOOP_LABEL + '：动态入流、准定常挥舞；独立动态验证尚未完成。')
     try:
@@ -357,7 +362,7 @@ def render(task_label):
     except (ValueError, KeyError, TypeError, StopIteration, IndexError) as error:
         input_errors.append('任务输入暂不完整，请在详细设置补齐：' + str(error))
     try:
-        details()
+        details(task, case.get('rotor_id') if case else None)
     except (ValueError, KeyError, TypeError, IndexError) as error:
         input_errors.append('详细设置存在结构缺项，请补齐或重新载入完整方案：' + str(error))
     errors = input_errors + designs.issues(current(), case.get('analysis') if case else None)

@@ -36,7 +36,7 @@ def render_mounting(rotor, index, epoch, put_at):
                                 help='尾桨正总距对应的正推力方向；与顺/逆时针旋向是两个独立参数。')
         zero = st.number_input('零方位绕轴偏置 / °', value=angles['zero_deg'], min_value=-180., max_value=180., key=key + 'zero',
                                help='主桨以机尾投影、尾桨以机头投影为0；绕正推力轴右手方向增加。历史机头零方位主桨回显±180°，保持原计算。')
-        sign = st.selectbox('旋转方向（从正推力轴端看向轮毂）', [1, -1], index=0 if rotor['rotation_sign'] == 1 else 1,
+        sign = st.selectbox('旋转方向（从正推力轴端看向桨毂）', [1, -1], index=0 if rotor['rotation_sign'] == 1 else 1,
                             format_func=lambda v: '逆时针（+1）' if v == 1 else '顺时针（−1）', key=key + 'sign',
                             help='常规向上主桨相当于从上往下看；向右尾桨相当于从机体右侧向内看。正方位角始终从局部+x朝+y，旋向只决定桨叶经过方位的次序。')
         submitted = st.form_submit_button('应用安装角')

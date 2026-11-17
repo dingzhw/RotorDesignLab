@@ -52,7 +52,7 @@ def blade_motion(psi, beta, beta_dot, beta_ddot, omega, rotation_sign, hinge_off
     rate, hub_acc, angular_acc = [np.asarray(v, dtype=float) for v in
                                  (body_rates, hub_acceleration, body_acceleration)]
     if any(v.shape != (3,) or not np.isfinite(v).all() for v in (rate, hub_acc, angular_acc)):
-        raise ValueError('角速度、轮毂加速度、角加速度均须为三个有限数。')
+        raise ValueError('角速度、桨毂加速度、角加速度均须为三个有限数。')
     er = np.column_stack((np.cos(psi), np.sin(psi), np.zeros_like(psi)))
     epsi = np.column_stack((-np.sin(psi), np.cos(psi), np.zeros_like(psi)))
     span = np.cos(beta)[:, None] * er

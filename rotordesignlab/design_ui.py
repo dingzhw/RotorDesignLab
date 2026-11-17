@@ -85,7 +85,7 @@ def scalar(path,schema):
         options=schema['enum']
         labels = {'none': '不附加残余比例力', 'legacy_fraction': '历史常比例下载'} if name == 'download_policy' else ENUM_LABELS
         if name == 'rotation_sign':
-            labels = {1: '逆时针（从正推力轴端看向轮毂）', -1: '顺时针（从正推力轴端看向轮毂）'}
+            labels = {1: '逆时针（从正推力轴端看向桨毂）', -1: '顺时针（从正推力轴端看向桨毂）'}
         st.selectbox(label(name),options,index=options.index(value) if value in options else None,
                      format_func=lambda v:labels.get(v,str(v)),**kwargs)
     elif schema.get('type')=='boolean':
@@ -282,11 +282,23 @@ def airfoil_editor(rotor,index):
         st.warning('系数尚不完整，暂不预览：' + str(error))
 
 
-def rotor_parameters(rotor, index, schema):
+def rotor_parameters(rotor, index, schema, isolated=False):
     from .mounting_ui import render_mounting
     render_mounting(rotor, index, st.session_state['design_epoch'], put_at)
     schema = deepcopy(schema)
     properties = schema['properties']
+    # Atmospheric values are operating conditions, not blade properties.
+    # Retain historical fields in the saved aircraft, but never edit a second
+    # competing atmosphere in the ordinary workspace.
+    for name in ('speed_of_sound_m_s', 'dynamic_viscosity_pa_s'):
+        properties.pop(name, None)
+    if isolated:
+        properties.pop('defaults', None)
+    st.info('空气密度、声速和动力黏度统一在上方“空气环境”设置；声速用于Mach数，不是上升速度。这里不另设空气参数。')
+    with st.expander('历史空气参数记录（只读）'):
+        st.caption('保留旧文件数值供历史工况复算；当前网页计算使用任务区的空气环境。')
+        st.write({'历史声速 / (m/s)': rotor.get('speed_of_sound_m_s', 340.3),
+                  '历史动力黏度 / (Pa·s)': rotor.get('dynamic_viscosity_pa_s', 1.7894e-5)})
     raw = {name: properties.pop(name) for name in ('thrust_axis_body', 'rotation_sign')}
     flight = properties.get('flight', {}).get('properties', {})
     reference = flight.pop('x_reference_body', None)
@@ -295,11 +307,11 @@ def rotor_parameters(rotor, index, schema):
         object_editor(['aircraft', 'rotors', index], dict(properties=raw))
         if reference and 'flight' in rotor:
             object_editor(['aircraft', 'rotors', index, 'flight'], dict(properties={'x_reference_body': reference}))
-    st.caption('下面“参考工况”用于新建计算输入或整机给定转速；孤立旋翼实际总距/转速取计算页。固定桨叶取旋翼一级预锥；机型挥舞模式取flight.flapping中的预锥和运动参数。')
+    st.caption('本次孤立旋翼的总距、转速和网格只在任务区填写。整机任务的参考转速及配平初值在整机参数视图修改。固定桨叶使用旋翼预锥；选择机型挥舞时使用挥舞参数中的预锥。')
     object_editor(['aircraft', 'rotors', index], schema)
 
 
-def details():
+def details(task=None, rotor_id=None):
     a=current()['aircraft'];props=(SCHEMA_V2 if a['schema_version']==2 else SCHEMA)['properties']
     with st.expander('详细设置：机型、旋翼、气动与动力',expanded=False):
         from .previews import layout_figure, show
@@ -311,6 +323,18 @@ def details():
             st.caption('示意采用实际桨毂位置、半径、安装轴和重心；虚线仅连接位置，未提供机身/尾翼外形时不虚构轮廓。')
         st.info('机体系：x向前、y向右、z向下。位置共用同一原点；重心和部件位置均填绝对坐标，程序计算相对力臂。单位向量不自动归一化，以便检查填写错误。')
         groups=['基本信息','质量、重心与惯量','主旋翼','尾桨','悬停下载','动力与传动','配平姿态限制','机身','平尾与垂尾']
+        isolated = task == 'rotor'
+        show_all = not isolated
+        if isolated:
+            show_all = st.checkbox('查看整机及其他旋翼参数', value=False,
+                                   help='仅扩展编辑范围，不改变当前计算任务。整机质量、动力和其他部件不会自动加入孤立旋翼气动力计算。')
+            if not show_all:
+                selected = next((r for r in a['rotors'] if r['id'] == rotor_id), a['rotors'][0])
+                group_name = '尾桨' if selected.get('role') == 'tail' else '主旋翼'
+                groups = [group_name, '基本信息']
+                if st.session_state.get('parameter-group') not in groups:
+                    st.session_state['parameter-group'] = group_name
+            st.caption('这里编辑的是当前方案的旋翼部件。几何、翼型和安装修改也会用于之后的整机任务；本次仍只计算所选旋翼。')
         group=st.selectbox('参数分组',groups,key='parameter-group',help='本次计算的总距、转速与来流在计算页直接填写；这里设置方案的几何、安装、气动、质量和限制。')
         if group=='基本信息':
             st.caption('方案名称在上方“方案管理”中修改。')
@@ -322,7 +346,7 @@ def details():
             i=indexes[0];rotor=a['rotors'][i];schema=props['rotors']['items']
             page=st.radio('旋翼设置内容',['参数与操纵','桨叶几何表','翼型气动表'],horizontal=True,key='rotor-page',help='参数与操纵包含桨叶数、半径、安装、参考工况和限位；另两页可直接编辑数值表。')
             if page == '参数与操纵':
-                rotor_parameters(rotor, i, schema)
+                rotor_parameters(rotor, i, schema, isolated=isolated and not show_all)
             elif page=='桨叶几何表':
                 st.caption('r/R递增到1；弦长是实际米数；扭转相对总距参考站归零后使用。表格可以直接增加/删除径向站。')
                 csv_editor(rotor,i,'geometry_csv')

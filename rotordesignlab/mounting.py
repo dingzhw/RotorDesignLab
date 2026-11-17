@@ -59,7 +59,7 @@ def coordinate_metadata(rotor):
     return dict(basis_rotor_to_body=basis.tolist(), x_zero_body=basis[:, 0].tolist(),
                 y_90_body=basis[:, 1].tolist(), positive_thrust_axis_body=basis[:, 2].tolist(),
                 rotation_sign=rotor['rotation_sign'],
-                rotation_view='从正推力轴端看向轮毂',
+                rotation_view='从正推力轴端看向桨毂',
                 rotation_direction='逆时针' if rotor['rotation_sign'] == 1 else '顺时针',
                 harmonic_definition='theta(psi)=theta0+theta_cos*cos(psi)+theta_sin*sin(psi); psi: +x toward +y')
 
@@ -96,7 +96,7 @@ def azimuth_figure(rotor, flow_body=None, controls_deg=(0., 0., 0.)):
                   xytext=.44 * np.array([np.cos(start), np.sin(start)]),
                   arrowprops=dict(arrowstyle='->', connectionstyle=f'arc3,rad={.3 * sign}', color='#c85a17'))
     word = '逆时针' if sign == 1 else '顺时针'
-    disk.set(title='从正推力轴端看向轮毂 · ' + word, xlabel='旋翼局部 x / R', ylabel='旋翼局部 y / R',
+    disk.set(title='从正推力轴端看向桨毂 · ' + word, xlabel='旋翼局部 x / R', ylabel='旋翼局部 y / R',
              xlim=(-1.65, 1.65), ylim=(-1.6, 1.6), aspect='equal')
     theta0, cosine, sine = controls_deg
     pitch.plot(np.rad2deg(angle), theta0 + cosine * np.cos(angle) + sine * np.sin(angle))

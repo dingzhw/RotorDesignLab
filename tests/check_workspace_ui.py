@@ -12,7 +12,11 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def field(items,label):return next(i for i in items if i.label==label)
 def ok(app):assert not app.exception,[e.value for e in app.exception]
-def choose(app,group):field(app.selectbox,'参数分组').set_value(group).run();ok(app)
+def choose(app, group):
+    if group not in field(app.selectbox, '参数分组').options:
+        field(app.checkbox, '查看整机及其他旋翼参数').check().run()
+    field(app.selectbox, '参数分组').set_value(group).run()
+    ok(app)
 def run(app):
     for checkbox in app.checkbox:
         if checkbox.label == '仅作故障诊断，查看矩阵与响应' and not checkbox.value:
@@ -97,7 +101,13 @@ def replay(record):
         assert result['status']==record['answer']['status'],result
         assert result.get('summary')==record['answer'].get('summary')
         if 'linearization' in result:assert result['linearization']==record['answer']['linearization']
-        assert designs.unpack((root/'design.rdl').read_bytes())==record['design']
+        expected = deepcopy(record['design'])
+        if record['case'].get('model') in ('spatial_rotor', 'aircraft_rotor'):
+            from rotordesignlab.design_models import MODELS
+            expected['settings'].setdefault('rotor', {})['flow_model'] = next(
+                label for label, model in MODELS.items() if model == record['case']['model'])
+            expected['settings']['_last_rotor_case'] = deepcopy(record['case'])
+        assert designs.unpack((root/'design.rdl').read_bytes()) == designs.unpack(designs.pack(expected))
 
 
 def analysis_checks(app,tasks=None):

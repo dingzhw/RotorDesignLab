@@ -35,7 +35,7 @@ def render_velocity(design, epoch, setting):
 
     view = cfg.get('velocity_view', default_view)
     view = st.selectbox('速度输入视角', ['motion', 'flow'], index=0 if view == 'motion' else 1,
-                        format_func=lambda v: {'motion': '飞行器运动速度', 'flow': '空气相对轮毂 XYZ'}[v],
+                        format_func=lambda v: {'motion': '飞行器运动速度', 'flow': '空气相对桨毂 XYZ'}[v],
                         key=view_key, on_change=change_view,
                         help='切换时转换已填数值，保持同一物理速度。运动视角相对静止空气；XYZ视角使用机体系，均不含诱导速度。')
     if prefix + 'switch_error' in st.session_state:
@@ -47,7 +47,7 @@ def render_velocity(design, epoch, setting):
         keys = MOTION_AXES
     else:
         labels = tuple('来流 ' + axis + ' 分量 / (m/s)' for axis in 'XYZ')
-        helps = ('空气相对轮毂，沿机体系X向前为正；水平前飞20 m/s时填−20。',
+        helps = ('空气相对桨毂，沿机体系X向前为正；水平前飞20 m/s时填−20。',
                  '沿机体系Y向右为正；水平向右运动时此分量为负。',
                  '沿机体系Z向下为正；水平姿态上升3 m/s时填+3。')
         keys = FLOW_AXES
@@ -78,7 +78,7 @@ def inflow_preview(case, rotor, rpm):
         vector = lambda values: '[' + ', '.join(f'{v:.5g}' for v in values) + ']'
         st.caption(f'实际运动〔水平前、水平右、上〕：{vector(motion)} m/s；滚转/俯仰：{vector(angles)}°。')
         st.caption(f'实际空气来流〔机体系X、Y、Z〕：{vector(flow)} m/s；合速度 {np.linalg.norm(flow):.5g} m/s。')
-        st.caption(f'所选旋翼盘面内推进比 μ={mu:.5g}；沿正推力轴的轮毂运动分量 {velocity[2]:.5g} m/s（不含诱导）。反求转速时以求得转速为准。')
+        st.caption(f'所选旋翼盘面内推进比 μ={mu:.5g}；沿正推力轴的桨毂运动分量 {velocity[2]:.5g} m/s（不含诱导）。反求转速时以求得转速为准。')
         if mu > .25 or velocity[2] < -1e-9:
             st.warning('当前参考工况超出μ≤0.25或正贯流范围；最终支持状态以求解诊断为准。')
     except (ValueError, TypeError, KeyError) as error:

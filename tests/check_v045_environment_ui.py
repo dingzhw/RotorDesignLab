@@ -27,6 +27,7 @@ with TemporaryDirectory() as directory, patch.object(designs, 'LIBRARY', Path(di
     epoch = app.session_state['design_epoch']
     app.session_state[f'd:{epoch}:aircraft/powerplant/accessory_power_w'] = 999000.
     app.session_state[f'd:{epoch}:aircraft/powerplant/_table'] = {'edited_rows': {0: {'continuous_power_w': 999000}}, 'added_rows': [], 'deleted_rows': []}
+    field(app.checkbox, '查看整机及其他旋翼参数').check().run()
     field(app.selectbox, '参数分组').set_value('动力与传动').run()
     original = app.session_state['design']['aircraft']['powerplant']['accessory_power_w']
     assert field(app.number_input, '附件耗功 / kW').value == original / 1000

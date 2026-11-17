@@ -174,9 +174,9 @@ def run_spatial(case,base,output):
     solved=dict(snapshot,rpm=summary['rpm'],collective_deg=summary['collective_deg']);solved.pop('target',None)
     write_json(output/'solved-case.json',solved)
     notes=['# 孤立旋翼三方向来流结果','',f"拉力 {summary['thrust_n']:.6g} N；轴功率 {summary['power_w']/1000:.6g} kW。",
-        f'输入来流（空气相对轮毂，机体系m/s）：{flow.tolist()}。',
+        f'输入来流（空气相对桨毂，机体系m/s）：{flow.tolist()}。',
         f"机体滚转/俯仰（°）：{snapshot.get('attitude_deg', [0., 0.])}；实际运动〔水平前、水平右、上〕m/s：{flow_to_motion(flow, snapshot.get('attitude_deg', [0., 0.])).tolist()}。",
-        '机体系x向前、y向右、z向下；力矩按右手定则，CSV区分轮毂与重心。',
+        '机体系x向前、y向右、z向下；力矩按右手定则，CSV区分桨毂与重心。',
         '方位角从旋翼+x向+y增加；旋翼+z为正推力轴。输出为整转平均气动力，不含重力或整机配平。',
         '适用范围：正推力、正轴功率、非负正贯流、μ≤0.25，且所有当地攻角/Mach/Re在所给翼型数据域内。',
         '采用现有稳态三状态Pitt–Peters入流；不含展向气动力、尾流旋转、非定常失速或弹性桨叶。',

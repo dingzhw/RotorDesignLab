@@ -18,13 +18,14 @@ with TemporaryDirectory() as directory, patch.object(designs, 'LIBRARY', Path(di
         app.session_state['design'] = designs.from_template(template)
         app.session_state['design_epoch'] += 1
         app.run()
+        field(app.checkbox, '查看整机及其他旋翼参数').check().run()
         field(app.selectbox, '参数分组').set_value('主旋翼').run()
         ok(app)
         assert field(app.number_input, '零方位绕轴偏置 / °').value == 0.
         field(app.number_input, '主轴前倾角 / °').set_value(5.)
         field(app.number_input, '主轴右倾角 / °').set_value(-4.)
         field(app.number_input, '零方位绕轴偏置 / °').set_value(12.)
-        field(app.selectbox, '旋转方向（从正推力轴端看向轮毂）').set_value(-1)
+        field(app.selectbox, '旋转方向（从正推力轴端看向桨毂）').set_value(-1)
         field(app.button, '应用安装角').click().run()
         ok(app)
         np.testing.assert_allclose(selected_basis(app.session_state['design']['aircraft']['rotors'][0]), tilt_basis('main', 5, -4, 12), atol=1e-14)

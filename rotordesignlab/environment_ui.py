@@ -7,6 +7,7 @@ def render_environment(design, task, setting, altitude=None, rotor=None):
     modern = design['settings'].get('_workspace_revision', 3) >= 6 and design['aircraft']['schema_version'] == 2
     default = 'isa' if modern or task != 'rotor' else 'custom'
     with st.expander('空气环境：高度、温差与气动参数', expanded=task == 'rotor'):
+        st.caption('这是本次计算空气参数的唯一设置入口。ISA模式自动计算三项；需要逐项指定时选择自定义完整环境。主尾桨几何和翼型仍来自同一方案；切换任务后使用各任务保存的环境。')
         mode = setting(task, 'environment_mode', '环境输入方式', default, ['isa', 'custom'],
                        format_func=lambda v: '高度与ISA温差联动' if v == 'isa' else '自定义完整环境',
                        help='ISA按气压高度确定压力，再叠加温差求密度、声速和动力黏度。自定义模式逐项使用填写值；切换环境模式是物理工况改变。')
