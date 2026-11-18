@@ -1,0 +1,529 @@
+{
+  "software_version": "0.4.6.dev8",
+  "model": "harmonic_hub_v1 unchanged",
+  "baseline_commit": "9eaf754",
+  "original_failures_retained": true,
+  "interpretation": "Three representative two-second cases only. Wider pulse differs from original short test. Public mass partition is a diagnostic assumption, not an accepted physical model.",
+  "pulse": [
+    {
+      "label": "synthetic-15-n24",
+      "control_index": 2,
+      "duration_s": 2.0,
+      "waveform": "pulse",
+      "start_s": 0.2,
+      "width_s": 0.5,
+      "original_equilibrium_scaled_rhs": 2.0363325205343936e-06,
+      "matrix_sha256": "b2aa5e7ed29f26bacb5a453fbb5c334ffcfabb8f778d83679f21c63db72369f0",
+      "runs": [
+        {
+          "name": "coarse",
+          "amplitude_deg": 0.02,
+          "step_s": 0.001,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 2001,
+          "elapsed_s": 34.654564200001914
+        },
+        {
+          "name": "fine",
+          "amplitude_deg": 0.02,
+          "step_s": 0.0005,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 4001,
+          "elapsed_s": 123.00860250000187
+        },
+        {
+          "name": "half",
+          "amplitude_deg": 0.01,
+          "step_s": 0.0005,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 4001,
+          "elapsed_s": 200.38359860000128
+        }
+      ],
+      "interpretation": "numerical diagnostic; original model and stored A/B; no drift subtraction",
+      "status": "computed",
+      "max_step_halving_relative_change": 1.1602984758048367e-05,
+      "step_peak_state": "main_beta0_rate",
+      "step_passed": true,
+      "errors": [
+        {
+          "scaled_peak_error": 1.2503804119514544e-05,
+          "peak_state": "main_betac_rate",
+          "peak_time_s": 0.5965
+        },
+        {
+          "scaled_peak_error": 5.600021350737287e-06,
+          "peak_state": "main_betac_rate",
+          "peak_time_s": 0.603
+        }
+      ],
+      "amplitude_halving_error_ratio": 0.44786540937548736,
+      "amplitude_passed": false,
+      "ratio_limit": 0.35,
+      "step_limit": 0.01,
+      "component_peak_floor_si": 1e-09,
+      "numerical_error_floor_scaled": 1e-12,
+      "state_names": [
+        "u",
+        "v",
+        "w",
+        "p",
+        "q",
+        "r",
+        "phi",
+        "theta",
+        "psi",
+        "main_lambda0",
+        "main_lambdac",
+        "main_lambdas",
+        "tail_lambda0",
+        "tail_lambdac",
+        "tail_lambdas",
+        "main_beta0",
+        "main_betac",
+        "main_betas",
+        "main_beta0_rate",
+        "main_betac_rate",
+        "main_betas_rate"
+      ],
+      "state_units": [
+        "m/s",
+        "m/s",
+        "m/s",
+        "rad/s",
+        "rad/s",
+        "rad/s",
+        "rad",
+        "rad",
+        "rad",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "rad",
+        "rad",
+        "rad",
+        "rad/s",
+        "rad/s",
+        "rad/s"
+      ],
+      "state_scale": [
+        10.0,
+        10.0,
+        10.0,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05
+      ]
+    },
+    {
+      "label": "oh6-20.58-n24",
+      "control_index": 2,
+      "duration_s": 2.0,
+      "waveform": "pulse",
+      "start_s": 0.2,
+      "width_s": 0.5,
+      "original_equilibrium_scaled_rhs": 7.216841885610821e-12,
+      "matrix_sha256": "03e42b4975d5f84b7bd1820ee1866adec8289e8a930603dadd4da6fb0912739e",
+      "runs": [
+        {
+          "name": "coarse",
+          "amplitude_deg": 0.02,
+          "step_s": 0.001,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 2001,
+          "elapsed_s": 239.02150470000197
+        },
+        {
+          "name": "fine",
+          "amplitude_deg": 0.02,
+          "step_s": 0.0005,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 4001,
+          "elapsed_s": 334.53314749999845
+        },
+        {
+          "name": "half",
+          "amplitude_deg": 0.01,
+          "step_s": 0.0005,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 4001,
+          "elapsed_s": 397.85474429999886
+        }
+      ],
+      "interpretation": "numerical diagnostic; original model and stored A/B; no drift subtraction",
+      "status": "computed",
+      "max_step_halving_relative_change": 3.9549484984714694e-07,
+      "step_peak_state": "main_betas_rate",
+      "step_passed": true,
+      "errors": [
+        {
+          "scaled_peak_error": 1.8387462404953736e-06,
+          "peak_state": "r",
+          "peak_time_s": 1.5425
+        },
+        {
+          "scaled_peak_error": 4.450469295303979e-07,
+          "peak_state": "r",
+          "peak_time_s": 1.5285
+        }
+      ],
+      "amplitude_halving_error_ratio": 0.24203825396292777,
+      "amplitude_passed": true,
+      "ratio_limit": 0.35,
+      "step_limit": 0.01,
+      "component_peak_floor_si": 1e-09,
+      "numerical_error_floor_scaled": 1e-12,
+      "state_names": [
+        "u",
+        "v",
+        "w",
+        "p",
+        "q",
+        "r",
+        "phi",
+        "theta",
+        "psi",
+        "main_lambda0",
+        "main_lambdac",
+        "main_lambdas",
+        "tail_lambda0",
+        "tail_lambdac",
+        "tail_lambdas",
+        "main_beta0",
+        "main_betac",
+        "main_betas",
+        "main_beta0_rate",
+        "main_betac_rate",
+        "main_betas_rate"
+      ],
+      "state_units": [
+        "m/s",
+        "m/s",
+        "m/s",
+        "rad/s",
+        "rad/s",
+        "rad/s",
+        "rad",
+        "rad",
+        "rad",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "rad",
+        "rad",
+        "rad",
+        "rad/s",
+        "rad/s",
+        "rad/s"
+      ],
+      "state_scale": [
+        10.0,
+        10.0,
+        10.0,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05
+      ]
+    }
+  ],
+  "doublet": [
+    {
+      "label": "synthetic-15-n24",
+      "control_index": 2,
+      "duration_s": 2.0,
+      "waveform": "doublet",
+      "start_s": 0.2,
+      "width_s": 0.5,
+      "original_equilibrium_scaled_rhs": 2.0363325205343936e-06,
+      "matrix_sha256": "b2aa5e7ed29f26bacb5a453fbb5c334ffcfabb8f778d83679f21c63db72369f0",
+      "runs": [
+        {
+          "name": "coarse",
+          "amplitude_deg": 0.02,
+          "step_s": 0.001,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 2001,
+          "elapsed_s": 50.096312800000305
+        },
+        {
+          "name": "fine",
+          "amplitude_deg": 0.02,
+          "step_s": 0.0005,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 4001,
+          "elapsed_s": 128.84563089999938
+        },
+        {
+          "name": "half",
+          "amplitude_deg": 0.01,
+          "step_s": 0.0005,
+          "status": "computed",
+          "last_time_s": 2.0,
+          "rows": 4001,
+          "elapsed_s": 188.9725873999996
+        }
+      ],
+      "interpretation": "numerical diagnostic; original model and stored A/B; no drift subtraction",
+      "status": "computed",
+      "max_step_halving_relative_change": 0.002700408912604962,
+      "step_peak_state": "main_betas_rate",
+      "step_passed": true,
+      "errors": [
+        {
+          "scaled_peak_error": 8.038902640708848e-05,
+          "peak_state": "main_betac_rate",
+          "peak_time_s": 0.7065
+        },
+        {
+          "scaled_peak_error": 3.114571943130251e-05,
+          "peak_state": "main_betac_rate",
+          "peak_time_s": 0.20700000000000002
+        }
+      ],
+      "amplitude_halving_error_ratio": 0.38743745040002336,
+      "amplitude_passed": false,
+      "ratio_limit": 0.35,
+      "step_limit": 0.01,
+      "component_peak_floor_si": 1e-09,
+      "numerical_error_floor_scaled": 1e-12,
+      "state_names": [
+        "u",
+        "v",
+        "w",
+        "p",
+        "q",
+        "r",
+        "phi",
+        "theta",
+        "psi",
+        "main_lambda0",
+        "main_lambdac",
+        "main_lambdas",
+        "tail_lambda0",
+        "tail_lambdac",
+        "tail_lambdas",
+        "main_beta0",
+        "main_betac",
+        "main_betas",
+        "main_beta0_rate",
+        "main_betac_rate",
+        "main_betas_rate"
+      ],
+      "state_units": [
+        "m/s",
+        "m/s",
+        "m/s",
+        "rad/s",
+        "rad/s",
+        "rad/s",
+        "rad",
+        "rad",
+        "rad",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "rad",
+        "rad",
+        "rad",
+        "rad/s",
+        "rad/s",
+        "rad/s"
+      ],
+      "state_scale": [
+        10.0,
+        10.0,
+        10.0,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05
+      ]
+    }
+  ],
+  "doublet_independent_confirmation": [
+    {
+      "label": "synthetic-15-n24",
+      "errors": [
+        {
+          "scaled_peak_error": 8.183147202975652e-05,
+          "peak_state": "main_betac_rate",
+          "peak_time_s": 0.7065
+        },
+        {
+          "scaled_peak_error": 3.143677176796998e-05,
+          "peak_state": "main_betac_rate",
+          "peak_time_s": 0.20700000000000002
+        }
+      ],
+      "comparisons": [
+        {
+          "amplitude_deg": 0.02,
+          "nfev": 34553,
+          "production_relative_difference": 0.0001795755105230312,
+          "passed": true
+        },
+        {
+          "amplitude_deg": 0.01,
+          "nfev": 32927,
+          "production_relative_difference": 0.00017958674697694338,
+          "passed": true
+        }
+      ],
+      "amplitude_halving_error_ratio": 0.3841648083336271,
+      "amplitude_passed": false,
+      "ratio_limit": 0.35,
+      "rtol": 1e-11,
+      "atol_scaled": 1e-13,
+      "max_step_s": 0.00125,
+      "interpretation": "independent numerical diagnostic; retains original RK4 failure"
+    }
+  ],
+  "trajectory_hashes": [
+    {
+      "path": "long-pulse\\oh6-20.58-n24\\coarse.npy",
+      "sha256": "b1d3498c7593e2551e6af142425f027fe1a54269af5e84be74d0b79dc85975ee",
+      "bytes": 688472
+    },
+    {
+      "path": "long-pulse\\oh6-20.58-n24\\fine.npy",
+      "sha256": "c5127a3cde8cb3534062d44e628b844632407c9d168937b8c5a79c4823d9edb6",
+      "bytes": 1376472
+    },
+    {
+      "path": "long-pulse\\oh6-20.58-n24\\half.npy",
+      "sha256": "7f6f544cfaa47e2b98b093e4665cef9a92d5168d8565c854a14bef7d20c5da1a",
+      "bytes": 1376472
+    },
+    {
+      "path": "long-pulse\\synthetic-15-n24\\coarse.npy",
+      "sha256": "7fd3476dfba616c3a21c53ba4744d557a07944e3deb8993ce12dd1a4c1c836e3",
+      "bytes": 688472
+    },
+    {
+      "path": "long-pulse\\synthetic-15-n24\\fine.npy",
+      "sha256": "35fe05ea0b91832131d38e7e67b9d9ab6b3fe5b2e4d6fb2bf96480e01e5c3a67",
+      "bytes": 1376472
+    },
+    {
+      "path": "long-pulse\\synthetic-15-n24\\half.npy",
+      "sha256": "f35dc8313f0c5763a4ff9dd502e79ca75bdf856ea428b6b190ef10d7e0b23d98",
+      "bytes": 1376472
+    },
+    {
+      "path": "long-doublet\\synthetic-15-n24\\coarse.npy",
+      "sha256": "7fa9728457de2c464ebc023181bd6a6b92372f74242bbd3bdc4c9717c8309694",
+      "bytes": 688472
+    },
+    {
+      "path": "long-doublet\\synthetic-15-n24\\fine.npy",
+      "sha256": "2ba1c62e34dd8a5038f6d6d40453bc2316a56a8825c1a729b013c0cfb4668c15",
+      "bytes": 1376472
+    },
+    {
+      "path": "long-doublet\\synthetic-15-n24\\half.npy",
+      "sha256": "472f1aff32b31bd1a72c77c844458cbfff6a97ac85fa847b1588fbc394a7e05f",
+      "bytes": 1376472
+    }
+  ],
+  "export_checks": [
+    {
+      "group": "long-pulse",
+      "label": "synthetic-15-n24",
+      "state_csv_roundtrip": "exact",
+      "rows": 4001,
+      "all_inputs_matched": true
+    },
+    {
+      "group": "long-pulse",
+      "label": "oh6-20.58-n24",
+      "state_csv_roundtrip": "exact",
+      "rows": 4001,
+      "all_inputs_matched": true
+    },
+    {
+      "group": "long-doublet",
+      "label": "synthetic-15-n24",
+      "state_csv_roundtrip": "exact",
+      "rows": 4001,
+      "all_inputs_matched": true
+    }
+  ],
+  "regressions": {
+    "a3_protocol_and_diagnostics": 7,
+    "coupled_mechanics": 6,
+    "legacy_semantics_and_restrictions": 3
+  },
+  "pulse_manifest": {
+    "elapsed_s": 397.8589893999997,
+    "model": "harmonic_hub_v1; unchanged frozen A3 candidates",
+    "control": "index 2 periodic pitch",
+    "protocol": "2 s; pulse/doublet width .5 s; start .2 s; .02/.01 degree; h .001/.0005 s"
+  },
+  "doublet_manifest": {
+    "elapsed_s": 188.97700669999904,
+    "model": "harmonic_hub_v1; unchanged frozen A3 candidates",
+    "control": "index 2 periodic pitch",
+    "protocol": "2 s; pulse/doublet width .5 s; start .2 s; .02/.01 degree; h .001/.0005 s"
+  }
+}

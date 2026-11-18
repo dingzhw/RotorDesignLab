@@ -17,8 +17,9 @@ def open_loop_restriction(aircraft):
     note = COUPLING_WARNING
     if enabled(aircraft):
         note = ('R19整机验收尚未关闭：新模型已接通主尾桨质量分账、动态一阶挥舞及隐式加速度；'
-                'A3首轮发现公开机型惯量归属待核实、前飞交叉导数仍有偏差，部分扰动跨越气动查表分段，'
-                '线性响应幅值检查未通过。仅供诊断，不用于稳定性判断或方案排序。')
+                '公开整机惯量与当前旋翼质量数据尚未闭合，前飞交叉导数仍有偏差；'
+                '已复现主桨跨查表节点导致的线性响应幅值检查未通过，2秒代表响应也保留失败。'
+                '仅供诊断，不用于稳定性判断或方案排序。')
     return dict(issue='R19' if affected else None, affected_rotors=affected,
                 engineering_use_allowed=False,
                 evaluation_status='cross_coupling_unresolved' if affected else 'experimental_unvalidated',

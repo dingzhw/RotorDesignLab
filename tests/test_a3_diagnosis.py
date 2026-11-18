@@ -36,6 +36,16 @@ class DiagnosisTests(unittest.TestCase):
         np.testing.assert_allclose(data[:, 1:22], expected, atol=1e-13, rtol=1e-10)
         np.testing.assert_allclose(data[:, 22:], expected, atol=1e-13, rtol=1e-10)
 
+        delayed, _ = integrate(Linear(), -np.eye(21), b, .02, rtol=1e-11, atol=1e-13,
+                               waveform=Perturbation(kind='doublet', amplitude_deg=.02,
+                                                     start_s=.02, duration_s=.02))
+        # Exact convolution of +H(t-.02)-2H(t-.04)+H(t-.06) with exp(-t).
+        kernel = sum(weight*(1-np.exp(-np.maximum(delayed[:, 0]-start, 0.)))
+                     for weight, start in [(1, .02), (-2, .04), (1, .06)])
+        expected = kernel[:, None]*np.deg2rad(.02)*np.arange(1, 22)
+        np.testing.assert_allclose(delayed[:, 1:22], expected, atol=2e-11, rtol=1e-9)
+        np.testing.assert_allclose(delayed[:, 22:], expected, atol=2e-11, rtol=1e-9)
+
 
 if __name__ == '__main__':
     unittest.main()
