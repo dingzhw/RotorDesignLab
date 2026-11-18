@@ -45,43 +45,45 @@ def values(text):
     except ValueError as error:raise ValueError('扫描值请填写用逗号分隔的数值。') from error
 
 
-def case_controls(task):
+def case_controls(task, hover=False):
+    def task_setting(task, *args, **kwargs):
+        return setting("hover_trim" if hover else task, *args, **kwargs)
     aircraft=current()['aircraft'];main=next(r for r in aircraft['rotors'] if r.get('role','main')=='main')
     batch=None
     if task=='rotor':
         st.subheader('孤立旋翼计算工况')
         st.caption('直接填写本次总距、转速和来流，再点击运行。桨叶几何、安装和气动表在下方详细设置中修改。')
         options=[r['id'] for r in aircraft['rotors']]
-        selected=setting(task,'rotor_id','选择分析旋翼',options[0],options,
+        selected=task_setting(task,'rotor_id','选择分析旋翼',options[0],options,
                          format_func=lambda v:('主旋翼' if v==main['id'] else '尾桨')+' · '+v)
         rotor=next(r for r in aircraft['rotors'] if r['id']==selected)
-        mode=setting(task,'mode','旋翼计算方式','固定总距正算',['固定总距正算','指定拉力反求总距','指定拉力反求转速','批量正算','批量反求总距'],help='正算：给总距与转速求拉力；反求：给目标拉力求总距或转速；批量：按扫描值逐点计算。')
+        mode=task_setting(task,'mode','旋翼计算方式','固定总距正算',['固定总距正算','指定拉力反求总距','指定拉力反求转速','批量正算','批量反求总距'],help='正算：给总距与转速求拉力；反求：给目标拉力求总距或转速；批量：按扫描值逐点计算。')
         from .design_models import rotor_model, AXIAL, SPATIAL
         resolved = rotor_model(current()['settings'])
         pending = '请选择原方案使用的模型'
         choices = [SPATIAL, AXIAL] if resolved else [pending, AXIAL, SPATIAL]
         if resolved is None:
             st.warning('此历史方案未保存求解模型，修订号不足以判断。请依据原计算记录选择轴流或三方向模型；选择前不会启动计算。原方案文件保持不变。')
-        flow_model=setting(task,'flow_model','来流与旋翼模型',resolved or pending,
+        flow_model=task_setting(task,'flow_model','来流与旋翼模型',resolved or pending,
              choices,
              help='三方向模型按方位角分解相对速度，支持盘面内来流与周期变距。轴流模型保留原悬停/轴流验证口径，两者的入流分布和挥舞假设不同。')
         if flow_model == pending:
             return None, None
         spatial=flow_model.startswith('三方向')
         a,b=st.columns(2)
-        with a:rpm=setting(task,'rpm-'+selected,'本次旋翼转速 / rpm',float(rotor['defaults']['rpm']),
+        with a:rpm=task_setting(task,'rpm-'+selected,'本次旋翼转速 / rpm',float(rotor['defaults']['rpm']),
                            min_value=1.,max_value=30000.,disabled=mode=='指定拉力反求转速',help=help_text('rpm'))
-        with b:collective=setting(task,'collective-'+selected,'本次总距 θ₀ / °',float(rotor['defaults']['collective_deg']),
+        with b:collective=task_setting(task,'collective-'+selected,'本次总距 θ₀ / °',float(rotor['defaults']['collective_deg']),
                                   min_value=-20.,max_value=55.,disabled='反求总距' in mode,
                                   help='总距参考站的桨距角，增加为正；参考站在下方桨叶参数中设置。反求总距时，本项作为初始参考，结果给出求得总距。')
         if spatial:
             st.caption(SPATIAL_SCOPE)
             from .velocity_ui import render_velocity, inflow_preview
-            velocity_input = render_velocity(current(), st.session_state['design_epoch'], setting)
+            velocity_input = render_velocity(current(), st.session_state['design_epoch'], task_setting)
         else:
-            speed=setting(task,'axial_speed_m_s','轴向来流 / (m/s)',0.,min_value=0.,max_value=150.)
+            speed=task_setting(task,'axial_speed_m_s','轴向来流 / (m/s)',0.,min_value=0.,max_value=150.)
         from .environment_ui import render_environment
-        environment = render_environment(current(), task, setting, rotor=rotor)
+        environment = render_environment(current(), task, task_setting, rotor=rotor)
         st.caption(f"当前旋翼：{rotor['blade_count']}片桨叶，R={rotor['radius_m']:g} m；总距参考站 r/R={rotor['pitch_reference_r_over_R']:g}。本页工况随方案保存，优先于机型参考工况。")
         case=dict(schema_version=2,model='spatial_rotor' if spatial else 'aircraft_rotor',rotor_id=selected,
                   rpm=rpm,collective_deg=collective, **environment)
@@ -91,17 +93,17 @@ def case_controls(task):
         else:
             case['axial_speed_m_s'] = speed
         with st.expander('周期变距、挥舞与计算网格'):
-            case['radial_stations']=setting(task,'radial-'+selected,'本次径向叶素数',rotor['defaults']['radial_stations'],min_value=8,max_value=2000,help=help_text('radial_stations'))
+            case['radial_stations']=task_setting(task,'radial-'+selected,'本次径向叶素数',rotor['defaults']['radial_stations'],min_value=8,max_value=2000,help=help_text('radial_stations'))
             if spatial:
                 a,b=st.columns(2)
                 for col,key,symbol in ((a,'cyclic_cos_deg','cos'),(b,'cyclic_sin_deg','sin')):
-                    with col:case[key]=setting(task,key+'-'+selected,symbol+' 周期变距 / °',0.,min_value=-30.,max_value=30.,
+                    with col:case[key]=task_setting(task,key+'-'+selected,symbol+' 周期变距 / °',0.,min_value=-30.,max_value=30.,
                         help=help_text('cyclic_cos_deg'))
                 choices=['fixed','aircraft'] if 'flight' in rotor else ['fixed']
-                case['flapping_model']=setting(task,'flapping-'+selected,'桨叶运动模型','fixed',choices,
+                case['flapping_model']=task_setting(task,'flapping-'+selected,'桨叶运动模型','fixed',choices,
                     format_func=lambda v:{'fixed':'固定桨叶（保留预锥）','aircraft':'使用机型挥舞参数'}[v],
                     help='固定桨叶不求挥舞平衡；使用机型参数时求解锥度和一阶挥舞，需提供相应惯量、质量一阶矩及铰接参数。')
-                case['azimuth_stations']=setting(task,'azimuth_stations','整周方位角站数',36,min_value=12,max_value=720)
+                case['azimuth_stations']=task_setting(task,'azimuth_stations','整周方位角站数',36,min_value=12,max_value=720)
                 st.caption('三状态入流；μ≤0.25、正推力和正轴功率，并受当地攻角/Mach/Re数据域限制。当前不含下降涡环态、展向气动力和非定常失速。')
         if spatial:
             with st.expander('方位、旋向与本次周期变距图'):
@@ -119,7 +121,7 @@ def case_controls(task):
                 except (ValueError, TypeError, KeyError) as error:
                     st.warning('暂不能显示方位图：' + str(error))
         if '反求' in mode:
-            thrust=setting(task,'target_thrust_n','目标拉力 / N',2000.,min_value=.1,max_value=1e7)
+            thrust=task_setting(task,'target_thrust_n','目标拉力 / N',2000.,min_value=.1,max_value=1e7)
             case['target']=dict(thrust_n=thrust,solve_for='rpm' if mode.endswith('转速') else 'collective_deg')
         if '批量' in mode:
             x='target_thrust_n' if '反求' in mode else 'collective_deg'
@@ -133,21 +135,21 @@ def case_controls(task):
             default = ('1000,1500,2000' if x == 'target_thrust_n' else '8,12,16' if x == 'collective_deg'
                        else '0,5,10' if x == 'flow_z_m_s' else '0,10,20' if x.startswith('motion_') else '0,-10,-20')
             title=('目标拉力扫描 / N' if x=='target_thrust_n' else '总距扫描 / °' if x=='collective_deg' else AXIS_LABELS[x]+'（扫描值）')
-            text=setting(task,x+'-scan',title,default,help='数值用逗号分隔；失败点会保留诊断。')
+            text=task_setting(task,x+'-scan',title,default,help='数值用逗号分隔；失败点会保留诊断。')
             rpm=rotor['defaults']['rpm'];rotor_key='rpm-scan-'+selected
-            rpms=setting(task,rotor_key,'转速扫描 / rpm',f'{rpm*.95:g},{rpm:g}',help='数值用逗号分隔。')
+            rpms=task_setting(task,rotor_key,'转速扫描 / rpm',f'{rpm*.95:g},{rpm:g}',help='数值用逗号分隔。')
             batch=lambda:dict(schema_version=1,kind='rotor_sweep',axes={x:values(text),'rpm':values(rpms)})
         return case,batch
     if aircraft['schema_version']!=2:
         st.info('当前是孤立旋翼模板。请从“200 kg 合成无人直升机”或“UH-60 公开部件模型”新建方案以进行整机分析。')
         return None,None
-    st.caption(f"当前整机质量 {aircraft['mass_properties']['mass_kg']:g} kg；重心 {aircraft['mass_properties']['cg_m']} m。质量和重心统一在详细设置修改。")
+    st.caption(f"当前整机质量 {aircraft['mass_properties']['mass_kg']:g} kg；重心 {aircraft['mass_properties']['cg_m']} m。质量和重心在整机装配的详细设置中统一修改。")
     case=dict(schema_version=3,model='helicopter',analysis=task)
     if task=='hover_budget':
-        mode=setting(task,'mode','预算任务','单点预算',['单点预算','质量—高度图','主桨尺寸—转速图','尾桨尺寸—力臂图','三方案比较'],help='单点给功率收支；性能图扫描两类参数；方案比较可在下表逐行填写候选方案。')
+        mode=task_setting(task,'mode','预算任务','单点预算',['单点预算','质量—高度图','主桨尺寸—转速图','尾桨尺寸—力臂图','三方案比较'],help='单点给功率收支；性能图扫描两类参数；方案比较可在下表逐行填写候选方案。')
         st.caption('功率与载荷预算：闭合垂向力和偏航力矩，同时报告剩余侧力；此任务不标记为六分量配平。')
     elif task=='trim':
-        mode=setting(task,'mode','配平任务','单点配平',['单点配平','速度曲线','速度—质量比较','速度—重心比较'],help='单点求一个速度下的六分量平衡；扫描逐点改变速度，并可比较不同质量或纵向重心。')
+        mode = '单点配平' if hover else task_setting(task,'mode','配平任务','单点配平',['单点配平','速度曲线','速度—质量比较','速度—重心比较'],help='单点求一个速度下的六分量平衡；扫描逐点改变速度，并可比较不同质量或纵向重心。')
         st.caption('同一整机方程求解六分量平衡；悬停、正爬升、无侧滑前飞，μ≤0.25且受局部气动表域限制。')
     else:
         mode = setting(task, 'mode', '开环任务', '线化、模态与频响',
@@ -171,16 +173,21 @@ def case_controls(task):
     st.caption(f"本次附加下载比例：{download['effective_fraction']:.1%}。" + download['note'])
     st.caption(download['comparison_note'])
     a,b,c=st.columns(3)
-    with a:case['altitude_m']=setting(task,'altitude_m','飞行高度 / m',0.,min_value=0.,max_value=11000.)
-    with b:case['requested_duration_s']=setting(task,'requested_duration_s','需维持时间 / s',600.,min_value=.001,max_value=1e9,help='用于连续或短时功率余量检查，不是响应积分时长。')
+    with a:case['altitude_m']=task_setting(task,'altitude_m','飞行高度 / m',0.,min_value=0.,max_value=11000.)
+    with b:case['requested_duration_s']=task_setting(task,'requested_duration_s','需维持时间 / s',600.,min_value=.001,max_value=1e9,help='用于连续或短时功率余量检查，不是响应积分时长。')
     from .environment_ui import render_environment
-    case.update(render_environment(current(), task, setting, altitude=case['altitude_m']))
+    case.update(render_environment(current(), task, task_setting, altitude=case['altitude_m']))
     if task!='hover_budget':
-        with c:case['speed_m_s']=setting(task,'speed_m_s','水平速度 / (m/s)',0.,min_value=0.,max_value=150.)
-        case['climb_m_s']=setting(task,'climb_m_s','爬升率 / (m/s)',0.,min_value=0.,max_value=15.,help='正值向上爬升；下降涡环态尚未覆盖。')
+        if hover:
+            case.update(speed_m_s=0., climb_m_s=0.)
+            st.caption('悬停六分量配平：水平速度=0、爬升率=0；与前飞配平使用同一方程，工况独立保存。')
+        else:
+            with c:
+                case['speed_m_s'] = task_setting(task,'speed_m_s','水平速度 / (m/s)',0.,min_value=0.,max_value=150.)
+            case['climb_m_s'] = task_setting(task,'climb_m_s','爬升率 / (m/s)',0.,min_value=0.,max_value=15.,help='正值向上爬升；下降涡环态尚未覆盖。')
     with st.expander('分析网格与扫描设置'):
-        case['radial_stations']=setting(task,'radial_stations','每桨径向叶素数',80,min_value=8,max_value=2000)
-        if task!='hover_budget':case['azimuth_stations']=setting(task,'azimuth_stations','整周方位角站数',36,min_value=12,max_value=720,help='对一整周离散；加密用于数值收敛检查。')
+        case['radial_stations']=task_setting(task,'radial_stations','每桨径向叶素数',80,min_value=8,max_value=2000)
+        if task!='hover_budget':case['azimuth_stations']=task_setting(task,'azimuth_stations','整周方位角站数',36,min_value=12,max_value=720,help='对一整周离散；加密用于数值收敛检查。')
         if task=='hover_budget' and '图' in mode:
             tail=next(r for r in aircraft['rotors'] if r['role']=='tail');mass=aircraft['mass_properties']['mass_kg']
             options={'质量—高度图':(('mass_kg','altitude_m'),([mass*.9,mass,mass*1.1],[0,1500,3000])),
@@ -202,11 +209,11 @@ def case_controls(task):
                 'main_rpm':st.column_config.NumberColumn('主桨转速 / rpm')})
             batch=lambda:dict(schema_version=1,kind='helicopter_comparison',variants=[dict(name=r['name'],overrides={k:v for k,v in r.items() if k!='name'}) for r in cfg['variants']])
         elif task=='trim' and mode!='单点配平':
-            speed=setting(task,'speed-scan','速度扫描 / (m/s)','0,5,10,15,20',help='填写水平速度列表，用逗号分隔；从低速到高速可使用相邻工况续接。')
+            speed=task_setting(task,'speed-scan','速度扫描 / (m/s)','0,5,10,15,20',help='填写水平速度列表，用逗号分隔；从低速到高速可使用相邻工况续接。')
             group=None
             if mode=='速度—质量比较':group='mass_kg';default=str(aircraft['mass_properties']['mass_kg'])
             if mode=='速度—重心比较':group='cg_x_m';default=str(aircraft['mass_properties']['cg_m'][0])
-            groups=setting(task,group+'-scan','质量扫描 / kg' if group=='mass_kg' else '重心 x 扫描 / m',default,help='用逗号分隔候选值。质量单位kg；重心x相对机型原点、向前为正。') if group else None
+            groups=task_setting(task,group+'-scan','质量扫描 / kg' if group=='mass_kg' else '重心 x 扫描 / m',default,help='用逗号分隔候选值。质量单位kg；重心x相对机型原点、向前为正。') if group else None
             batch=lambda:dict(schema_version=1,kind='helicopter_trim_sweep',axes={'speed_m_s':values(speed),**({group:values(groups)} if group else {})},continuation=True)
     if case['analysis'] == 'response':
         from .presentation import CONTROL_LABELS
@@ -257,7 +264,10 @@ def input_fingerprint(design,case,batch):
         # Ignore only round-off from a view round trip, not physical input edits.
         case['flow_body_m_s'] = [0. if abs(v) < 5e-13 else round(v, 12) for v in case['flow_body_m_s']]
         case.setdefault('attitude_deg', [0., 0.])
-    return designs.digest(dict(aircraft=design['aircraft'],assets=design['assets'],case=case,batch=batch))
+    content = dict(aircraft=design['aircraft'], assets=design['assets'], case=case, batch=batch)
+    if design.get('format_version') == 2:
+        content['assembly'] = design['assembly']
+    return designs.digest(content)
 
 
 def show_result(record,is_current):
@@ -346,7 +356,7 @@ def show_result(record,is_current):
     st.download_button('下载本次结果、方案与复算工况',archive.getvalue(),'rotordesignlab-result.zip',key='download-result')
 
 
-def render(task_label):
+def render(task_label, edit_design=True, hover=False, result_key=None):
     task = TASKS[task_label]
     case, batch = None, None
     input_errors = []
@@ -354,15 +364,16 @@ def render(task_label):
         st.info('孤立旋翼：从当前方案中取出所选主旋翼或尾桨，给定总距、转速与来流，单独计算气动力和功率。不会自动加入另一旋翼、机身、尾翼或整机重量，也不求整机平衡。安装确定来流投影和载荷方向，重心仅用于力矩移轴。')
     else:
         st.info('整机任务：共用当前方案的主尾桨、机身、尾翼、质量与动力参数。悬停预算求功率和载荷需求；配平联立求姿态与操纵量。孤立旋翼页填写的总距和来流不会自动作为整机配平条件。')
-    st.caption('上方任务区填写本次工况，下方详细设置编辑方案参数。各任务分别保存工况；切换任务时请核对本页环境与速度，结果对应实际提交的输入。')
+    st.caption('本页填写本次工况；' + ('下方详细设置编辑方案参数。' if edit_design else '部件与整机参数统一在整机装配页修改。') + '各任务分别保存工况，结果对应实际提交的输入。')
     if task == 'open_loop':
         st.info(OPEN_LOOP_LABEL + '：动态入流、准定常挥舞；独立动态验证尚未完成。')
     try:
-        case, batch = case_controls(task)
+        case, batch = case_controls(task, hover=hover)
     except (ValueError, KeyError, TypeError, StopIteration, IndexError) as error:
         input_errors.append('任务输入暂不完整，请在详细设置补齐：' + str(error))
     try:
-        details(task, case.get('rotor_id') if case else None)
+        if edit_design:
+            details(task, case.get('rotor_id') if case else None)
     except (ValueError, KeyError, TypeError, IndexError) as error:
         input_errors.append('详细设置存在结构缺项，请补齐或重新载入完整方案：' + str(error))
     errors = input_errors + designs.issues(current(), case.get('analysis') if case else None)
@@ -393,9 +404,33 @@ def render(task_label):
                 answer=answer, files=files, design=submitted,
                 fingerprint=designs.digest(submitted), input_fingerprint=input_fingerprint(submitted, case, spec),
                 case=deepcopy(case), task=task)
+            if result_key:
+                from . import analysis_history
+                record = st.session_state['workspace-result']
+                record['context'] = result_key
+                st.session_state.setdefault('analysis-results', {})[result_key] = record
+                try:
+                    record['history_id'] = analysis_history.save(record)
+                except (ValueError, OSError) as error:
+                    st.warning('本次结果已保留在页面，历史落盘失败，请先下载结果：' + str(error))
         except (ValueError, OSError, KeyError, TypeError) as error:
             st.error(str(error))
-    record = st.session_state.get('workspace-result')
+    if result_key:
+        from . import analysis_history
+        with st.expander('本任务历史结果（保留实际输入）'):
+            rows = analysis_history.entries(result_key)
+            names = {identifier: timestamp + ' · ' + name for identifier, timestamp, name in rows}
+            selected = st.selectbox('已保存计算结果', list(names), index=0 if names else None,
+                                    format_func=lambda value: names[value], key='history:'+result_key,
+                                    help='只读取历史结果，不覆盖当前整机或工况。时间使用UTC，完整日期随结果保存。')
+            if st.button('查看历史结果', disabled=selected is None):
+                try:
+                    st.session_state.setdefault('analysis-results', {})[result_key] = analysis_history.load(selected)
+                except (ValueError, OSError, KeyError) as error:
+                    st.error('历史结果无法读取：' + str(error))
+        record = st.session_state.get('analysis-results', {}).get(result_key)
+    else:
+        record = st.session_state.get('workspace-result')
     if record and record['task'] == task:
         try:
             same = not disabled and record['input_fingerprint'] == input_fingerprint(current(), case, batch() if batch else None)

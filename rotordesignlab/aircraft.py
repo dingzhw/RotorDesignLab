@@ -61,6 +61,12 @@ def read_aircraft(path):
                    if 'transmission_efficiency' not in r]
         if missing:
             raise ValueError('悬停预算缺少参数：' + ', '.join(missing))
+        main = next(r for r in aircraft['rotors'] if r['role'] == 'main')
+        for rotor in aircraft['rotors']:
+            if 'rpm_ratio_to_main' in rotor:
+                if rotor['role'] != 'tail' or not np.isclose(rotor['defaults']['rpm'],
+                        main['defaults']['rpm'] * rotor['rpm_ratio_to_main'], rtol=1e-12, atol=1e-9):
+                    raise ValueError('尾桨实际参考转速与声明的主尾桨速比不一致。')
         plant = aircraft['powerplant']
         altitude = np.asarray(plant['altitude_m'])
         if np.any(np.diff(altitude) <= 0):

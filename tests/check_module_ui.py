@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from streamlit.testing.v1 import AppTest
 from rotordesignlab import module_workspace as store
-from rotordesignlab import designs
+from rotordesignlab import designs, analysis_history
 from check_workspace_ui import replay
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +21,7 @@ def ok(app):
 
 
 def main():
-    with TemporaryDirectory() as directory, patch.object(store, 'LIBRARY', Path(directory)/'modules'), patch.object(designs, 'LIBRARY', Path(directory)/'aircraft'):
+    with TemporaryDirectory() as directory, patch.object(store, 'LIBRARY', Path(directory)/'modules'), patch.object(designs, 'LIBRARY', Path(directory)/'aircraft'), patch.object(analysis_history, 'LIBRARY', Path(directory)/'results'):
         app = AppTest.from_file(str(ROOT/'app.py'), default_timeout=120).run()
         ok(app)
         assert 'design' not in app.session_state

@@ -5,7 +5,7 @@ import json
 from .mounting import mount_angles, tilt_basis, coordinate_metadata, azimuth_figure
 
 
-def render_mounting(rotor, index, epoch, put_at):
+def render_mounting(rotor, index, epoch, put_at, allow_rotation_edit=True):
     role = rotor.get('role', 'main')
     root = ['aircraft', 'rotors', index]
     physical = [rotor.get('thrust_axis_body'), rotor.get('flight', {}).get('x_reference_body'), rotor.get('rotation_sign')]
@@ -37,6 +37,7 @@ def render_mounting(rotor, index, epoch, put_at):
         zero = st.number_input('零方位绕轴偏置 / °', value=angles['zero_deg'], min_value=-180., max_value=180., key=key + 'zero',
                                help='主桨以机尾投影、尾桨以机头投影为0；绕正推力轴右手方向增加。历史机头零方位主桨回显±180°，保持原计算。')
         sign = st.selectbox('旋转方向（从正推力轴端看向桨毂）', [1, -1], index=0 if rotor['rotation_sign'] == 1 else 1,
+                            disabled=not allow_rotation_edit,
                             format_func=lambda v: '逆时针（+1）' if v == 1 else '顺时针（−1）', key=key + 'sign',
                             help='常规向上主桨相当于从上往下看；向右尾桨相当于从机体右侧向内看。正方位角始终从局部+x朝+y，旋向只决定桨叶经过方位的次序。')
         submitted = st.form_submit_button('应用安装角')
@@ -44,7 +45,8 @@ def render_mounting(rotor, index, epoch, put_at):
         basis = tilt_basis(role, *values, zero, side)
         put_at(root + ['thrust_axis_body'], basis[:, 2].tolist())
         put_at(root + ['flight', 'x_reference_body'], basis[:, 0].tolist())
-        put_at(root + ['rotation_sign'], sign)
+        if allow_rotation_edit:
+            put_at(root + ['rotation_sign'], sign)
         st.session_state['design_epoch'] += 1
         st.rerun()
     vector = lambda v: '[' + ', '.join(f'{x:.5g}' for x in v) + ']'

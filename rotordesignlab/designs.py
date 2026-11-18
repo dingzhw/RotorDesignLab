@@ -45,6 +45,9 @@ def from_template(name):
 
 def materialize(design, directory):
     """Write only normalized asset names to a task-owned empty directory."""
+    if design.get('format_version') == 2:
+        from .assembly import validate
+        validate(design)
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
     for name,content in design['assets'].items():
         if not re.fullmatch(r'rotor-\d+-(geometry\.csv|polar\.(csv|json))',name):
@@ -60,6 +63,12 @@ def issues(design, analysis=None):
     errors=[];a=design['aircraft']
     try:digest(design)
     except (ValueError,TypeError):return ['方案：含空值以外的非有限数值或无效数据类型。']
+    if design.get('format_version') == 2:
+        from .assembly import validate
+        try:
+            validate(design)
+        except (ValueError, KeyError, TypeError, StopIteration) as error:
+            return ['整机装配：' + str(error)]
     schema=SCHEMA_V2 if a.get('schema_version')==2 else SCHEMA
     for error in jsonschema.Draft202012Validator(schema).iter_errors(a):
         errors.append(location(list(error.absolute_path))+'：'+schema_message(error))
@@ -102,8 +111,11 @@ def unpack(data):
             if len(records)>50 or len(set(names))!=len(names) or sum(f.file_size for f in records)>32*1024**2:
                 raise ValueError('方案包过大或存在重复文件。')
             manifest=json.loads(z.read('design.json'))
-            if (set(manifest)!={'format_version','template','aircraft','settings','asset_hashes'} or
-                type(manifest['format_version']) is not int or manifest['format_version']!=1 or
+            expected = {'format_version', 'template', 'aircraft', 'settings', 'asset_hashes'}
+            if manifest.get('format_version') == 2:
+                expected.add('assembly')
+            if (set(manifest) != expected or
+                type(manifest['format_version']) is not int or manifest['format_version'] not in (1, 2) or
                 not isinstance(manifest['settings'],dict) or not isinstance(manifest['aircraft'],dict)):
                 raise ValueError('方案格式或版本不受支持。')
             hashes=manifest.pop('asset_hashes')
@@ -197,6 +209,16 @@ def execute(design,case,batch=None):
         files = {p.relative_to(out).as_posix(): p.read_bytes() for p in out.rglob('*') if p.is_file()}
     collected = perf_counter()
     files['design.rdl'] = pack(design)
+    if design.get('format_version') == 2:
+        from .assembly import describe
+        context = dict(assembly=design['assembly'], assembly_sha256=digest(design['assembly']),
+                       generated_aircraft_sha256=digest(design['aircraft']),
+                       note='运行基准装配；扫描/工况覆盖另见各点aircraft.json及case.json，不修改模块库或基准快照。')
+        files['assembly.json'] = json.dumps(context, ensure_ascii=False, indent=2, allow_nan=False).encode('utf-8')
+        rows = describe(design)
+        import pandas as pd
+        files['assembly-summary.csv'] = pd.DataFrame(rows).to_csv(index=False).encode('utf-8-sig')
+        answer['assembly_sha256'] = context['assembly_sha256']
     packed = perf_counter()
     answer['workflow_timings_s'] = dict(
         validation_and_materialize=prepared - started, analysis_and_exports=analyzed - prepared,

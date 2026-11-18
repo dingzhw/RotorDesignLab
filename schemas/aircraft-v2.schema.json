@@ -235,6 +235,10 @@
             "exclusiveMinimum": 0,
             "maximum": 1
           },
+          "rpm_ratio_to_main": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
           "flight": {
             "type": "object",
             "additionalProperties": false,

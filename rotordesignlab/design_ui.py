@@ -311,7 +311,7 @@ def rotor_parameters(rotor, index, schema, isolated=False):
     object_editor(['aircraft', 'rotors', index], schema)
 
 
-def details(task=None, rotor_id=None):
+def details(task=None, rotor_id=None, assembly_only=False):
     a=current()['aircraft'];props=(SCHEMA_V2 if a['schema_version']==2 else SCHEMA)['properties']
     with st.expander('详细设置：机型、旋翼、气动与动力',expanded=False):
         from .previews import layout_figure, show
@@ -323,6 +323,10 @@ def details(task=None, rotor_id=None):
             st.caption('示意采用实际桨毂位置、半径、安装轴和重心；虚线仅连接位置，未提供机身/尾翼外形时不虚构轮廓。')
         st.info('机体系：x向前、y向右、z向下。位置共用同一原点；重心和部件位置均填绝对坐标，程序计算相对力臂。单位向量不自动归一化，以便检查填写错误。')
         groups=['基本信息','质量、重心与惯量','主旋翼','尾桨','悬停下载','动力与传动','配平姿态限制','机身','平尾与垂尾']
+        if assembly_only:
+            groups = [name for name in groups if name not in ('主旋翼', '尾桨')]
+            if st.session_state.get('parameter-group') not in groups:
+                st.session_state['parameter-group'] = groups[0]
         isolated = task == 'rotor'
         show_all = not isolated
         if isolated:
@@ -366,8 +370,15 @@ def details(task=None, rotor_id=None):
             else:object_editor(['aircraft',*path],schema)
 
 
-def manager():
-    if 'design' not in st.session_state:replace_design(designs.from_template(next(iter(designs.TEMPLATES))))
+def manager(assembly_mode=False):
+    def create_template(name):
+        design = designs.from_template(name)
+        if assembly_mode and design['aircraft']['schema_version'] == 2:
+            from .assembly import from_legacy
+            return from_legacy(design)
+        return design
+    if 'design' not in st.session_state:
+        replace_design(create_template(next(iter(designs.TEMPLATES))))
     if st.session_state.pop('_reset_consent',False):st.session_state['replace-consent']=False
     st.subheader('当前方案：'+current()['aircraft']['name'])
     if '_design_notice' in st.session_state:st.success(st.session_state.pop('_design_notice'))
@@ -382,8 +393,11 @@ def manager():
         consent=st.checkbox('确认替换当前草稿（新建、重开、导入或恢复模板时使用）',key='replace-consent')
         a,b,c,d=st.columns(4)
         if a.button('从模板新建'):
-            if not dirty() or consent:replace_design(designs.from_template(template));st.rerun()
-            else:st.warning('当前有未保存修改，请先保存，或勾选替换当前草稿。')
+            if not dirty() or consent:
+                replace_design(create_template(template))
+                st.rerun()
+            else:
+                st.warning('当前有未保存修改，请先保存，或勾选替换当前草稿。')
         if b.button('保存方案',type='primary'):
             try:
                 i,v=designs.save_design(current(),st.session_state.get('design_id'),st.session_state.get('design_version'))
@@ -409,7 +423,9 @@ def manager():
             else:st.warning('请先保存修改，或确认替换当前草稿。')
         if st.button('恢复原模板参数'):
             if current()['template'] not in designs.TEMPLATES and current()['template'] not in designs.TEMPLATE_ALIASES:st.warning('此导入方案没有对应的本机模板，请从模板新建。')
-            elif consent:replace_design(designs.from_template(current()['template']));st.rerun()
+            elif consent:
+                replace_design(create_template(current()['template']))
+                st.rerun()
             else:st.warning('恢复会替换机型、气动表和各任务工况，请先保存或勾选替换当前草稿。')
         try:payload=designs.pack(current())
         except ValueError:st.caption('请修正参数后下载方案包。')

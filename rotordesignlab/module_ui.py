@@ -286,7 +286,7 @@ def conditions():
     st.caption('实际空气相对桨毂速度 [x, y, z] = ' + str(case['flow_rotor_m_s']) + ' m/s')
     with st.expander('周期变距、试验姿态与计算网格'):
         for name in ('cyclic_cos_deg', 'cyclic_sin_deg'):
-            field(case, name, default=0., prefix='case', help='θ(ψ)=总距+几何扭转差+θc cosψ+θs sinψ；ψ从局部x按模块旋向递增。单位°。')
+            field(case, name, default=0., prefix='case', help='θ(ψ)=总距+几何扭转差+θc cosψ+θs sinψ；ψ从局部+x朝+y几何增大；旋向决定桨叶经过的时间次序。单位°。')
         vector(case, 'gravity_rotor_m_s2', '局部重力 / (m/s²)', [0., 0., -9.80665], 'case',
                '水平向上旋翼填写[0,0,−9.80665]；竖直试验台按姿态投影，例如[0,−9.80665,0]。零向量仅用于无重力数值对照。')
         for name, title, value in [('radial_stations', '径向叶素数', 80), ('azimuth_stations', '方位离散数', 36)]:

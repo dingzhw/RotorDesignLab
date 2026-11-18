@@ -28,6 +28,15 @@ def apply_design(aircraft, case):
             rotor['defaults']['radial_stations'] = numeric(case, 'radial_stations', 8, 2000, integer=True)
         if role == 'tail' and 'tail_arm_m' in case:
             rotor['position_m'][0] = aircraft['mass_properties']['cg_m'][0] - numeric(case, 'tail_arm_m', .01, 100)
+    main = next(r for r in aircraft['rotors'] if r['role'] == 'main')
+    tail = next(r for r in aircraft['rotors'] if r['role'] == 'tail')
+    if 'rpm_ratio_to_main' in tail:
+        # A declared fixed gear ratio binds both operating points and sweeps.
+        # Rotor rotation signs remain module properties, independent of RPM size.
+        linked = main['defaults']['rpm'] * tail['rpm_ratio_to_main']
+        if 'tail_rpm' in case and not np.isclose(case['tail_rpm'], linked, rtol=1e-12, atol=1e-9):
+            raise ValueError('尾桨转速覆盖与已声明的主尾桨速比冲突；请在装配中选择独立给定转速再扫描。')
+        tail['defaults']['rpm'] = numeric({'rpm': linked}, 'rpm', *tail['limits']['rpm'])
 
 
 def component_loads(aircraft, rotor, summary):
