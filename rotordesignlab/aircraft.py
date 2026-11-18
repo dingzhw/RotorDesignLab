@@ -85,6 +85,9 @@ def require_analysis(aircraft, analysis):
     if aircraft['schema_version'] != 2:
         raise ValueError('整机悬停预算需要机型版本 2；版本 1 继续用于孤立旋翼。')
     if analysis in ('trim','linearize','response'):
+        from .mass_partition import enabled, Partition
+        if enabled(aircraft):
+            Partition(aircraft)
         from .airframe import validate_trim_inputs
         missing=[]
         try:validate_trim_inputs(aircraft)

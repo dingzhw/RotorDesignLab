@@ -13,7 +13,12 @@ COUPLING_WARNING = ('铰接旋翼开环交叉耦合待修复（R19）：桨毂�
 def open_loop_restriction(aircraft):
     affected = [r['id'] for r in aircraft['rotors']
                 if r.get('flight', {}).get('flapping', {}).get('mode') == 'hinged']
+    from .mass_partition import enabled
+    note = COUPLING_WARNING
+    if enabled(aircraft):
+        note = ('R19整机验收尚未关闭：新模型已接通主尾桨质量分账、动态一阶挥舞及隐式加速度；'
+                '公开机型质量估算、整机导数及响应仍须验收。仅供诊断，不用于稳定性判断或方案排序。')
     return dict(issue='R19' if affected else None, affected_rotors=affected,
                 engineering_use_allowed=False,
                 evaluation_status='cross_coupling_unresolved' if affected else 'experimental_unvalidated',
-                note=COUPLING_WARNING if affected else '低频模型仍属试验性，未完成独立动态验证。')
+                note=note if affected else '低频模型仍属试验性，未完成独立动态验证。')

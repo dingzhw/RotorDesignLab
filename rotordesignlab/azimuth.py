@@ -33,7 +33,8 @@ class AzimuthRotor:
         self.er=np.column_stack((np.cos(self.psi),np.sin(self.psi),np.zeros_like(self.psi)))
         self.et=self.rotation_sign*np.column_stack((-np.sin(self.psi),np.cos(self.psi),np.zeros_like(self.psi)))
 
-    def elements(self, controls, inflow, flap, velocity, *, strict=True, body_rates=(0,0,0)):
+    def elements(self, controls, inflow, flap, velocity, *, strict=True, body_rates=(0,0,0),
+                 flap_rates=None, flap_accelerations=None):
         """Return revolution-mean loads plus per-blade element diagnostics.
 
         No spanwise aerodynamic force, swirl, elastic twist or tip correction.
@@ -46,6 +47,15 @@ class AzimuthRotor:
         beta=self.harmonics@flap
         beta_dot=self.rotation_sign*omega*(-flap[1]*np.sin(self.psi)+flap[2]*np.cos(self.psi))
         beta_ddot=-omega**2*(flap[1]*np.cos(self.psi)+flap[2]*np.sin(self.psi))
+        # Harmonic amplitudes may change in time. Keep BOTH transport terms in
+        # d²(H(psi)b)/dt²; the legacy caller supplies neither and is unchanged.
+        if flap_rates is not None:
+            rates = np.asarray(flap_rates, dtype=float)
+            beta_dot = beta_dot + self.harmonics @ rates
+            beta_ddot = beta_ddot + 2*self.rotation_sign*omega*(
+                -rates[1]*np.sin(self.psi) + rates[2]*np.cos(self.psi))
+        if flap_accelerations is not None:
+            beta_ddot = beta_ddot + self.harmonics @ np.asarray(flap_accelerations)
         cb,sb=np.cos(beta),np.sin(beta)
         normal=-sb[:,None]*self.er;normal[:,2]=cb
         arm=h+cb[:,None]*(self.r-h)

@@ -56,9 +56,11 @@ class SteadyRotor:
         return np.r_[1e-6,-.5,-.5,-limit,-limit,-limit],np.r_[.5,.5,.5,limit,limit,limit]
 
     def evaluate(self, state, controls, velocity, gravity=(0,0,-9.80665), strict=False, *, body_rates=(0,0,0), require_equilibrium=True,
-                 hub_acceleration=(0,0,0), body_acceleration=(0,0,0)):
+                 hub_acceleration=(0,0,0), body_acceleration=(0,0,0),
+                 flap_rates=None, flap_accelerations=None, require_flap_equilibrium=True):
         state=np.asarray(state,dtype=float);inflow,flap=state[:3],state[3:]
-        data=self.kernel.elements(controls,inflow,flap,velocity,strict=strict,body_rates=body_rates)
+        data=self.kernel.elements(controls,inflow,flap,velocity,strict=strict,body_rates=body_rates,
+                                  flap_rates=flap_rates, flap_accelerations=flap_accelerations)
         thrust=data['force'][2];ct=thrust/self.scale
         ir,diagnostic=pitt_peters(inflow,np.asarray(velocity)/(self.rotor.omega*self.rotor.radius),
                                   ct,data['pressure_moments']/(self.scale*self.rotor.radius))
@@ -98,7 +100,8 @@ class SteadyRotor:
             if np.max(data['mach'])>1 and self.rotor.airfoil_grid is None:
                 raise ValueError('无Mach维度的极曲线不支持超声速叶素。')
             checked=residual if require_equilibrium else residual_flap
-            if np.max(abs(checked))>1e-6:raise ValueError('旋翼内部入流/挥舞残差未收敛。')
+            if require_flap_equilibrium and np.max(abs(checked))>1e-6:
+                raise ValueError('旋翼内部入流/挥舞残差未收敛。')
         diagnostic.update(internal_max_residual=float(np.max(abs(residual))),
             omitted_flap_harmonics_rms=harmonic_defect,alpha_min_deg=float(data['alpha_deg'].min()),
             alpha_max_deg=float(data['alpha_deg'].max()),mach_max=float(data['mach'].max()),

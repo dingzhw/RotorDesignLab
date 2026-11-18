@@ -18,6 +18,7 @@ WARNINGS=[OPEN_LOOP_LABEL, MACH_SCOPE, '低频降阶模型：6自由度机体、
 
 def run_open_loop(case,base,output):
     started = perf_counter()
+    warnings = list(WARNINGS)
     analysis = case['analysis']
     if type(case.get('diagnostic_only', False)) is not bool:
         raise ValueError('diagnostic_only必须是布尔值。')
@@ -50,18 +51,30 @@ def run_open_loop(case,base,output):
     if trim['status']!='converged':
         return dict(status='failed',analysis=analysis,solver_status='trim_failed',support_status=trim['support_status'],
             design_limits_status=trim['design_limits_status'],evidence_status='model_estimate',error='开环基点未通过配平：'+trim['error'],
-            trim=trim,download_model=trim.get('download_model'),warnings=WARNINGS + [restriction['note']],
+            trim=trim,download_model=trim.get('download_model'),warnings=warnings + [restriction['note']],
             evaluation_restriction=restriction),snapshot
     saved = read_case(output / 'trim/case.json')
     aircraft = read_aircraft(output / 'trim/aircraft.json')
     system=TrimSystem(aircraft,output/'trim',saved)
-    plant=ReducedDynamics(system,trim['diagnostics']['solved_state'],trim['velocity_body_m_s'])
+    if system.partition is not None:
+        from .coupled_dynamics import CoupledDynamics
+        plant = CoupledDynamics(system, trim['diagnostics']['solved_state'], trim['velocity_body_m_s'])
+        warnings = [OPEN_LOOP_LABEL, MACH_SCOPE,
+                    '一阶谐波动态挥舞、机体与旋转桨毂联立加速度；方位平均，无摆振/弹性/尾迹曲率/传动动态。',
+                    '低频频段输出；附加高频谐波模态未经独立验证。']
+    else:
+        plant = ReducedDynamics(system, trim['diagnostics']['solved_state'], trim['velocity_body_m_s'])
+    names = getattr(plant, 'state_names', STATES)
+    units = getattr(plant, 'state_units', UNITS)
+    scales = getattr(plant, 'state_scale', STATE_SCALE)
+    steps = getattr(plant, 'state_steps', STATE_STEPS)
+    size = len(names)
     equilibrium=plant.rhs(plant.state,plant.controls)
     if np.max(abs(equilibrium)) > 1e-6:
         raise ValueError('配平点代入动态方程未保持平衡。')
     a, b = central_derivatives(plant)
     fine_a, fine_b = central_derivatives(plant, .5)
-    check = derivative_check(a, b, fine_a, fine_b)
+    check = derivative_check(a, b, fine_a, fine_b, scales)
     a, b = fine_a, fine_b
     maximum_frequency=min(3.,.1*system.rotors['main'].rotor.omega)
     raw_frequencies=case.get('frequencies_rad_s',np.geomspace(.1,maximum_frequency,36).tolist())
@@ -70,25 +83,29 @@ def run_open_loop(case,base,output):
     frequencies=np.asarray(raw_frequencies,dtype=float)
     if frequencies.ndim!=1 or not 2<=len(frequencies)<=500 or not np.isfinite(frequencies).all() or np.any(np.diff(frequencies)<=0) or frequencies[0]<.01 or frequencies[-1]>maximum_frequency:
         raise ValueError(f'频率需要2–500个严格递增有限数，范围0.01–{maximum_frequency:g} rad/s。')
-    modal=modes(a)
+    modal=modes(a, names)
     unavailable = sum(mode['participation_status'] == 'unavailable' for mode in modal)
     modal_warnings = [f'{unavailable}个模态的参与因子不可用，特征根及数值诊断已保留。'] if unavailable else []
     for mode in modal:
         mode['within_low_frequency_band'] = bool(np.hypot(mode['real'], mode['imag']) <= maximum_frequency)
-    metadata=dict(state_names=STATES,state_units=UNITS,control_names=CONTROLS,control_units=['rad']*4,
+    metadata=dict(state_names=names,state_units=units,control_names=CONTROLS,control_units=['rad']*4,
         state_equilibrium=plant.state.tolist(),control_equilibrium_rad=plant.controls.tolist(),
         equilibrium_derivative=equilibrium.tolist(),derivative_check=check,
-        state_difference_steps=(STATE_STEPS*.5).tolist(),control_difference_steps=(CONTROL_STEPS*.5).tolist(),
+        state_difference_steps=(steps*.5).tolist(),control_difference_steps=(getattr(plant, 'control_steps', CONTROL_STEPS)*.5).tolist(),
         mass_matrix_definition='E*delta_x_dot = F*delta_x + G*delta_u; E=diag(m*I3,I_cg,I3,Mpp/Omega_main,Mpp/Omega_tail), Mpp=diag(128/(75pi),16/(45pi),16/(45pi)). F=E*A, G=E*B. No hidden acceleration coupling in this reduced model.',
-        modes=modal,model_scope=WARNINGS,maximum_frequency_rad_s=maximum_frequency,
+        modes=modal,model_scope=warnings,maximum_frequency_rad_s=maximum_frequency,
         download_model=trim['download_model'])
+    if system.partition is not None:
+        metadata['mass_matrix_definition'] = plant.mass_matrix_definition
+        metadata['mass_partition'] = system.partition.report
+    metadata['dynamics_model'] = aircraft.get('dynamics', {}).get('model', 'legacy_aero_v1')
     from .mounting import coordinate_metadata
     metadata['rotor_coordinates'] = {role: coordinate_metadata(rotor) for role, rotor in system.selected.items()}
     metadata['evaluation_restriction'] = restriction
     write_json(output/'linearization.json',metadata)
-    for name,matrix,columns in [('A',a,STATES),('B',b,CONTROLS),('E',plant.mass_matrix,STATES),
-                                 ('F',plant.mass_matrix@a,STATES),('G',plant.mass_matrix@b,CONTROLS)]:
-        write_csv(output/f'{name}.csv',['state',*columns],([label,*row] for label,row in zip(STATES,matrix)))
+    for name,matrix,columns in [('A',a,names),('B',b,CONTROLS),('E',plant.mass_matrix,names),
+                                 ('F',plant.mass_matrix@a,names),('G',plant.mass_matrix@b,CONTROLS)]:
+        write_csv(output/f'{name}.csv',['state',*columns],([label,*row] for label,row in zip(names,matrix)))
     write_csv(output/'modes.csv',['real_per_s','imag_rad_s','damping_ratio','period_s','e_folding_time_s','behavior','dominant_states',
               'participation_status','participation_note','eigenvector_condition','eigenpair_relative_residual'],
         ([m['real'],m['imag'],m['damping_ratio'],m['period_s'],m['e_folding_time_s'],m['behavior'],
@@ -103,9 +120,9 @@ def run_open_loop(case,base,output):
         model_maturity=OPEN_LOOP_LABEL,download_model=trim['download_model'],
         evaluation_restriction=restriction,
         diagnostic_only=case.get('diagnostic_only', False),
-        warnings=WARNINGS + [restriction['note']] + modal_warnings + [trim['download_model']['note'], trim['download_model']['comparison_note']],
+        warnings=warnings + [restriction['note']] + modal_warnings + [trim['download_model']['note'], trim['download_model']['comparison_note']],
         design_limit_scope='trim base point; response checks control/attitude/data limits, transient power limits not evaluated',
-        summary=dict(states=15,controls=4,unstable_modes=sum(m['real']>1e-7 for m in modal),
+        summary=dict(states=size,controls=4,unstable_modes=sum(m['real']>1e-7 for m in modal),
                      neutral_modes=sum(m['behavior']=='kinematic_neutral' for m in modal),
                      max_equilibrium_derivative=float(abs(equilibrium).max()),
                      derivative_check_pass=check['passed']),trim=trim,linearization=metadata)
@@ -120,7 +137,7 @@ def run_open_loop(case,base,output):
                                     duration, step, perturbation=perturbation)
         except ResponseDomainError as error:
             history=error.history
-            write_csv(output/'partial-response.csv',['time_s',*[k+'_nonlinear' for k in STATES],*[k+'_linear' for k in STATES]],history)
+            write_csv(output/'partial-response.csv',['time_s',*[k+'_nonlinear' for k in names],*[k+'_linear' for k in names]],history)
             write_input_history(output, history, perturbation, plant.controls, case['control'])
             result.update(status='failed',solver_status='response_stopped',support_status='outside_implemented_reduced_domain',error=str(error),elapsed_s=perf_counter()-started)
             result['summary']['last_valid_time_s'] = float(history[-1, 0]) if len(history) else None
@@ -132,13 +149,13 @@ def run_open_loop(case,base,output):
             from .open_loop_plots import save_figures
             save_figures(output, result)
             return result,snapshot
-        write_csv(output/'response.csv',['time_s',*[k+'_nonlinear' for k in STATES],*[k+'_linear' for k in STATES]],history)
+        write_csv(output/'response.csv',['time_s',*[k+'_nonlinear' for k in names],*[k+'_linear' for k in names]],history)
         write_input_history(output, history, perturbation, plant.controls, case['control'])
         result['summary']['duration_s']=duration
-        error=history[:,1:16]-history[:,16:31]
-        result['summary']['response_error_scaled_norm']=float(np.max(np.linalg.norm(error/STATE_SCALE,axis=1)))
-        result['response_max_abs_error']={name:float(value) for name,value in zip(STATES,abs(error).max(axis=0))}
-        result['response_error_state_scales']=STATE_SCALE.tolist()
+        error=history[:,1:1+size]-history[:,1+size:1+2*size]
+        result['summary']['response_error_scaled_norm']=float(np.max(np.linalg.norm(error/scales,axis=1)))
+        result['response_max_abs_error']={name:float(value) for name,value in zip(names,abs(error).max(axis=0))}
+        result['response_error_state_scales']=scales.tolist()
         result['response_definition'] = 'Deltas from accepted trim; both models share perturbation. See input.csv for right-continuous actual controls; discontinuities split integration steps. Body states retain SI/rad; no position states.'
     from .open_loop_plots import save_figures
     save_figures(output,result)

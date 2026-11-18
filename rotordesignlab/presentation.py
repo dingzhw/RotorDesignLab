@@ -15,6 +15,10 @@ CONTROL_LABELS = {'main_collective':'主桨总距', 'main_cos':'主桨 cos 周�
                   'main_sin':'主桨 sin 周期变距', 'tail_collective':'尾桨总距'}
 STATE_LABELS = {'u':'纵向速度 u', 'v':'侧向速度 v', 'w':'垂向速度 w',
                 'p':'滚转角速度 p', 'q':'俯仰角速度 q', 'r':'偏航角速度 r'}
+for role, title in [('main', '主桨'), ('tail', '尾桨')]:
+    for suffix, component in [('0', '锥度'), ('c', 'cos挥舞'), ('s', 'sin挥舞')]:
+        STATE_LABELS[role+'_beta'+suffix] = title+component+'幅值 β'+suffix
+        STATE_LABELS[role+'_beta'+suffix+'_rate'] = title+component+'幅值变化率'
 
 
 def configure_chinese_plots():

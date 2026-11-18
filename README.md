@@ -6,7 +6,7 @@
 
 2026-11-16 已完成0.4.4-A/B：速度/Mach边界、模态可靠性、错误恢复与试验性标识，以及共享扰动输入和显式下载策略。新建方案可直接选择平滑脉冲/双脉冲/阶跃并导出实际输入，旧方案保留原计算语义。0.4.5-A已接入运动速度与空气XYZ双视角及非水平姿态，旧方案保持原语义；新主桨模板使用实际机尾零方位，安装角和旋向可在页面修改；增加高度/ISA温差、kW输入、中文结果表及布局/几何/翼型预览。88项回归和页面检查通过，正式0.4.5待同事实测。[整改跟踪表](docs/reviews/RotorDesignLab-v0.4.3-评审意见回复书.md) · [开发路线](docs/roadmap.md) · [0.4.4检查](docs/v044-work.md) · [0.4.5检查](docs/v045-work.md)。软件小版本与模型成熟度分别管理，完整动态挥舞及独立操稳验证仍待完成。
 
-已发布v0.3.0整机配平。当前开发版 `0.4.6.dev5` 已完成独立旋翼、模块装配和三个整机分析入口（M1–M3）。旋翼本体与安装实例分别保存，装配内嵌固定模块快照；悬停预算、六分量悬停配平、前飞配平及开环诊断共用该装配，结果支持历史重开和导出复算。桨毂传力核已建立，整机质量分账与隐式加速度接入仍在A2/A3。**铰接旋翼交叉耦合问题尚未关闭，仅开放故障诊断，不用于稳定性判断或方案排序**；尚未发布正式v0.4。[整机装配用法](docs/assembly-workspace.md) · [桨毂传力进展](docs/hub-loads.md) · [孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [环境与预览](docs/environment-and-previews.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
+已发布v0.3.0整机配平。当前开发版 `0.4.6.dev6` 已完成独立旋翼、模块装配和三个整机分析入口（M1–M3）。旋翼本体与安装实例分别保存，装配内嵌固定模块快照；悬停预算、六分量悬停配平、前飞配平及开环诊断共用该装配，结果支持历史重开和导出复算。A2已接通显式质量分账和一阶谐波动态挥舞的隐式加速度，旧模型保持；A3整机验收继续推进。[A2说明](docs/a2-mass-coupling.md)。**铰接旋翼交叉耦合问题尚未关闭，仅开放故障诊断，不用于稳定性判断或方案排序**；尚未发布正式v0.4。[整机装配用法](docs/assembly-workspace.md) · [桨毂传力进展](docs/hub-loads.md) · [孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [环境与预览](docs/environment-and-previews.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
 
 旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：原环带模型 XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.09%；接入旧表局部Re后仍为28.87%，真实Re气动与非局部尾迹继续排查。均匀入流核 C–T 偏差39.5%。UH‑60 与 NASA TM‑85890 姿态及部分导数作带配置差异的数学模型对照，所有通用整机结果标记为模型估算。公开参数和工程估计分别注明；已发布标签保持可复算。
 
@@ -74,4 +74,4 @@ $env:PYTHONPATH = (Get-Location).Path
 
 原始 J‑GenHel 代码由 Umberto Saetti 编写，依 [MIT 许可](src/LICENSE) 使用。引用 Saetti & Horn, *Flight Simulation and Control using the Julia Language*, AIAA 2022‑2354。 [原作者仓库](https://github.com/terragord7/J-GenHel) · [论文 DOI](https://doi.org/10.2514/6.2022-2354)
 
-模块化M1–M3已完成。左侧选择“孤立旋翼”，无需整机参数即可编辑旋翼、正算/反求/扫描和保存；进入“整机装配”加载模块，设置位置、方向、传动及机体参数，再进入悬停、配平或开环诊断。模块库更新不会改变已保存装配；修改装配后保留上次结果及实际输入。参见[旋翼网页说明](docs/module-workspace.md)、[装配操作说明](docs/assembly-workspace.md)和[M3检查记录](docs/m3-work.md)。下一包A2补齐质量分账与隐式加速度，随后A3整机验收。
+模块化M1–M3已完成。左侧选择“孤立旋翼”，无需整机参数即可编辑旋翼、正算/反求/扫描和保存；进入“整机装配”加载模块，设置位置、方向、传动及机体参数，再进入悬停、配平或开环诊断。模块库更新不会改变已保存装配；修改装配后保留上次结果及实际输入。参见[旋翼网页说明](docs/module-workspace.md)、[装配操作说明](docs/assembly-workspace.md)和[M3检查记录](docs/m3-work.md)。A2实现与力学检查已完成，下一包A3整机导数及响应验收。

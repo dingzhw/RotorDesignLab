@@ -33,6 +33,8 @@ class TrimSystem:
         self.Rmain=self.selected['main']['radius_m']
         self.residual_calls = 0
         self.element_calls = 0
+        from .mass_partition import enabled, Partition
+        self.partition = Partition(aircraft) if enabled(aircraft) else None
 
     def bounds(self):
         main,tail=self.selected['main'],self.selected['tail'];cfg=self.aircraft['trim']
@@ -59,24 +61,41 @@ class TrimSystem:
             if np.max(abs(residual[:6]))>1e-4:raise ValueError('六分量配平残差未收敛。')
         return residual,data
 
-    def loads(self,x,velocity,body_rates=(0,0,0),strict=False,require_equilibrium=True):
+    def loads(self,x,velocity,body_rates=(0,0,0),strict=False,require_equilibrium=True,
+              flap_rates=None, dynamic_flap=False):
         """Common component loads for trim and the reduced dynamic model."""
         R=body_to_ned(*x[4:6]);gravity=R.T@np.array([0,0,G]);F=self.weight/G*gravity;M=np.zeros(3)
         internal=[];items={};rotor_data={};cg=np.asarray(self.aircraft['mass_properties']['cg_m'])
+        mechanics = None
+        if self.partition is not None:
+            from .coupled_loads import Mechanics
+            mechanics = Mechanics(self, body_rates, gravity)
+            F, M = mechanics.rhs[:3].copy(), mechanics.rhs[3:6].copy()
         for role,start,controls in [('main',6,x[:3]),('tail',12,np.array([x[3],0,0]))]:
             basis=self.bases[role];model=self.rotors[role];data=self.selected[role]
             try:
                 hub_velocity=velocity+np.cross(body_rates,np.asarray(data['position_m'])-cg)
                 self.element_calls += 1
+                options = {}
+                if mechanics is not None:
+                    arm = np.asarray(data['position_m'])-cg
+                    options = dict(hub_acceleration=basis.T@np.cross(body_rates, np.cross(body_rates, arm)),
+                                   flap_rates=(flap_rates or {}).get(role), require_flap_equilibrium=not dynamic_flap)
                 residual,loads,diag=model.evaluate(x[start:start+6],controls,basis.T@hub_velocity,basis.T@gravity,strict,
-                    body_rates=basis.T@np.asarray(body_rates),require_equilibrium=require_equilibrium)
+                    body_rates=basis.T@np.asarray(body_rates),require_equilibrium=require_equilibrium, **options)
             except ValueError as error:
                 raise ValueError(role+': '+str(error)) from error
             internal.extend(residual);f=basis@loads['force'];m=basis@loads['moment']+np.cross(np.asarray(data['position_m'])-cg,f)
+            transfer_details = None
+            if mechanics is not None:
+                wrench, transfer_details = mechanics.rotor(role, model, loads, residual)
+                f, m = wrench[:3], wrench[3:]
             F+=f;M+=m
             items[role]=dict(force_body_n=f.tolist(),moment_cg_body_nm=m.tolist(),power_w=loads['power'],
                              thrust_n=float(loads['force'][2]),torque_nm=loads['torque'],diagnostics=diag,
                              inflow=x[start:start+3].tolist(),flap_deg=np.rad2deg(x[start+3:start+6]).tolist())
+            if transfer_details is not None:
+                items[role]['hub_transfer_at_zero_generalized_acceleration'] = transfer_details
             rotor_data[role]=loads
         induced=self.rotors['main'].rotor.omega*self.Rmain*x[6]*self.bases['main'][:,2]
         tail_induced=self.rotors['tail'].rotor.omega*self.selected['tail']['radius_m']*x[12]*self.bases['tail'][:,2]
@@ -86,10 +105,15 @@ class TrimSystem:
         # A single policy feeds trim, derivatives and every dynamic RHS.
         items['download'] = download_load(self.aircraft, items['main']['thrust_n'], self.bases['main'][:, 2])
         F += items['download']['force_body_n']
+        if mechanics is not None:
+            mechanics.rhs[:6] = np.r_[F, M]
         outer=np.r_[F/self.weight,M/(self.weight*self.Rmain)]
         if strict:
             if items['main']['diagnostics']['mu']>.25+1e-9:raise ValueError('主桨推进比超出μ≤0.25范围。')
-        return np.r_[outer,10*np.array(internal)],dict(components=items,force=F,moment=M,velocity=velocity,rotor_data=rotor_data)
+        result = dict(components=items,force=F,moment=M,velocity=velocity,rotor_data=rotor_data)
+        if mechanics is not None:
+            result['mechanics'] = mechanics
+        return np.r_[outer,10*np.array(internal)], result
 
 
 def run_trim(case,base,output):
@@ -133,6 +157,9 @@ def run_trim(case,base,output):
         solved_state=fit.x.tolist(),scaled_force_moment_residual=residual[:6].tolist(),
         rotor_internal_residual=(residual[6:]/10).tolist(),near_limits=near_limits,elapsed_s=perf_counter()-started)
     diagnostic['rotors']={role:data['components'][role]['diagnostics'] for role in ('main','tail')}
+    if system.partition is not None:
+        diagnostic['mass_partition'] = system.partition.report
+        write_json(output/'mass-partition.json', system.partition.report)
     write_json(output/'trim-diagnostics.json',diagnostic)
     write_csv(output/'residuals.csv',['component','scaled_residual'],zip(['Fx','Fy','Fz','Mx','My','Mz'],residual[:6]))
     try:system.evaluate(fit.x,strict=True)

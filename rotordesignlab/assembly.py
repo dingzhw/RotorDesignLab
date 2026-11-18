@@ -57,14 +57,14 @@ def from_legacy(design):
                 assets[name] = design['assets'][rotor[key]].encode('utf-8')
                 rotor[key] = name
         flap = deepcopy(old['flight']['flapping'])
-        mass = {'provenance': '从原机型原值提取；单片质量未给定，不由质量矩反推。'}
+        mass = deepcopy(old.get('blade_mass', {'provenance': '从原机型原值提取；单片质量未给定，不由质量矩反推。'}))
         for key in MOMENTS:
             if key in flap:
                 mass[key] = flap.pop(key)
         module = dict(schema_version=1, kind='rotor_module', id=old['id'], name=aircraft['name']+' / '+old['id'],
                       axes='right_handed_z_thrust_x_zero', rotor=rotor, flapping=flap, blade_mass=mass,
-                      hub={'provenance': '原机型未分列桨毂质量属性。'}, provenance=old.get('provenance', aircraft['provenance']))
-        installation = {k: deepcopy(v) for k, v in old.items() if k not in MODULE_FIELDS}
+                      hub=deepcopy(old.get('hub', {'provenance': '原机型未分列桨毂质量属性。'})), provenance=old.get('provenance', aircraft['provenance']))
+        installation = {k: deepcopy(v) for k, v in old.items() if k not in MODULE_FIELDS | {'blade_mass', 'hub'}}
         ratio = installation.pop('rpm_ratio_to_main', None)
         installation['flight'] = {k: deepcopy(v) for k, v in old['flight'].items() if k not in CYCLIC | {'flapping'}}
         instances.append(dict(snapshot=snapshot(module, assets), installation=installation,
@@ -83,7 +83,7 @@ def from_legacy(design):
     return result
 
 
-def project(assembly):
+def project(assembly, coupled=False):
     rotors, assets = [], {}
     instances = assembly['instances']
     main = next(i for i in instances if i['installation']['role'] == 'main')
@@ -106,6 +106,9 @@ def project(assembly):
         flap = deepcopy(module['flapping'])
         flap.update({key: module['blade_mass'][key] for key in MOMENTS if key in module['blade_mass']})
         rotor['flight']['flapping'] = flap
+        if coupled:
+            rotor['blade_mass'] = deepcopy(module['blade_mass'])
+            rotor['hub'] = deepcopy(module['hub'])
         if instance['drive']['rpm_mode'] == 'main_ratio':
             rotor['defaults']['rpm'] = main_rpm * instance['drive']['ratio']
             rotor['rpm_ratio_to_main'] = instance['drive']['ratio']
@@ -114,7 +117,11 @@ def project(assembly):
 
 
 def refresh(design):
-    rotors, assets = project(design['assembly'])
+    from .mass_partition import enabled
+    coupled = enabled(design['aircraft'])
+    rotors, assets = project(design['assembly'], coupled)
+    design['assembly']['mass_accounting'] = ('total_at_reference_flap_subtract_rotors' if coupled
+                                            else 'legacy_total_aircraft_no_automatic_rotor_addition')
     design['aircraft']['rotors'] = rotors
     design['assets'] = assets
 
@@ -125,7 +132,8 @@ def validate(design):
             set(assembly) != {'schema_version', 'layout', 'instances', 'mass_accounting'} or
             type(assembly['schema_version']) is not int or assembly['schema_version'] != 1 or
             assembly['layout'] != 'single_main_tail' or
-            assembly['mass_accounting'] != 'legacy_total_aircraft_no_automatic_rotor_addition'):
+            assembly['mass_accounting'] not in ('legacy_total_aircraft_no_automatic_rotor_addition',
+                                               'total_at_reference_flap_subtract_rotors')):
         raise ValueError('装配版本、布局或质量归属声明无效。')
     instances = assembly['instances']
     if not isinstance(instances, list) or len(instances) != 2:
@@ -175,7 +183,12 @@ def validate(design):
             raise ValueError('模块快照必须记录来源。')
     if sorted(roles) != ['main', 'tail'] or len(set(ids)) != 2:
         raise ValueError('需恰好一个主旋翼和一个尾桨，安装编号须不同。')
-    rotors, assets = project(assembly)
+    from .mass_partition import enabled
+    expected = ('total_at_reference_flap_subtract_rotors' if enabled(design['aircraft'])
+                else 'legacy_total_aircraft_no_automatic_rotor_addition')
+    if assembly['mass_accounting'] != expected:
+        raise ValueError('装配质量归属声明与动力学模型不一致。')
+    rotors, assets = project(assembly, enabled(design['aircraft']))
     if design['aircraft']['rotors'] != rotors or design['assets'] != assets:
         raise ValueError('整机求解输入与装配快照不一致；请从装配入口修改，不直接改生成的旋翼参数。')
 

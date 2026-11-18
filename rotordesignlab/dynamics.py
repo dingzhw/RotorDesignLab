@@ -77,21 +77,25 @@ class ReducedDynamics:
 
 
 def central_derivatives(plant,factor=1.):
-    a=np.empty((15,15));b=np.empty((15,4))
-    for index,h in enumerate(STATE_STEPS*factor):
-        offset=np.zeros(15);offset[index]=h
+    size = len(plant.state)
+    steps = getattr(plant, 'state_steps', STATE_STEPS)
+    a, b = np.empty((size, size)), np.empty((size, 4))
+    for index,h in enumerate(steps*factor):
+        offset = np.zeros(size)
+        offset[index] = h
         a[:,index]=(plant.rhs(plant.state+offset,plant.controls)-plant.rhs(plant.state-offset,plant.controls))/(2*h)
-    for index,h in enumerate(CONTROL_STEPS*factor):
+    for index,h in enumerate(getattr(plant, 'control_steps', CONTROL_STEPS)*factor):
         offset=np.zeros(4);offset[index]=h
         b[:,index]=(plant.rhs(plant.state,plant.controls+offset)-plant.rhs(plant.state,plant.controls-offset))/(2*h)
     return a,b
 
 
-def derivative_check(a,b,refa,refb):
+def derivative_check(a,b,refa,refb,state_scale=None):
     # Compare effects in dimensionless design perturbation coordinates.
     # Row/column minimum keeps body derivatives from being hidden by fast inflow
     # rows. Exclude only <0.1% of the smaller peak, with a 1e-7/s absolute floor.
-    scale=STATE_SCALE;uscale=np.full(4,np.deg2rad(1.))
+    scale = STATE_SCALE if state_scale is None else np.asarray(state_scale)
+    uscale = np.full(4,np.deg2rad(1.))
     metrics={}
     for name,x,ref,colscale in [('A',a,refa,scale),('B',b,refb,uscale)]:
         current=x*colscale/scale[:,None];reference=ref*colscale/scale[:,None]
@@ -107,8 +111,9 @@ def derivative_check(a,b,refa,refb):
     return metrics
 
 
-def modes(a):
+def modes(a, state_names=None):
     """Keep eigenvalues even when an eigenvector basis cannot support attribution."""
+    names = STATES if state_names is None else state_names
     values, right = np.linalg.eig(a)
     condition = float(np.linalg.cond(right))
     limit = 1e8
@@ -149,7 +154,7 @@ def modes(a):
             period_s=float(2 * np.pi / abs(value.imag)) if abs(value.imag) > 1e-7 else None,
             e_folding_time_s=float(1 / abs(value.real)) if abs(value.real) > 1e-7 else None,
             behavior=behavior,
-            participation={STATES[j]: float(weights[j]) for j in np.argsort(weights)[-4:][::-1]} if available else {},
+            participation={names[j]: float(weights[j]) for j in np.argsort(weights)[-4:][::-1]} if available else {},
             participation_status='available' if available else 'unavailable',
             participation_note=note, repeated_eigenvalue=bool(repeated),
             eigenvector_condition=condition if np.isfinite(condition) else None,
@@ -170,9 +175,9 @@ def frequency_response(a,b,frequencies):
 
 
 class ResponseDomainError(ValueError):
-    def __init__(self,message,history):
+    def __init__(self,message,history,state_count=15):
         super().__init__(message)
-        self.history = np.asarray(history).reshape((-1, 31))
+        self.history = np.asarray(history).reshape((-1, 1+2*state_count))
 
 
 def step_response(plant, a, b, control_index, amplitude_deg, duration, step, *, perturbation=None):
@@ -190,7 +195,8 @@ def step_response(plant, a, b, control_index, amplitude_deg, duration, step, *, 
     events = [v for v in wave.breakpoints() if 0 <= v <= duration]
     times = [t for t in np.arange(count + 1) * step if not any(abs(t - e) < 1e-12 for e in events)]
     times = sorted([*times, *events])
-    linear = np.zeros(15)
+    size = len(plant.state)
+    linear = np.zeros(size)
     nonlinear = plant.state.copy()
     transitions = {}
     rows = []
@@ -205,7 +211,7 @@ def step_response(plant, a, b, control_index, amplitude_deg, duration, step, *, 
         try:
             k1 = plant.rhs(nonlinear, plant.controls + first_input)
         except ValueError as error:
-            raise ResponseDomainError(f't={time:g}s状态超出支持域：{error}', rows) from error
+            raise ResponseDomainError(f't={time:g}s状态超出支持域：{error}', rows, size) from error
         rows.append(np.r_[time, nonlinear - plant.state, linear])
         if index == len(times) - 1:
             break
@@ -220,14 +226,14 @@ def step_response(plant, a, b, control_index, amplitude_deg, duration, step, *, 
             k3 = plant.rhs(nonlinear + h * k2 / 2, plant.controls + middle_input)
             k4 = plant.rhs(nonlinear + h * k3, plant.controls + last_input)
         except ValueError as error:
-            raise ResponseDomainError(f't={time:g}s之后积分失败：{error}', rows) from error
+            raise ResponseDomainError(f't={time:g}s之后积分失败：{error}', rows, size) from error
         nonlinear += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6
         if wave.kind != 'pulse':
             key = round(h, 12)
             if key not in transitions:
-                transitions[key] = expm(np.block([[a, b], [np.zeros((4, 19))]]) * h)
+                transitions[key] = expm(np.block([[a, b], [np.zeros((4, size+4))]]) * h)
             transition = transitions[key]
-            linear = transition[:15, :15] @ linear + transition[:15, 15:] @ first_input
+            linear = transition[:size, :size] @ linear + transition[:size, size:] @ first_input
         else:
             l1 = a @ linear + b @ first_input
             l2 = a @ (linear + h * l1 / 2) + b @ middle_input

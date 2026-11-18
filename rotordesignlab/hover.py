@@ -16,6 +16,10 @@ VARIABLES = {'mass_kg', 'altitude_m', 'main_radius_m', 'main_rpm', 'tail_radius_
 
 
 def apply_design(aircraft, case):
+    from .mass_partition import enabled
+    structural = {'mass_kg', 'cg_x_m', 'main_radius_m', 'tail_radius_m', 'tail_arm_m'} & set(case)
+    if enabled(aircraft) and structural:
+        raise ValueError('质量分账模型的尺寸/质量/重心覆盖需要另存装配并确认参考惯量：'+', '.join(sorted(structural)))
     if 'mass_kg' in case:
         aircraft['mass_properties']['mass_kg'] = numeric(case, 'mass_kg', .01, 1e6)
     for rotor in aircraft['rotors']:

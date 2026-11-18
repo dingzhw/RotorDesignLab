@@ -123,7 +123,7 @@ def module_selector(index):
         mass = saved['module']['blade_mass']
         hub = saved['module']['hub']
         st.caption('单片质量 / kg：' + str(mass.get('mass_kg', '未提供')) + '；桨毂质量 / kg：' + str(hub.get('mass_kg', '未提供')))
-        st.caption('单片质量、桨毂及完整质量矩保存在快照中。A2前仍使用原整机总质量/惯量；不会将这些值再次累加。')
+        st.caption('单片质量、桨毂及完整质量矩保存在快照中。历史模型沿用原总质量；新耦合模型按下方质量参考构型分账，不重复累加。')
         module, assets = assembly.module_data(instance)
         st.download_button('下载此安装位的旋翼模块', rotor_module.pack(module, assets), 'installed-rotor.rdlr', key=prefix+'download')
         consent = st.checkbox('允许替换孤立旋翼工作区草稿', key=prefix+'consent', help='将装配中的副本载入孤立工作区。编辑和保存后，仍需回到装配页显式换入。')
@@ -168,6 +168,8 @@ def render():
     with st.expander('安装位置、方向、操纵与传动', expanded=True):
         installation_editor(index)
     details(assembly_only=True)
+    from .coupling_ui import render as render_coupling
+    render_coupling()
     errors = designs.issues(current())
     if errors:
         st.warning('装配尚未满足输入要求，草稿保留；请修正后计算或保存。')

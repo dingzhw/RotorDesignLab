@@ -21,6 +21,7 @@ TEMPLATES = {
     '200 kg 合成无人直升机': ROOT/'examples/templates/v045/synthetic.json',
     'UH-60 公开部件模型（含工程估计）': ROOT/'examples/templates/v045/uh60-public.json',
     '三桨叶孤立旋翼示例（兼容旧版）': ROOT/'examples/synthetic-aircraft.json',
+    '200 kg 合成机（A2质量分账，试验性）': ROOT/'examples/templates/a2/synthetic.json',
 }
 TEMPLATE_ALIASES={'三片叶孤立旋翼示例（兼容旧版）':'三桨叶孤立旋翼示例（兼容旧版）'}
 

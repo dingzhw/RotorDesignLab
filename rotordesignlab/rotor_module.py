@@ -142,13 +142,13 @@ def extract(source, rotor_id, output):
                 rotor[key] = name
         flap = deepcopy(old.get('flight', {}).get('flapping', dict(
             mode='fixed', hinge_offset_m=0., precone_deg=old.get('precone_deg', 0.), max_flap_deg=15.)))
-        mass = {'provenance': '从旧旋翼字段原值提取；单片质量未提供，不由质量矩反推。'}
+        mass = deepcopy(old.get('blade_mass', {'provenance': '从旧旋翼字段原值提取；单片质量未提供，不由质量矩反推。'}))
         for key in ('inertia_kg_m2', 'first_mass_moment_kg_m'):
             if key in flap:
                 mass[key] = flap.pop(key)
         module = dict(schema_version=1, kind='rotor_module', id=rotor_id, name=aircraft['name']+' / '+rotor_id,
                       axes='right_handed_z_thrust_x_zero', rotor=rotor, blade_mass=mass, flapping=flap,
-                      hub={'provenance': '旧文件未提供桨毂独立质量/重心惯量。'},
+                      hub=deepcopy(old.get('hub', {'provenance': '旧文件未提供桨毂独立质量/重心惯量。'})),
                       provenance=old.get('provenance', aircraft.get('provenance', '旧公开/用户方案原值，来源待核。')))
         validate(module)
         output.mkdir(parents=True, exist_ok=False)
@@ -298,7 +298,7 @@ def run(case, base, output):
         ('hub', ('mass_kg','cg_rotor_m','inertia_cg_kg_m2')))
         for key in keys if key not in module[group]]
     warnings = ['独立旋翼整转平均气动载荷，力矩关于桨毂；未加入整机、安装或重心移轴。',
-                '单片质量与桨毂质量属性已保存；当前稳态挥舞只使用一阶/二阶质量矩，桨毂传力及整机惯性耦合仍待A2。']
+                '当前孤立稳态挥舞使用一阶/二阶质量矩；完整质量与桨毂属性在装配选择质量分账模型后参与整机惯性耦合。']
     from .model_scope import SPATIAL_SCOPE, MACH_SCOPE
     warnings += [MACH_SCOPE]
     if method == 'spatial':

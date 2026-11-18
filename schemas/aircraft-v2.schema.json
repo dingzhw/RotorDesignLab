@@ -320,6 +320,59 @@
             "type": "number",
             "minimum": 1e-06,
             "maximum": 0.001
+          },
+          "blade_mass": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provenance"
+            ],
+            "properties": {
+              "provenance": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mass_kg": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "first_mass_moment_kg_m": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "inertia_kg_m2": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          },
+          "hub": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provenance"
+            ],
+            "properties": {
+              "provenance": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mass_kg": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "inertia_cg_kg_m2": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "$ref": "#/$defs/vector"
+                }
+              },
+              "cg_rotor_m": {
+                "$ref": "#/$defs/vector"
+              }
+            }
           }
         }
       }
@@ -400,7 +453,10 @@
       "properties": {
         "download_policy": {
           "type": "string",
-          "enum": ["none", "legacy_fraction"],
+          "enum": [
+            "none",
+            "legacy_fraction"
+          ],
           "description": "Explicit six-DOF residual download; absent preserves legacy_fraction."
         },
         "roll_deg": {
@@ -815,6 +871,35 @@
         "surfaces",
         "provenance"
       ]
+    },
+    "dynamics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "mass_reference",
+        "reference_flap_deg",
+        "provenance"
+      ],
+      "properties": {
+        "model": {
+          "const": "harmonic_hub_v1"
+        },
+        "mass_reference": {
+          "const": "total_at_reference_flap"
+        },
+        "reference_flap_deg": {
+          "type": "object",
+          "minProperties": 2,
+          "additionalProperties": {
+            "$ref": "#/$defs/vector"
+          }
+        },
+        "provenance": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   },
   "$defs": {
