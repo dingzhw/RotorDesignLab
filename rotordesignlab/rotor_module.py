@@ -191,7 +191,7 @@ def convert_case(case, migration, reference):
             if key in case:
                 result['environment'][key] = case[key]
     # Overrides to module physical properties must not be silently discarded.
-    if set(case) & {'precone_deg','tip_loss','inflow_model'}:
+    if set(case) & {'precone_deg','tip_loss','inflow_model','polar_interpolation'}:
         raise ValueError('旧工况含旋翼模型覆盖项，请先显式另存对应模块再转换。')
     if case['model']=='spatial_rotor':
         resolved = canonical_spatial_case(case)

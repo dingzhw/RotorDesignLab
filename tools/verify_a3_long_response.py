@@ -68,7 +68,8 @@ def report(points, folder):
         headers = ['时间_s']+[f'{kind}_{name}_{unit}' for kind in ('非线性增量', '线性增量')
                               for name, unit in zip(plant.state_names, plant.state_units)]
         write_csv(folder/item['label']/'fine-states.csv', headers, history.tolist())
-        fig, axes = plt.subplots(2, 2, figsize=(10, 7), layout='constrained')
+        fig, axes = plt.subplots(2, 2, figsize=(10, 7))
+        fig.subplots_adjust(left=.12, right=.98, bottom=.09, top=.91, wspace=.33, hspace=.32)
         for axis, name in zip(axes.flat, ['p', 'q', 'main_betas_rate']):
             index = plant.state_names.index(name)
             axis.plot(history[:, 0], history[:, 1+index], label='非线性')

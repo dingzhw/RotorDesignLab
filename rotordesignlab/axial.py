@@ -37,8 +37,7 @@ def solve_axial(rotor):
         else:
             if strict and (alpha.min() < rotor.polar[0,0] or alpha.max() > rotor.polar[-1,0]):
                 raise SolverError('Converged element angle exceeds the polar domain.')
-            cl = np.interp(alpha, rotor.polar[:,0], rotor.polar[:,1])
-            cd = np.interp(alpha, rotor.polar[:,0], rotor.polar[:,2])
+            cl, cd = rotor.polar_coefficients(alpha, strict=strict)
         force_scale = .5*rotor.density*speed**2*chord*widths*rotor.blades
         normal = force_scale*(cl*np.cos(phi)-cd*np.sin(phi))
         thrust = normal*cone

@@ -97,7 +97,8 @@ def read_rotor(case, base):
     if inflow not in ('uniform', 'annular') or tip not in ('none', 'prandtl') or (inflow == 'uniform' and tip != 'none'):
         raise ValueError('inflow_model 选 uniform/annular；Prandtl 尖损失仅用于 annular。')
     return Rotor(geometry, polar, blades, radius, omega, speed, density, collective, reference,
-                 stations, airfoil_grid, cone, sound, inflow, tip, viscosity), (geo_path, polar_path)
+                 stations, airfoil_grid, cone, sound, inflow, tip, viscosity,
+                 case.get('polar_interpolation', 'linear_v1')), (geo_path, polar_path)
 
 
 def run_case(case, base, output):

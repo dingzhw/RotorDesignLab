@@ -1,6 +1,7 @@
 """Shared Chinese field dictionary for forms, diagnostics and input summaries."""
 # Values are (display label including units, filling instructions).
 FIELDS = {
+ 'polar_interpolation':('翼型攻角插值','分段线性保持旧方案语义；PCHIP为CSV攻角域内部连续斜率候选，保留原节点，不外推、不增加气动物理。Re/Mach表仍用原插值。'),
  'name':('方案名称','填写便于同事识别的名称；保存时使用此名称展示。'),
  'description':('方案说明','说明设计用途、构型和主要假设。'),
  'provenance':('参数来源与估算说明','保留公开资料来源；修改后写明估算依据或试验编号。模板原来源不自动成为新数值的依据。'),
@@ -114,6 +115,7 @@ FIELDS.update({
  'cg_rotor_m': ('桨毂重心局部坐标 / m', '相对局部桨毂原点，不是全机重心。'),
 })
 ENUM_LABELS={'uniform':'均匀入流','annular':'环带入流','none':'无尖损失','prandtl':'Prandtl 尖损失',
+             'linear_v1':'分段线性（旧方案）','pchip_alpha_v1':'连续斜率PCHIP（显式候选）',
              'fixed':'固定桨叶','hinged':'铰接挥舞',1:'+1（绕正推力轴右手转向）',-1:'−1（反向）'}
 INTERNAL={'schema_version','kind','id','units','axes','role','geometry_csv','polar_csv','polar_json'}
 

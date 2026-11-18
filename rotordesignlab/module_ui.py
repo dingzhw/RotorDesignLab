@@ -195,6 +195,14 @@ def details():
             field(rotor, 'tip_loss', '轴流性能桨尖损失', default='none', options=['none', 'prandtl'], prefix='rotor',
                   format_func=lambda v: {'none': '不附加', 'prandtl': 'Prandtl桨尖损失'}[v],
                   help='只作用于轴流性能法；更换假设时分别记录比较。')
+            field(rotor, 'polar_interpolation', '翼型攻角插值', default='linear_v1',
+                  options=['linear_v1', 'pchip_alpha_v1'], prefix='rotor',
+                  format_func=lambda v: {'linear_v1': '分段线性（旧方案）',
+                                         'pchip_alpha_v1': '连续斜率 PCHIP（显式候选）'}[v],
+                  help='PCHIP目前仅支持CSV翼型表，保留CL/CD节点并使内部斜率连续。'
+                       '不增加气动数据，不提高尾迹模型精度，不作域外外推。随模块保存并用于各求解任务；旧文件缺省仍为分段线性。')
+            if 'polar_json' in rotor:
+                st.caption('当前为Re/Mach多维翼型表，请使用分段线性；不兼容的PCHIP选项会明确拒算，可在上方改回。')
             optional(rotor, 'precone_deg', '固定对照预锥 / °', 0., 'rotor',
                      '仅选择固定桨叶对照时使用；采用模块挥舞特性时使用挥舞组预锥。旧文件两项保持原语义。')
             st.caption('半径改变时保持几何表中的实际弦长与扭转；质量矩不会自动缩放。')

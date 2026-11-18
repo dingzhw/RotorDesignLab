@@ -16,10 +16,15 @@ def open_loop_restriction(aircraft):
     from .mass_partition import enabled
     note = COUPLING_WARNING
     if enabled(aircraft):
+        interpolation_note = (
+            '原线性插值已复现主桨跨查表节点导致的线性响应幅值检查未通过，2秒代表响应也保留失败。')
+        if any(r.get('polar_interpolation') == 'pchip_alpha_v1' for r in aircraft['rotors']):
+            interpolation_note = (
+                '已显式选择CSV连续斜率插值候选；两组代表前飞短脉冲及2秒平滑脉冲数值检查通过，'
+                '其它波形、操纵及多维气动表尚未完成该候选的检查。')
         note = ('R19整机验收尚未关闭：新模型已接通主尾桨质量分账、动态一阶挥舞及隐式加速度；'
                 '公开整机惯量与当前旋翼质量数据尚未闭合，前飞交叉导数仍有偏差；'
-                '已复现主桨跨查表节点导致的线性响应幅值检查未通过，2秒代表响应也保留失败。'
-                '仅供诊断，不用于稳定性判断或方案排序。')
+                + interpolation_note + '仅供诊断，不用于稳定性判断或方案排序。')
     return dict(issue='R19' if affected else None, affected_rotors=affected,
                 engineering_use_allowed=False,
                 evaluation_status='cross_coupling_unresolved' if affected else 'experimental_unvalidated',

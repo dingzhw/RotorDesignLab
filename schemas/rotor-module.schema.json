@@ -90,6 +90,9 @@
             "prandtl"
           ]
         },
+        "polar_interpolation": {
+          "enum": ["linear_v1", "pchip_alpha_v1"]
+        },
         "limits": {
           "type": "object",
           "additionalProperties": false,

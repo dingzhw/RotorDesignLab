@@ -1,6 +1,6 @@
 """Blade-element loads and the axial steady limit of Pitt–Peters inflow."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from math import pi
 
 import numpy as np
@@ -38,6 +38,33 @@ class Rotor:
     inflow_model: str = 'uniform'
     tip_loss: str = 'none'
     dynamic_viscosity: float = 1.7894e-5
+    polar_interpolation: str = 'linear_v1'
+    _polar_curve: object = field(default=None, init=False, repr=False, compare=False)
+
+    def __post_init__(self):
+        if self.polar_interpolation not in ('linear_v1', 'pchip_alpha_v1'):
+            raise ValueError('翼型攻角插值须为linear_v1或pchip_alpha_v1。')
+        if self.polar_interpolation == 'pchip_alpha_v1':
+            if self.airfoil_grid is not None:
+                raise ValueError('PCHIP攻角插值当前仅支持CSV翼型表；Re/Mach表保留原插值。')
+            from scipy.interpolate import PchipInterpolator
+            # Shape-preserving C1 interpolation INSIDE the CSV alpha domain.
+            # This changes interpolation, not measured nodes or flow physics.
+            object.__setattr__(self, '_polar_curve', PchipInterpolator(
+                self.polar[:, 0], self.polar[:, 1:], axis=0, extrapolate=False))
+
+    def polar_coefficients(self, alpha, *, strict=False):
+        alpha = np.asarray(alpha)
+        if not np.isfinite(alpha).all():
+            raise SolverError('翼型查表攻角须为有限数值。')
+        if strict and (alpha.min() < self.polar[0, 0] or alpha.max() > self.polar[-1, 0]):
+            raise SolverError('叶素攻角超出翼型表范围；禁止端点外推。')
+        if self.polar_interpolation == 'linear_v1':
+            return (np.interp(alpha, self.polar[:, 0], self.polar[:, 1]),
+                    np.interp(alpha, self.polar[:, 0], self.polar[:, 2]))
+        # Trial states retain legacy endpoint holding; accepted states are strict.
+        values = self._polar_curve(np.clip(alpha, self.polar[0, 0], self.polar[-1, 0]))
+        return values[..., 0], values[..., 1]
 
     def grid(self):
         root = self.geometry[0, 0] * self.radius
@@ -57,9 +84,7 @@ def axial_loads(rotor, grid, induced_speed):
     axial = rotor.axial_speed + induced_speed
     inflow_angle = np.arctan2(axial, tangential)
     alpha = np.rad2deg(pitch - inflow_angle)
-    angles, lift, drag = rotor.polar.T
-    cl = np.interp(alpha, angles, lift)
-    cd = np.interp(alpha, angles, drag)
+    cl, cd = rotor.polar_coefficients(alpha)
     pressure_area = 0.5 * rotor.density * (tangential**2 + axial**2) * chord * widths
     lift_force, drag_force = pressure_area * cl, pressure_area * cd
     thrust = lift_force * np.cos(inflow_angle) - drag_force * np.sin(inflow_angle)

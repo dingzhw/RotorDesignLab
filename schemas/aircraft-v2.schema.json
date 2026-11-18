@@ -162,6 +162,9 @@
               "prandtl"
             ]
           },
+          "polar_interpolation": {
+            "enum": ["linear_v1", "pchip_alpha_v1"]
+          },
           "position_m": {
             "$ref": "#/$defs/vector"
           },

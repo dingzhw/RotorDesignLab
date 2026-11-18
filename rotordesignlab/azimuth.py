@@ -82,8 +82,7 @@ class AzimuthRotor:
         else:
             if strict and (alpha.min()<model.polar[0,0] or alpha.max()>model.polar[-1,0]):
                 raise ValueError('方位角叶素攻角超出翼型表；回流区需要四象限数据，禁止端点外推。')
-            cl=np.interp(alpha,model.polar[:,0],model.polar[:,1])
-            cd=np.interp(alpha,model.polar[:,0],model.polar[:,2])
+            cl, cd = model.polar_coefficients(alpha, strict=strict)
         scale=.5*model.density*speed**2*self.chord*self.dr
         normal_force=scale*(cl*np.cos(phi)-cd*np.sin(phi))
         tangent_force=scale*(cl*np.sin(phi)+cd*np.cos(phi))
