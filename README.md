@@ -6,9 +6,11 @@
 
 2026-11-16 已完成0.4.4-A/B：速度/Mach边界、模态可靠性、错误恢复与试验性标识，以及共享扰动输入和显式下载策略。新建方案可直接选择平滑脉冲/双脉冲/阶跃并导出实际输入，旧方案保留原计算语义。0.4.5-A已接入运动速度与空气XYZ双视角及非水平姿态，旧方案保持原语义；新主桨模板使用实际机尾零方位，安装角和旋向可在页面修改；增加高度/ISA温差、kW输入、中文结果表及布局/几何/翼型预览。88项回归和页面检查通过，正式0.4.5待同事实测。[整改跟踪表](docs/reviews/RotorDesignLab-v0.4.3-评审意见回复书.md) · [开发路线](docs/roadmap.md) · [0.4.4检查](docs/v044-work.md) · [0.4.5检查](docs/v045-work.md)。软件小版本与模型成熟度分别管理，完整动态挥舞及独立操稳验证仍待完成。
 
-已发布v0.3.0整机配平。当前开发版 `0.4.6.dev15` 已完成独立旋翼、模块装配和三个整机分析入口（M1–M3）。旋翼本体与安装实例分别保存，装配内嵌固定模块快照；悬停预算、六分量悬停配平、前飞配平及开环诊断共用该装配，结果支持历史重开和导出复算。A2已接通显式质量分账和一阶谐波动态挥舞的隐式加速度，旧模型保持；A3已完成导数、网格及代表短响应检查；后续核实公开惯量为整机模型输入，当前旋翼分账仍不相容，并定位主桨查表跨节点为两组前飞幅值失败的主要原因。dev9的显式CSV连续插值候选已通过原两组前飞正负短脉冲、两秒平滑脉冲和稳态趋势检查；旧线性插值失败保留，公开整机质量缺项未闭合。dev10已完成同装配悬停预算/配平的功率分账、额定限时与假设对照，详见[功率对照说明](docs/power-comparison.md)。dev11完成C1同任务三方案：统一质量/速度/环境/维持时间，比较功率分项、动力与四项操纵双向余量；来源、几何规则和质量未更新项随结果保存。[三方案用法与证据](docs/design-comparison.md)。dev12完成C2桨叶几何生成、步长扫描与中文CSV/TXT往返，网页可直接配置并复算；新建演示机型统一命名为“千机-200轻型无人直升机”，估算来源与旧包语义保持。[C2用法及示例表格](docs/engineering-inputs.md)。C3-A已完成六模板来源/假设审核，详见[审核清单](docs/template-audit.md)；dev14提供现代Windows离线候选包构建、校验和结果ZIP复算入口；[部署维护](docs/offline-distribution.md)与[同事验收表](docs/colleague-acceptance.md)随包提供，真实同事试用待填写。dev15补齐Windows批处理CRLF换行与真实CMD分发检查。A3详见[A3后续记录](docs/a3-followup.md)及[首轮验收](docs/a3-aircraft-acceptance.md)。[A2说明](docs/a2-mass-coupling.md)。**铰接旋翼交叉耦合问题尚未关闭，仅开放故障诊断，不用于稳定性判断或方案排序**；尚未发布正式v0.4。[整机装配用法](docs/assembly-workspace.md) · [桨毂传力进展](docs/hub-loads.md) · [孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [环境与预览](docs/environment-and-previews.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
+已发布v0.3.0整机配平。当前开发版 `0.4.6.dev18` 已完成独立旋翼、模块装配和三个整机分析入口（M1–M3）。旋翼本体与安装实例分别保存，装配内嵌固定模块快照；悬停预算、六分量悬停配平、前飞配平及开环诊断共用该装配，结果支持历史重开和导出复算。A2已接通显式质量分账和一阶谐波动态挥舞的隐式加速度，旧模型保持；A3已完成导数、网格及代表短响应检查；后续核实公开惯量为整机模型输入，当前旋翼分账仍不相容，并定位主桨查表跨节点为两组前飞幅值失败的主要原因。dev9的显式CSV连续插值候选已通过原两组前飞正负短脉冲、两秒平滑脉冲和稳态趋势检查；旧线性插值失败保留，公开整机质量缺项未闭合。dev10已完成同装配悬停预算/配平的功率分账、额定限时与假设对照，详见[功率对照说明](docs/power-comparison.md)。dev11完成C1同任务三方案：统一质量/速度/环境/维持时间，比较功率分项、动力与四项操纵双向余量；来源、几何规则和质量未更新项随结果保存。[三方案用法与证据](docs/design-comparison.md)。dev12完成C2桨叶几何生成、步长扫描与中文CSV/TXT往返，网页可直接配置并复算；新建演示机型统一命名为“千机-200轻型无人直升机”，估算来源与旧包语义保持。[C2用法及示例表格](docs/engineering-inputs.md)。C3-A已完成六模板来源/假设审核，详见[审核清单](docs/template-audit.md)；dev14提供现代Windows离线候选包构建、校验和结果ZIP复算入口；[部署维护](docs/offline-distribution.md)与[同事验收表](docs/colleague-acceptance.md)随包提供，真实同事试用待填写。dev15补齐Windows批处理CRLF换行与真实CMD分发检查。A3详见[A3后续记录](docs/a3-followup.md)及[首轮验收](docs/a3-aircraft-acceptance.md)。[A2说明](docs/a2-mass-coupling.md)。**铰接旋翼交叉耦合问题尚未关闭，仅开放故障诊断，不用于稳定性判断或方案排序**；尚未发布正式v0.4。[整机装配用法](docs/assembly-workspace.md) · [桨毂传力进展](docs/hub-loads.md) · [孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [环境与预览](docs/environment-and-previews.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
 
 旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：原环带模型 XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.09%；接入旧表局部Re后仍为28.87%，真实Re气动与非局部尾迹继续排查。均匀入流核 C–T 偏差39.5%。UH‑60 与 NASA TM‑85890 姿态及部分导数作带配置差异的数学模型对照，所有通用整机结果标记为模型估算。公开参数和工程估计分别注明；已发布标签保持可复算。
+
+C4-A/B/C现已统一五入口方案操作和任务参数显示，完成草稿保护、历史恢复、可恢复删除、旋翼同文件装配及旧方案读取检查。[C4-C交付说明](docs/c4c-delivery.md)提供当前用法；[21项同事验收表](docs/colleague-acceptance.md)用于完整操作链复测。自动软件检查和真实同事验收分别记录，人工全链验收仍待完成。
 
 ## 在 Windows 上启动
 
@@ -23,7 +25,7 @@ julia --startup-file=no --project=julia -e 'using Pkg; Pkg.instantiate()'
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-手工运行Streamlit时打开 [127.0.0.1:8501](http://127.0.0.1:8501)；使用双击启动器时以其自动打开的地址为准。如 `julia` 未加入 PATH，请把 `ROTOR_DESIGN_JULIA` 设为 Julia 1.12.4 的可执行文件绝对路径。网页从模板建立方案，在“详细设置”填写参数，选择分析任务后点 **运行分析**；可保存、重开或下载便携方案。日常入口为孤立旋翼、整机悬停预算、整机配平、开环初评（低频模型·试验性）。原 Julia UH‑60 80 kt 位于左侧“基准验证（高级）”，首次运行需等待 Julia 启动和编译。
+手工运行Streamlit时打开 [127.0.0.1:8501](http://127.0.0.1:8501)；使用双击启动器时以其自动打开的地址为准。如 `julia` 未加入 PATH，请把 `ROTOR_DESIGN_JULIA` 设为 Julia 1.12.4 的可执行文件绝对路径。网页从模板建立方案，在“详细设置”填写参数，选择分析任务后点 **运行分析**；可保存、重开或下载便携方案。日常入口为孤立旋翼、整机装配、悬停求解、全机配平、开环评估。五入口统一使用“新建、打开、保存、更多”；旋翼方案与整机方案分别保存，四个整机入口读取同一装配，分析工况独立。开环仍为低频试验性故障诊断。原 Julia UH‑60 80 kt 位于左侧“基准验证（高级）”，首次运行需等待 Julia 启动和编译。
 
 Windows 应用执行别名有时会显示 `julia.exe`，但实际无法启动。先用 `julia --version` 检查；失败时使用真实安装路径。例如默认 Juliaup 安装可在当前 PowerShell 会话中运行：
 
