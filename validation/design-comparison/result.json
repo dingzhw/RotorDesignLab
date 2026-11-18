@@ -1,0 +1,1856 @@
+{
+  "schema_version": 1,
+  "solver_version": "0.4.6.dev11",
+  "model": "helicopter_design_comparison",
+  "status": "converged",
+  "summary": {
+    "total": 3,
+    "converged": 3,
+    "failed": 0,
+    "limit_violations": 0
+  },
+  "candidates": [
+    {
+      "name": "基准方案",
+      "directory": "candidate-1",
+      "change": {
+        "name": "基准方案",
+        "overrides": {},
+        "geometry_rule": "preserve_chord",
+        "provenance": "复用B包200 kg合成机的冻结输入；全部参数是流程演示与工程估计，无实测整机精度依据。"
+      },
+      "geometry_rule": "保持实际弦长与扭转",
+      "mass_inertia_update": "未自动更新；仅作气动/配平设计比较",
+      "parameters": {
+        "飞行质量_kg": 200,
+        "重心X_m": 0,
+        "主桨半径_m": 1.1,
+        "主桨转速_rpm": 1700,
+        "主桨实度": 0.07628585795018344,
+        "主桨传动效率": 0.96,
+        "尾桨半径_m": 0.24,
+        "尾桨转速_rpm": 7500,
+        "尾桨实度": 0.09383510186459665,
+        "尾桨传动效率": 0.93,
+        "尾桨安装X_m": -1.7,
+        "尾桨纵向力臂_m": 1.7,
+        "主桨盘载_N_m2": 518.6381500150252,
+        "主桨局部最大Mach": 0.6174227760503509,
+        "主桨旋转桨尖Mach": 0.5754610688530606,
+        "尾桨局部最大Mach": 0.5969076496067837,
+        "尾桨旋转桨尖Mach": 0.5539197454200584
+      },
+      "sources": {
+        "aircraft": "Synthetic example; no measured aircraft data; v0.4.4 template: six-DOF residual download=none; original public-helicopter template retained. v0.4.5: main azimuth zero points aft; original templates unchanged.",
+        "mass_properties": "Synthetic rigid-body inertia estimate; not measured, symmetric tensor in body axes",
+        "rotors": {
+          "main": "Same synthetic geometry and polar as v0.1.0；本次候选：复用B包200 kg合成机的冻结输入；全部参数是流程演示与工程估计，无实测整机精度依据。",
+          "tail": "Synthetic: all dimensions, rpm, limits and installation estimated；本次候选：复用B包200 kg合成机的冻结输入；全部参数是流程演示与工程估计，无实测整机精度依据。"
+        },
+        "powerplant": "Synthetic shaft-power curves, losses and 120 s rating; not a specific engine"
+      },
+      "result": {
+        "schema_version": 1,
+        "solver_version": "0.4.6.dev11",
+        "python_version": "3.14.3",
+        "numpy_version": "2.4.3",
+        "scipy_version": "1.17.1",
+        "status": "converged",
+        "warnings": [
+          "旋翼模型估算，稳态一阶挥舞；未包含高阶桨叶运动、弹性、旋流和主尾桨干扰。",
+          "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+          "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+        ],
+        "model": "helicopter",
+        "solver_status": "converged",
+        "analysis": "trim",
+        "summary": {
+          "speed_m_s": 15,
+          "climb_m_s": 0,
+          "altitude_m": 0,
+          "download_n": 0.0,
+          "mass_kg": 200,
+          "required_power_w": 33673.06954740691,
+          "transmission_loss_w": 1370.0419077686947,
+          "accessory_power_w": 700,
+          "continuous_margin_w": 11326.930452593093,
+          "short_time_margin_w": 21326.930452593093,
+          "duration_margin_w": 11326.930452593093,
+          "max_scaled_residual": 1.6361406832517685e-11,
+          "max_internal_residual": 4.777379407750185e-12,
+          "main_collective_deg": 11.699232351061157,
+          "main_cos_deg": 1.8099705346581034,
+          "main_sin_deg": -2.556990804107053,
+          "tail_collective_deg": 12.015869453075,
+          "roll_deg": -2.049211303289675,
+          "pitch_deg": -0.9397317008855297,
+          "main_thrust_n": 1971.5132603699112,
+          "main_torque_nm": 168.61998906618098,
+          "main_power_w": 30018.334737593304,
+          "tail_thrust_n": 100.20013534696828,
+          "tail_torque_nm": 2.0176936691447005,
+          "tail_power_w": 1584.6929020449065
+        },
+        "feasible": true,
+        "support_status": "within_implemented_steady_domain",
+        "design_limits_status": "within_supplied_limits",
+        "evidence_status": "model_estimate",
+        "violations": [],
+        "control_margins_deg": {
+          "main_collective_deg": {
+            "to_lower": 9.699232351061157,
+            "to_upper": 12.300767648938844
+          },
+          "main_cos_deg": {
+            "to_lower": 16.809970534658103,
+            "to_upper": 13.190029465341896
+          },
+          "main_sin_deg": {
+            "to_lower": 12.443009195892946,
+            "to_upper": 17.556990804107052
+          },
+          "tail_collective_deg": {
+            "to_lower": 10.015869453075,
+            "to_upper": 11.984130546925003
+          },
+          "roll_deg": {
+            "to_lower": 17.950788696710326,
+            "to_upper": 22.049211303289674
+          },
+          "pitch_deg": {
+            "to_lower": 24.060268299114473,
+            "to_upper": 25.939731700885527
+          }
+        },
+        "components": {
+          "main": {
+            "force_body_n": [
+              6.448801843504386,
+              -30.076605122933945,
+              -1971.5132603699112
+            ],
+            "moment_cg_body_nm": [
+              -13.483916668423074,
+              -15.678370310453149,
+              168.61998906618098
+            ],
+            "power_w": 30018.334737593304,
+            "thrust_n": 1971.5132603699112,
+            "torque_nm": 168.61998906618098,
+            "diagnostics": {
+              "momentum_induced": 0.05726952398494394,
+              "total_axial_ratio": 0.05852659716548349,
+              "mu": 0.07658831999764813,
+              "mass_flow_mean": 0.09639052513516527,
+              "mass_flow_harmonic": 0.13116355241586225,
+              "wake_skew_rad": 0.918287097382791,
+              "internal_max_residual": 4.777379407750185e-12,
+              "omitted_flap_harmonics_rms": 0.0002223290714195098,
+              "alpha_min_deg": 3.2913378081874782,
+              "alpha_max_deg": 14.523217748417494,
+              "mach_max": 0.6174227760503509,
+              "flap_peak_deg": 0.9024579433457262,
+              "reverse_flow_fraction": 0.0
+            },
+            "inflow": [
+              0.057049029105356384,
+              0.031313405261026106,
+              -0.0004906947249486963
+            ],
+            "flap_deg": [
+              0.6371989834621844,
+              0.22160388590826066,
+              -0.14668873021927933
+            ]
+          },
+          "tail": {
+            "force_body_n": [
+              -1.6293008166319338,
+              100.20013534696828,
+              -0.005186715697769135
+            ],
+            "moment_cg_body_nm": [
+              13.483916663987863,
+              -1.7821159633361179,
+              -168.61998905707554
+            ],
+            "power_w": 1584.6929020449065,
+            "thrust_n": 100.20013534696828,
+            "torque_nm": 2.0176936691447005,
+            "diagnostics": {
+              "momentum_induced": 0.06276313756207044,
+              "total_axial_ratio": 0.06276313756207044,
+              "mu": 0.07957747154594766,
+              "mass_flow_mean": 0.10134981704118408,
+              "mass_flow_harmonic": 0.14021729161229907,
+              "wake_skew_rad": 0.9029807199842251,
+              "internal_max_residual": 2.0717975945938605e-13,
+              "omitted_flap_harmonics_rms": 0.0,
+              "alpha_min_deg": -11.747935468801785,
+              "alpha_max_deg": 8.690862768654114,
+              "mach_max": 0.5969076496067837,
+              "flap_peak_deg": 2.442577903008673e-13,
+              "reverse_flow_fraction": 0.0
+            },
+            "inflow": [
+              0.06592133988174856,
+              -0.02236937300764501,
+              -0.015040015483381835
+            ],
+            "flap_deg": [
+              4.4284431639482e-14,
+              -1.6460551105017545e-14,
+              -1.999733586613853e-13
+            ]
+          },
+          "fuselage": {
+            "force_body_n": [
+              -37.156219090744315,
+              -0.0,
+              0.09745350959836621
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.0810108154034168,
+              0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": -0.9403329516920818,
+            "beta_deg": 0.0
+          },
+          "horizontal_tail": {
+            "force_body_n": [
+              0.4175740797237748,
+              0.0,
+              11.608927447237212
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              17.32987635491106,
+              -0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": -7.302382843509946,
+            "incidence_deg": 0.0,
+            "reverse_flow_estimate": false
+          },
+          "vertical_tail": {
+            "force_body_n": [
+              -0.24799569386960052,
+              0.0,
+              0.0
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.04959913877392011,
+              0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": 0.0,
+            "incidence_deg": 0.0,
+            "reverse_flow_estimate": false
+          },
+          "download": {
+            "force_body_n": [
+              -0.0,
+              -0.0,
+              0.0
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "power_w": 0.0,
+            "magnitude_n": 0.0,
+            "strategy": "none",
+            "effective_fraction": 0.0,
+            "configured_hover_fraction": 0.03,
+            "six_dof_strategy": "none",
+            "applied_at": "cg",
+            "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+            "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+            "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+          }
+        },
+        "download_model": {
+          "strategy": "none",
+          "effective_fraction": 0.0,
+          "configured_hover_fraction": 0.03,
+          "six_dof_strategy": "none",
+          "applied_at": "cg",
+          "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+          "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+          "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+        },
+        "residual_force_body_n": [
+          2.036402491079059e-09,
+          4.4418868583306903e-10,
+          -2.588794956182028e-09
+        ],
+        "residual_moment_body_nm": [
+          -4.435211309328224e-09,
+          3.5299129869104107e-08,
+          9.105434628509101e-09
+        ],
+        "velocity_body_m_s": [
+          14.997979915386328,
+          0.0,
+          -0.24616753983481968
+        ],
+        "diagnostics": {
+          "nfev": 6,
+          "njev": 6,
+          "residual_calls": 114,
+          "element_calls": 228,
+          "solve_elapsed_s": 0.43385359999956563,
+          "call_count_scope": "least_squares including finite-difference Jacobian; excludes final checks",
+          "grid": {
+            "radial": {
+              "main": 80,
+              "tail": 80
+            },
+            "azimuth": 36
+          },
+          "message": "`gtol` termination condition is satisfied.",
+          "initial_state": [
+            0.22689280275926285,
+            0.0,
+            0.0,
+            0.20943951023931956,
+            -0.03490658503988659,
+            0.0,
+            0.07410618293986378,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.05916079783099616,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "solved_state": [
+            0.2041901244818543,
+            0.03158994519386604,
+            -0.04462790847488542,
+            0.20971648444596902,
+            -0.03576548431148893,
+            -0.016401412265819006,
+            0.057049029105356384,
+            0.031313405261026106,
+            -0.0004906947249486963,
+            0.011121220251776014,
+            0.003867717444313013,
+            -0.002560201317896128,
+            0.06592133988174856,
+            -0.02236937300764501,
+            -0.015040015483381835,
+            7.729091394833114e-16,
+            -2.8729081347534706e-16,
+            -3.4901935249126938e-15
+          ],
+          "scaled_force_moment_residual": [
+            1.0382763181509787e-12,
+            2.2647320228266995e-13,
+            -1.3199180944471497e-12,
+            -2.0557531273204797e-12,
+            1.6361406832517685e-11,
+            4.220436053136995e-12
+          ],
+          "rotor_internal_residual": [
+            -2.631020401544504e-13,
+            1.2579520758393414e-13,
+            -3.9025748778398484e-13,
+            -9.348052192834038e-14,
+            -4.777379407750185e-12,
+            -8.861160838324821e-13,
+            1.2530254611675673e-13,
+            -9.604123052397995e-14,
+            -2.0717975945938605e-13,
+            7.729091394833114e-16,
+            -2.8729081347534706e-16,
+            -3.4901935249126938e-15
+          ],
+          "near_limits": [],
+          "elapsed_s": 0.4684402000057162,
+          "rotors": {
+            "main": {
+              "momentum_induced": 0.05726952398494394,
+              "total_axial_ratio": 0.05852659716548349,
+              "mu": 0.07658831999764813,
+              "mass_flow_mean": 0.09639052513516527,
+              "mass_flow_harmonic": 0.13116355241586225,
+              "wake_skew_rad": 0.918287097382791,
+              "internal_max_residual": 4.777379407750185e-12,
+              "omitted_flap_harmonics_rms": 0.0002223290714195098,
+              "alpha_min_deg": 3.2913378081874782,
+              "alpha_max_deg": 14.523217748417494,
+              "mach_max": 0.6174227760503509,
+              "flap_peak_deg": 0.9024579433457262,
+              "reverse_flow_fraction": 0.0
+            },
+            "tail": {
+              "momentum_induced": 0.06276313756207044,
+              "total_axial_ratio": 0.06276313756207044,
+              "mu": 0.07957747154594766,
+              "mass_flow_mean": 0.10134981704118408,
+              "mass_flow_harmonic": 0.14021729161229907,
+              "wake_skew_rad": 0.9029807199842251,
+              "internal_max_residual": 2.0717975945938605e-13,
+              "omitted_flap_harmonics_rms": 0.0,
+              "alpha_min_deg": -11.747935468801785,
+              "alpha_max_deg": 8.690862768654114,
+              "mach_max": 0.5969076496067837,
+              "flap_peak_deg": 2.442577903008673e-13,
+              "reverse_flow_fraction": 0.0
+            }
+          }
+        },
+        "short_time_rating_applicable": false,
+        "elapsed_s": 0.5377550000048359,
+        "backend": "Python / azimuth blade elements + steady PP + first harmonic flap + six-component trim",
+        "power_accounting": {
+          "components": [
+            {
+              "role": "main",
+              "shaft_power_w": 30018.334737593304,
+              "torque_nm": 168.61998906618098,
+              "omega_rad_s": 178.0235837034216,
+              "efficiency": 0.96,
+              "input_power_w": 31269.098684993027,
+              "loss_w": 1250.7639473997233,
+              "omega_q_residual_w": 0.0,
+              "inflow": "steady_pitt_peters",
+              "tip_loss": "none",
+              "flap": "hinged",
+              "precone_deg": 0,
+              "position_m": [
+                0,
+                0,
+                -0.6
+              ],
+              "thrust_axis_body": [
+                0,
+                0,
+                -1
+              ],
+              "yaw_thrust_arm_m": 0.0,
+              "force_body_n": [
+                6.448801843504386,
+                -30.076605122933945,
+                -1971.5132603699112
+              ],
+              "moment_cg_body_nm": [
+                -13.483916668423074,
+                -15.678370310453149,
+                168.61998906618098
+              ],
+              "solved_flap_deg": [
+                0.6371989834621844,
+                0.22160388590826066,
+                -0.14668873021927933
+              ],
+              "collective_deg": 11.699232351061157
+            },
+            {
+              "role": "tail",
+              "shaft_power_w": 1584.6929020449065,
+              "torque_nm": 2.0176936691447005,
+              "omega_rad_s": 785.3981633974483,
+              "efficiency": 0.93,
+              "input_power_w": 1703.970862413878,
+              "loss_w": 119.27796036897135,
+              "omega_q_residual_w": 0.0,
+              "inflow": "steady_pitt_peters",
+              "tip_loss": "none",
+              "flap": "fixed",
+              "precone_deg": 0,
+              "position_m": [
+                -1.7,
+                0,
+                -0.15
+              ],
+              "thrust_axis_body": [
+                0,
+                1,
+                0
+              ],
+              "yaw_thrust_arm_m": -1.7,
+              "force_body_n": [
+                -1.6293008166319338,
+                100.20013534696828,
+                -0.005186715697769135
+              ],
+              "moment_cg_body_nm": [
+                13.483916663987863,
+                -1.7821159633361179,
+                -168.61998905707554
+              ],
+              "solved_flap_deg": [
+                4.4284431639482e-14,
+                -1.6460551105017545e-14,
+                -1.999733586613853e-13
+              ],
+              "collective_deg": 12.015869453075
+            }
+          ],
+          "accessory_power_w": 700,
+          "required_power_w": 33673.06954740691,
+          "sum_residual_w": 0.0,
+          "continuous_available_w": 45000.0,
+          "short_time_available_w": 55000.0,
+          "selected_available_w": 45000.0,
+          "rating": "continuous",
+          "requested_duration_s": 600,
+          "short_time_duration_s": 120,
+          "margin_residual_w": 0.0,
+          "download": {
+            "strategy": "none",
+            "effective_fraction": 0.0,
+            "configured_hover_fraction": 0.03,
+            "six_dof_strategy": "none",
+            "applied_at": "cg",
+            "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+            "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+            "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+          },
+          "download_force_body_n": [
+            -0.0,
+            -0.0,
+            0.0
+          ],
+          "residual_force_body_n": [
+            2.036402491079059e-09,
+            4.4418868583306903e-10,
+            -2.588794956182028e-09
+          ],
+          "residual_moment_body_nm": [
+            -4.435211309328224e-09,
+            3.5299129869104107e-08,
+            9.105434628509101e-09
+          ],
+          "attitude_deg": [
+            -2.049211303289675,
+            -0.9397317008855297
+          ],
+          "cyclic_deg": [
+            1.8099705346581034,
+            -2.556990804107053
+          ],
+          "nonrotor_loads": {
+            "fuselage": {
+              "force_body_n": [
+                -37.156219090744315,
+                -0.0,
+                0.09745350959836621
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.0810108154034168,
+                0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": -0.9403329516920818,
+              "beta_deg": 0.0
+            },
+            "horizontal_tail": {
+              "force_body_n": [
+                0.4175740797237748,
+                0.0,
+                11.608927447237212
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                17.32987635491106,
+                -0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": -7.302382843509946,
+              "incidence_deg": 0.0,
+              "reverse_flow_estimate": false
+            },
+            "vertical_tail": {
+              "force_body_n": [
+                -0.24799569386960052,
+                0.0,
+                0.0
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.04959913877392011,
+                0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": 0.0,
+              "incidence_deg": 0.0,
+              "reverse_flow_estimate": false
+            },
+            "download": {
+              "force_body_n": [
+                -0.0,
+                -0.0,
+                0.0
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "power_w": 0.0,
+              "magnitude_n": 0.0,
+              "strategy": "none",
+              "effective_fraction": 0.0,
+              "configured_hover_fraction": 0.03,
+              "six_dof_strategy": "none",
+              "applied_at": "cg",
+              "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+              "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+              "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+            }
+          },
+          "scope": "稳态气动轴功率；下载和机身/尾翼通过载荷改变旋翼需求，不重复相加。",
+          "transient_scope": "未包含转速变化、挥舞储能变化及瞬态轴端传递功率；不能用此账目判定瞬态动力峰值。"
+        }
+      }
+    },
+    {
+      "name": "主桨加大5%",
+      "directory": "candidate-2",
+      "change": {
+        "name": "主桨加大5%",
+        "overrides": {
+          "main_radius_m": 1.155
+        },
+        "geometry_rule": "preserve_chord",
+        "provenance": "相对基准仅将主桨半径增加5%，保留实际弦长及扭转、总质量和质量矩；用于固定飞行质量下的气动敏感性分析，需另行复核结构与重量。"
+      },
+      "geometry_rule": "保持实际弦长与扭转",
+      "mass_inertia_update": "未自动更新；仅作气动/配平设计比较",
+      "parameters": {
+        "飞行质量_kg": 200,
+        "重心X_m": 0,
+        "主桨半径_m": 1.155,
+        "主桨转速_rpm": 1700,
+        "主桨实度": 0.07265319804779377,
+        "主桨传动效率": 0.96,
+        "尾桨半径_m": 0.24,
+        "尾桨转速_rpm": 7500,
+        "尾桨实度": 0.09383510186459665,
+        "尾桨传动效率": 0.93,
+        "尾桨安装X_m": -1.7,
+        "尾桨纵向力臂_m": 1.7,
+        "主桨盘载_N_m2": 470.307157536388,
+        "主桨局部最大Mach": 0.6458996596602863,
+        "主桨旋转桨尖Mach": 0.6042341222957136,
+        "尾桨局部最大Mach": 0.5968176621173946,
+        "尾桨旋转桨尖Mach": 0.5539197454200584
+      },
+      "sources": {
+        "aircraft": "Synthetic example; no measured aircraft data; v0.4.4 template: six-DOF residual download=none; original public-helicopter template retained. v0.4.5: main azimuth zero points aft; original templates unchanged.",
+        "mass_properties": "Synthetic rigid-body inertia estimate; not measured, symmetric tensor in body axes",
+        "rotors": {
+          "main": "Same synthetic geometry and polar as v0.1.0；本次候选：相对基准仅将主桨半径增加5%，保留实际弦长及扭转、总质量和质量矩；用于固定飞行质量下的气动敏感性分析，需另行复核结构与重量。",
+          "tail": "Synthetic: all dimensions, rpm, limits and installation estimated；本次候选：相对基准仅将主桨半径增加5%，保留实际弦长及扭转、总质量和质量矩；用于固定飞行质量下的气动敏感性分析，需另行复核结构与重量。"
+        },
+        "powerplant": "Synthetic shaft-power curves, losses and 120 s rating; not a specific engine"
+      },
+      "result": {
+        "schema_version": 1,
+        "solver_version": "0.4.6.dev11",
+        "python_version": "3.14.3",
+        "numpy_version": "2.4.3",
+        "scipy_version": "1.17.1",
+        "status": "converged",
+        "warnings": [
+          "旋翼模型估算，稳态一阶挥舞；未包含高阶桨叶运动、弹性、旋流和主尾桨干扰。",
+          "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+          "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+        ],
+        "model": "helicopter",
+        "solver_status": "converged",
+        "analysis": "trim",
+        "summary": {
+          "speed_m_s": 15,
+          "climb_m_s": 0,
+          "altitude_m": 0,
+          "download_n": 0.0,
+          "mass_kg": 200,
+          "required_power_w": 32222.83782583962,
+          "transmission_loss_w": 1308.7943759835762,
+          "accessory_power_w": 700,
+          "continuous_margin_w": 12777.162174160381,
+          "short_time_margin_w": 22777.16217416038,
+          "duration_margin_w": 12777.162174160381,
+          "max_scaled_residual": 2.2149375136838885e-12,
+          "max_internal_residual": 6.235507926454251e-13,
+          "main_collective_deg": 9.944743409544833,
+          "main_cos_deg": 1.7043015136690576,
+          "main_sin_deg": -2.114145706298283,
+          "tail_collective_deg": 11.57701072638824,
+          "roll_deg": -1.9770403467715425,
+          "pitch_deg": -0.996752412048591,
+          "main_thrust_n": 1971.039961574493,
+          "main_torque_nm": 161.381633268706,
+          "main_power_w": 28729.73669840637,
+          "tail_thrust_n": 95.94636460086411,
+          "tail_torque_nm": 1.8898780524631102,
+          "tail_power_w": 1484.3067514496734
+        },
+        "feasible": true,
+        "support_status": "within_implemented_steady_domain",
+        "design_limits_status": "within_supplied_limits",
+        "evidence_status": "model_estimate",
+        "violations": [],
+        "control_margins_deg": {
+          "main_collective_deg": {
+            "to_lower": 7.9447434095448335,
+            "to_upper": 14.05525659045517
+          },
+          "main_cos_deg": {
+            "to_lower": 16.70430151366906,
+            "to_upper": 13.295698486330942
+          },
+          "main_sin_deg": {
+            "to_lower": 12.885854293701716,
+            "to_upper": 17.114145706298284
+          },
+          "tail_collective_deg": {
+            "to_lower": 9.57701072638824,
+            "to_upper": 12.422989273611764
+          },
+          "roll_deg": {
+            "to_lower": 18.022959653228455,
+            "to_upper": 21.977040346771542
+          },
+          "pitch_deg": {
+            "to_lower": 24.00324758795141,
+            "to_upper": 25.99675241204859
+          }
+        },
+        "components": {
+          "main": {
+            "force_body_n": [
+              4.4678005459394905,
+              -28.292647338167413,
+              -1971.039961574493
+            ],
+            "moment_cg_body_nm": [
+              -12.932000141392798,
+              -15.014033799367347,
+              161.381633268706
+            ],
+            "power_w": 28729.73669840637,
+            "thrust_n": 1971.039961574493,
+            "torque_nm": 161.381633268706,
+            "diagnostics": {
+              "momentum_induced": 0.05069748038037553,
+              "total_axial_ratio": 0.051967273625824796,
+              "mu": 0.07294002972486556,
+              "mass_flow_mean": 0.08955917297723119,
+              "mass_flow_harmonic": 0.11897670495619063,
+              "wake_skew_rad": 0.9517529841138239,
+              "internal_max_residual": 6.235507926454251e-13,
+              "omitted_flap_harmonics_rms": 0.00021267519493968438,
+              "alpha_min_deg": 2.3229800738388633,
+              "alpha_max_deg": 14.329030319253235,
+              "mach_max": 0.6458996596602863,
+              "flap_peak_deg": 0.925047095059378,
+              "reverse_flow_fraction": 0.0
+            },
+            "inflow": [
+              0.05049429774452787,
+              0.02955566438086556,
+              -0.00038699444012818296
+            ],
+            "flap_deg": [
+              0.6536664903476463,
+              0.2329728712865941,
+              -0.13924035956987796
+            ]
+          },
+          "tail": {
+            "force_body_n": [
+              -1.5307446287177988,
+              95.94636460086411,
+              0.008629414652746359
+            ],
+            "moment_cg_body_nm": [
+              12.932000141869974,
+              -1.6455963532457716,
+              -161.38163326869136
+            ],
+            "power_w": 1484.3067514496734,
+            "thrust_n": 95.94636460086411,
+            "torque_nm": 1.8898780524631102,
+            "diagnostics": {
+              "momentum_induced": 0.06081542741703351,
+              "total_axial_ratio": 0.06081542741703351,
+              "mu": 0.07957747154594767,
+              "mass_flow_mean": 0.10015533031028645,
+              "mass_flow_harmonic": 0.13708313235994543,
+              "wake_skew_rad": 0.9182505535374591,
+              "internal_max_residual": 3.903821710338207e-14,
+              "omitted_flap_harmonics_rms": 0.0,
+              "alpha_min_deg": -11.54474801871504,
+              "alpha_max_deg": 8.341638146589219,
+              "mach_max": 0.5968176621173946,
+              "flap_peak_deg": 6.357310704416025e-14,
+              "reverse_flow_fraction": 0.0
+            },
+            "inflow": [
+              0.06408690173541184,
+              -0.022171547552354717,
+              -0.014697110504476037
+            ],
+            "flap_deg": [
+              8.365021076957277e-15,
+              -1.4125018852027762e-14,
+              -5.356913775574566e-14
+            ]
+          },
+          "fuselage": {
+            "force_body_n": [
+              -37.15299617829191,
+              -0.0,
+              0.10336218242780204
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.08592255645653359,
+              0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": -0.9973459806243843,
+            "beta_deg": 0.0
+          },
+          "horizontal_tail": {
+            "force_body_n": [
+              0.34515276113678184,
+              0.0,
+              11.06209378924543
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              16.52411013164079,
+              -0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": -6.913334473838972,
+            "incidence_deg": 0.0,
+            "reverse_flow_estimate": false
+          },
+          "vertical_tail": {
+            "force_body_n": [
+              -0.24798734766686534,
+              0.0,
+              0.0
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.04959746953337307,
+              0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": 0.0,
+            "incidence_deg": 0.0,
+            "reverse_flow_estimate": false
+          },
+          "download": {
+            "force_body_n": [
+              -0.0,
+              -0.0,
+              0.0
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "power_w": 0.0,
+            "magnitude_n": 0.0,
+            "strategy": "none",
+            "effective_fraction": 0.0,
+            "configured_hover_fraction": 0.03,
+            "six_dof_strategy": "none",
+            "applied_at": "cg",
+            "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+            "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+            "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+          }
+        },
+        "download_model": {
+          "strategy": "none",
+          "effective_fraction": 0.0,
+          "configured_hover_fraction": 0.03,
+          "six_dof_strategy": "none",
+          "applied_at": "cg",
+          "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+          "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+          "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+        },
+        "residual_force_body_n": [
+          1.2602188736998698e-10,
+          1.595594767422881e-10,
+          -8.573888266028007e-10
+        ],
+        "residual_moment_body_nm": [
+          4.771756323407317e-10,
+          5.017578019739233e-09,
+          1.4637180356658064e-11
+        ],
+        "velocity_body_m_s": [
+          14.997727537548137,
+          0.0,
+          -0.2610913814554547
+        ],
+        "diagnostics": {
+          "nfev": 6,
+          "njev": 6,
+          "residual_calls": 114,
+          "element_calls": 228,
+          "solve_elapsed_s": 0.4099050000004354,
+          "call_count_scope": "least_squares including finite-difference Jacobian; excludes final checks",
+          "grid": {
+            "radial": {
+              "main": 80,
+              "tail": 80
+            },
+            "azimuth": 36
+          },
+          "message": "`gtol` termination condition is satisfied.",
+          "initial_state": [
+            0.22689280275926285,
+            0.0,
+            0.0,
+            0.20943951023931956,
+            -0.03490658503988659,
+            0.0,
+            0.06721649246246147,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.05916079783099616,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "solved_state": [
+            0.1735685157625642,
+            0.0297456728602482,
+            -0.03689880344180606,
+            0.20205695471417515,
+            -0.03450586349593386,
+            -0.01739661141744311,
+            0.05049429774452787,
+            0.02955566438086556,
+            -0.00038699444012818296,
+            0.011408632466522161,
+            0.004066143671776025,
+            -0.0024302027261551657,
+            0.06408690173541184,
+            -0.022171547552354717,
+            -0.014697110504476037,
+            1.4599715979162646e-16,
+            -2.4652808587415416e-16,
+            -9.349578312921677e-16
+          ],
+          "scaled_force_moment_residual": [
+            6.425328087062706e-14,
+            8.135269268419292e-14,
+            -4.3714664365649874e-13,
+            2.1064230681205157e-13,
+            2.2149375136838885e-12,
+            6.46137234717155e-15
+          ],
+          "rotor_internal_residual": [
+            -2.5882074261573962e-14,
+            2.9205804441545524e-14,
+            -2.994257402785805e-14,
+            -2.0015304969701654e-14,
+            -6.235507926454251e-13,
+            -4.872650861507964e-14,
+            4.98212582300539e-15,
+            -3.903821710338207e-14,
+            -1.0911410663894117e-14,
+            1.4599715979162646e-16,
+            -2.4652808587415416e-16,
+            -9.349578312921677e-16
+          ],
+          "near_limits": [],
+          "elapsed_s": 0.440453900002467,
+          "rotors": {
+            "main": {
+              "momentum_induced": 0.05069748038037553,
+              "total_axial_ratio": 0.051967273625824796,
+              "mu": 0.07294002972486556,
+              "mass_flow_mean": 0.08955917297723119,
+              "mass_flow_harmonic": 0.11897670495619063,
+              "wake_skew_rad": 0.9517529841138239,
+              "internal_max_residual": 6.235507926454251e-13,
+              "omitted_flap_harmonics_rms": 0.00021267519493968438,
+              "alpha_min_deg": 2.3229800738388633,
+              "alpha_max_deg": 14.329030319253235,
+              "mach_max": 0.6458996596602863,
+              "flap_peak_deg": 0.925047095059378,
+              "reverse_flow_fraction": 0.0
+            },
+            "tail": {
+              "momentum_induced": 0.06081542741703351,
+              "total_axial_ratio": 0.06081542741703351,
+              "mu": 0.07957747154594767,
+              "mass_flow_mean": 0.10015533031028645,
+              "mass_flow_harmonic": 0.13708313235994543,
+              "wake_skew_rad": 0.9182505535374591,
+              "internal_max_residual": 3.903821710338207e-14,
+              "omitted_flap_harmonics_rms": 0.0,
+              "alpha_min_deg": -11.54474801871504,
+              "alpha_max_deg": 8.341638146589219,
+              "mach_max": 0.5968176621173946,
+              "flap_peak_deg": 6.357310704416025e-14,
+              "reverse_flow_fraction": 0.0
+            }
+          }
+        },
+        "short_time_rating_applicable": false,
+        "elapsed_s": 0.5061558000015793,
+        "backend": "Python / azimuth blade elements + steady PP + first harmonic flap + six-component trim",
+        "power_accounting": {
+          "components": [
+            {
+              "role": "main",
+              "shaft_power_w": 28729.73669840637,
+              "torque_nm": 161.381633268706,
+              "omega_rad_s": 178.0235837034216,
+              "efficiency": 0.96,
+              "input_power_w": 29926.80906083997,
+              "loss_w": 1197.0723624336008,
+              "omega_q_residual_w": 0.0,
+              "inflow": "steady_pitt_peters",
+              "tip_loss": "none",
+              "flap": "hinged",
+              "precone_deg": 0,
+              "position_m": [
+                0,
+                0,
+                -0.6
+              ],
+              "thrust_axis_body": [
+                0,
+                0,
+                -1
+              ],
+              "yaw_thrust_arm_m": 0.0,
+              "force_body_n": [
+                4.4678005459394905,
+                -28.292647338167413,
+                -1971.039961574493
+              ],
+              "moment_cg_body_nm": [
+                -12.932000141392798,
+                -15.014033799367347,
+                161.381633268706
+              ],
+              "solved_flap_deg": [
+                0.6536664903476463,
+                0.2329728712865941,
+                -0.13924035956987796
+              ],
+              "collective_deg": 9.944743409544833
+            },
+            {
+              "role": "tail",
+              "shaft_power_w": 1484.3067514496734,
+              "torque_nm": 1.8898780524631102,
+              "omega_rad_s": 785.3981633974483,
+              "efficiency": 0.93,
+              "input_power_w": 1596.0287649996487,
+              "loss_w": 111.72201354997532,
+              "omega_q_residual_w": 0.0,
+              "inflow": "steady_pitt_peters",
+              "tip_loss": "none",
+              "flap": "fixed",
+              "precone_deg": 0,
+              "position_m": [
+                -1.7,
+                0,
+                -0.15
+              ],
+              "thrust_axis_body": [
+                0,
+                1,
+                0
+              ],
+              "yaw_thrust_arm_m": -1.7,
+              "force_body_n": [
+                -1.5307446287177988,
+                95.94636460086411,
+                0.008629414652746359
+              ],
+              "moment_cg_body_nm": [
+                12.932000141869974,
+                -1.6455963532457716,
+                -161.38163326869136
+              ],
+              "solved_flap_deg": [
+                8.365021076957277e-15,
+                -1.4125018852027762e-14,
+                -5.356913775574566e-14
+              ],
+              "collective_deg": 11.57701072638824
+            }
+          ],
+          "accessory_power_w": 700,
+          "required_power_w": 32222.83782583962,
+          "sum_residual_w": 0.0,
+          "continuous_available_w": 45000.0,
+          "short_time_available_w": 55000.0,
+          "selected_available_w": 45000.0,
+          "rating": "continuous",
+          "requested_duration_s": 600,
+          "short_time_duration_s": 120,
+          "margin_residual_w": 0.0,
+          "download": {
+            "strategy": "none",
+            "effective_fraction": 0.0,
+            "configured_hover_fraction": 0.03,
+            "six_dof_strategy": "none",
+            "applied_at": "cg",
+            "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+            "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+            "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+          },
+          "download_force_body_n": [
+            -0.0,
+            -0.0,
+            0.0
+          ],
+          "residual_force_body_n": [
+            1.2602188736998698e-10,
+            1.595594767422881e-10,
+            -8.573888266028007e-10
+          ],
+          "residual_moment_body_nm": [
+            4.771756323407317e-10,
+            5.017578019739233e-09,
+            1.4637180356658064e-11
+          ],
+          "attitude_deg": [
+            -1.9770403467715425,
+            -0.996752412048591
+          ],
+          "cyclic_deg": [
+            1.7043015136690576,
+            -2.114145706298283
+          ],
+          "nonrotor_loads": {
+            "fuselage": {
+              "force_body_n": [
+                -37.15299617829191,
+                -0.0,
+                0.10336218242780204
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.08592255645653359,
+                0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": -0.9973459806243843,
+              "beta_deg": 0.0
+            },
+            "horizontal_tail": {
+              "force_body_n": [
+                0.34515276113678184,
+                0.0,
+                11.06209378924543
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                16.52411013164079,
+                -0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": -6.913334473838972,
+              "incidence_deg": 0.0,
+              "reverse_flow_estimate": false
+            },
+            "vertical_tail": {
+              "force_body_n": [
+                -0.24798734766686534,
+                0.0,
+                0.0
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.04959746953337307,
+                0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": 0.0,
+              "incidence_deg": 0.0,
+              "reverse_flow_estimate": false
+            },
+            "download": {
+              "force_body_n": [
+                -0.0,
+                -0.0,
+                0.0
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "power_w": 0.0,
+              "magnitude_n": 0.0,
+              "strategy": "none",
+              "effective_fraction": 0.0,
+              "configured_hover_fraction": 0.03,
+              "six_dof_strategy": "none",
+              "applied_at": "cg",
+              "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+              "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+              "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+            }
+          },
+          "scope": "稳态气动轴功率；下载和机身/尾翼通过载荷改变旋翼需求，不重复相加。",
+          "transient_scope": "未包含转速变化、挥舞储能变化及瞬态轴端传递功率；不能用此账目判定瞬态动力峰值。"
+        }
+      }
+    },
+    {
+      "name": "主桨降速5%",
+      "directory": "candidate-3",
+      "change": {
+        "name": "主桨降速5%",
+        "overrides": {
+          "main_rpm": 1615
+        },
+        "geometry_rule": "preserve_chord",
+        "provenance": "相对基准仅将主桨转速降低5%；本冻结装配尾桨采用独立给定转速，不假定存在主尾桨固定速比。其余参数保持基准。"
+      },
+      "geometry_rule": "保持实际弦长与扭转",
+      "mass_inertia_update": "未自动更新；仅作气动/配平设计比较",
+      "parameters": {
+        "飞行质量_kg": 200,
+        "重心X_m": 0,
+        "主桨半径_m": 1.1,
+        "主桨转速_rpm": 1615,
+        "主桨实度": 0.07628585795018344,
+        "主桨传动效率": 0.96,
+        "尾桨半径_m": 0.24,
+        "尾桨转速_rpm": 7500,
+        "尾桨实度": 0.09383510186459665,
+        "尾桨传动效率": 0.93,
+        "尾桨安装X_m": -1.7,
+        "尾桨纵向力臂_m": 1.7,
+        "主桨盘载_N_m2": 518.5774714681348,
+        "主桨局部最大Mach": 0.5888391123423293,
+        "主桨旋转桨尖Mach": 0.5466880154104076,
+        "尾桨局部最大Mach": 0.597028316117996,
+        "尾桨旋转桨尖Mach": 0.5539197454200584
+      },
+      "sources": {
+        "aircraft": "Synthetic example; no measured aircraft data; v0.4.4 template: six-DOF residual download=none; original public-helicopter template retained. v0.4.5: main azimuth zero points aft; original templates unchanged.",
+        "mass_properties": "Synthetic rigid-body inertia estimate; not measured, symmetric tensor in body axes",
+        "rotors": {
+          "main": "Same synthetic geometry and polar as v0.1.0；本次候选：相对基准仅将主桨转速降低5%；本冻结装配尾桨采用独立给定转速，不假定存在主尾桨固定速比。其余参数保持基准。",
+          "tail": "Synthetic: all dimensions, rpm, limits and installation estimated；本次候选：相对基准仅将主桨转速降低5%；本冻结装配尾桨采用独立给定转速，不假定存在主尾桨固定速比。其余参数保持基准。"
+        },
+        "powerplant": "Synthetic shaft-power curves, losses and 120 s rating; not a specific engine"
+      },
+      "result": {
+        "schema_version": 1,
+        "solver_version": "0.4.6.dev11",
+        "python_version": "3.14.3",
+        "numpy_version": "2.4.3",
+        "scipy_version": "1.17.1",
+        "status": "converged",
+        "warnings": [
+          "旋翼模型估算，稳态一阶挥舞；未包含高阶桨叶运动、弹性、旋流和主尾桨干扰。",
+          "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+          "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+        ],
+        "model": "helicopter",
+        "solver_status": "converged",
+        "analysis": "trim",
+        "summary": {
+          "speed_m_s": 15,
+          "climb_m_s": 0,
+          "altitude_m": 0,
+          "download_n": 0.0,
+          "mass_kg": 200,
+          "required_power_w": 33963.89668177871,
+          "transmission_loss_w": 1386.186447880542,
+          "accessory_power_w": 700,
+          "continuous_margin_w": 11036.103318221292,
+          "short_time_margin_w": 21036.103318221292,
+          "duration_margin_w": 11036.103318221292,
+          "max_scaled_residual": 3.7958249918215746e-15,
+          "max_internal_residual": 1.0700111707167497e-15,
+          "main_collective_deg": 13.026038364740241,
+          "main_cos_deg": 1.8832469345973168,
+          "main_sin_deg": -3.0408799946556067,
+          "tail_collective_deg": 12.601349980321297,
+          "roll_deg": -2.178570797165155,
+          "pitch_deg": -0.8768073587755746,
+          "main_thrust_n": 1971.2826013645704,
+          "main_torque_nm": 178.2919437604916,
+          "main_power_w": 30153.162235007032,
+          "tail_thrust_n": 105.87855274166466,
+          "tail_torque_nm": 2.1957627089820857,
+          "tail_power_w": 1724.5479988911359
+        },
+        "feasible": true,
+        "support_status": "within_implemented_steady_domain",
+        "design_limits_status": "within_supplied_limits",
+        "evidence_status": "model_estimate",
+        "violations": [],
+        "control_margins_deg": {
+          "main_collective_deg": {
+            "to_lower": 11.026038364740243,
+            "to_upper": 10.97396163525976
+          },
+          "main_cos_deg": {
+            "to_lower": 16.883246934597313,
+            "to_upper": 13.116753065402682
+          },
+          "main_sin_deg": {
+            "to_lower": 11.959120005344392,
+            "to_upper": 18.040879994655608
+          },
+          "tail_collective_deg": {
+            "to_lower": 10.601349980321297,
+            "to_upper": 11.398650019678705
+          },
+          "roll_deg": {
+            "to_lower": 17.821429202834842,
+            "to_upper": 22.178570797165158
+          },
+          "pitch_deg": {
+            "to_lower": 24.123192641224428,
+            "to_upper": 25.876807358775572
+          }
+        },
+        "components": {
+          "main": {
+            "force_body_n": [
+              8.75280660087148,
+              -31.329143128323672,
+              -1971.2826013645704
+            ],
+            "moment_cg_body_nm": [
+              -14.218250883929608,
+              -15.371830253465054,
+              178.2919437604916
+            ],
+            "power_w": 30153.162235007032,
+            "thrust_n": 1971.2826013645704,
+            "torque_nm": 178.2919437604916,
+            "diagnostics": {
+              "momentum_induced": 0.060301498381060734,
+              "total_axial_ratio": 0.06153623969011764,
+              "mu": 0.08062068810665089,
+              "mass_flow_mean": 0.10142191156741964,
+              "mass_flow_harmonic": 0.1380089508048285,
+              "wake_skew_rad": 0.9188494190764837,
+              "internal_max_residual": 1.0700111707167497e-15,
+              "omitted_flap_harmonics_rms": 0.00030360177397057597,
+              "alpha_min_deg": 3.980143782464296,
+              "alpha_max_deg": 14.98644326475818,
+              "mach_max": 0.5888391123423293,
+              "flap_peak_deg": 0.983401576055711,
+              "reverse_flow_fraction": 0.0
+            },
+            "inflow": [
+              0.06010493944798921,
+              0.032884961157019596,
+              -0.0005223829557230644
+            ],
+            "flap_deg": [
+              0.7184016456129947,
+              0.20836776828684822,
+              -0.16394366946939654
+            ]
+          },
+          "tail": {
+            "force_body_n": [
+              -1.7650589713785876,
+              105.87855274166466,
+              -0.021141441416348685
+            ],
+            "moment_cg_body_nm": [
+              14.218250883927253,
+              -1.9669443136830904,
+              -178.2919437604885
+            ],
+            "power_w": 1724.5479988911359,
+            "thrust_n": 105.87855274166466,
+            "torque_nm": 2.1957627089820857,
+            "diagnostics": {
+              "momentum_induced": 0.0652967343207073,
+              "total_axial_ratio": 0.0652967343207073,
+              "mu": 0.07957747154594766,
+              "mass_flow_mean": 0.10293802742716195,
+              "mass_flow_harmonic": 0.14435774003984014,
+              "wake_skew_rad": 0.8836541022623516,
+              "internal_max_residual": 1.6653345369377348e-16,
+              "omitted_flap_harmonics_rms": 0.0,
+              "alpha_min_deg": -11.982571262851536,
+              "alpha_max_deg": 9.162989528130424,
+              "mach_max": 0.597028316117996,
+              "flap_peak_deg": 5.956505760101766e-17,
+              "reverse_flow_fraction": 0.0
+            },
+            "inflow": [
+              0.06829652866673575,
+              -0.022663547570085724,
+              -0.015501549821754055
+            ],
+            "flap_deg": [
+              1.2267636473586007e-17,
+              7.185702957310457e-18,
+              -4.6760026779630743e-17
+            ]
+          },
+          "fuselage": {
+            "force_body_n": [
+              -37.159774308563925,
+              -0.0,
+              0.09093561026240198
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.07559263865329277,
+              0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": -0.8774414709575401,
+            "beta_deg": 0.0
+          },
+          "horizontal_tail": {
+            "force_body_n": [
+              0.40662565806942186,
+              0.0,
+              11.52993746259738
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              17.213581062282184,
+              -0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": -7.245968325342318,
+            "incidence_deg": 0.0,
+            "reverse_flow_estimate": false
+          },
+          "vertical_tail": {
+            "force_body_n": [
+              -0.24800433110428516,
+              0.0,
+              0.0
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.049600866220857034,
+              0.0
+            ],
+            "power_w": 0,
+            "alpha_deg": 0.0,
+            "incidence_deg": 0.0,
+            "reverse_flow_estimate": false
+          },
+          "download": {
+            "force_body_n": [
+              -0.0,
+              -0.0,
+              0.0
+            ],
+            "moment_cg_body_nm": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "power_w": 0.0,
+            "magnitude_n": 0.0,
+            "strategy": "none",
+            "effective_fraction": 0.0,
+            "configured_hover_fraction": 0.03,
+            "six_dof_strategy": "none",
+            "applied_at": "cg",
+            "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+            "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+            "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+          }
+        },
+        "download_model": {
+          "strategy": "none",
+          "effective_fraction": 0.0,
+          "configured_hover_fraction": 0.03,
+          "six_dof_strategy": "none",
+          "applied_at": "cg",
+          "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+          "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+          "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+        },
+        "residual_force_body_n": [
+          8.924527783449321e-13,
+          -2.842170943040401e-14,
+          1.9326762412674725e-12
+        ],
+        "residual_moment_body_nm": [
+          -2.355449169044732e-12,
+          8.18935197433035e-12,
+          3.097966327914037e-12
+        ],
+        "velocity_body_m_s": [
+          14.998241089163994,
+          0.0,
+          -0.22970466106028886
+        ],
+        "diagnostics": {
+          "nfev": 7,
+          "njev": 7,
+          "residual_calls": 133,
+          "element_calls": 266,
+          "solve_elapsed_s": 0.4459509000007529,
+          "call_count_scope": "least_squares including finite-difference Jacobian; excludes final checks",
+          "grid": {
+            "radial": {
+              "main": 80,
+              "tail": 80
+            },
+            "azimuth": 36
+          },
+          "message": "`gtol` termination condition is satisfied.",
+          "initial_state": [
+            0.22689280275926285,
+            0.0,
+            0.0,
+            0.20943951023931956,
+            -0.03490658503988659,
+            0.0,
+            0.07800650835775133,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.05916079783099616,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "solved_state": [
+            0.22734725795581526,
+            0.03286885963681349,
+            -0.05307336806476791,
+            0.21993504735272928,
+            -0.0380232333983295,
+            -0.015303175316348974,
+            0.06010493944798921,
+            0.032884961157019596,
+            -0.0005223829557230644,
+            0.012538474067692235,
+            0.003636703611638126,
+            -0.0028613568200422743,
+            0.06829652866673575,
+            -0.022663547570085724,
+            -0.015501549821754055,
+            2.141106479018222e-19,
+            1.2541417567536102e-19,
+            -8.161164256252774e-19
+          ],
+          "scaled_force_moment_residual": [
+            4.550242836977623e-16,
+            -1.4491038953365322e-17,
+            9.85390648828842e-16,
+            -1.091768048418319e-15,
+            3.7958249918215746e-15,
+            1.4359302235607454e-15
+          ],
+          "rotor_internal_residual": [
+            -1.3877787807814457e-16,
+            1.3877787807814457e-17,
+            2.248635305734936e-16,
+            -6.910283013244416e-18,
+            -1.0700111707167497e-15,
+            -4.086071879191238e-16,
+            -1.6653345369377348e-16,
+            4.163336342344337e-17,
+            4.336808689942018e-17,
+            2.141106479018222e-19,
+            1.2541417567536102e-19,
+            -8.161164256252774e-19
+          ],
+          "near_limits": [],
+          "elapsed_s": 0.4799702999953297,
+          "rotors": {
+            "main": {
+              "momentum_induced": 0.060301498381060734,
+              "total_axial_ratio": 0.06153623969011764,
+              "mu": 0.08062068810665089,
+              "mass_flow_mean": 0.10142191156741964,
+              "mass_flow_harmonic": 0.1380089508048285,
+              "wake_skew_rad": 0.9188494190764837,
+              "internal_max_residual": 1.0700111707167497e-15,
+              "omitted_flap_harmonics_rms": 0.00030360177397057597,
+              "alpha_min_deg": 3.980143782464296,
+              "alpha_max_deg": 14.98644326475818,
+              "mach_max": 0.5888391123423293,
+              "flap_peak_deg": 0.983401576055711,
+              "reverse_flow_fraction": 0.0
+            },
+            "tail": {
+              "momentum_induced": 0.0652967343207073,
+              "total_axial_ratio": 0.0652967343207073,
+              "mu": 0.07957747154594766,
+              "mass_flow_mean": 0.10293802742716195,
+              "mass_flow_harmonic": 0.14435774003984014,
+              "wake_skew_rad": 0.8836541022623516,
+              "internal_max_residual": 1.6653345369377348e-16,
+              "omitted_flap_harmonics_rms": 0.0,
+              "alpha_min_deg": -11.982571262851536,
+              "alpha_max_deg": 9.162989528130424,
+              "mach_max": 0.597028316117996,
+              "flap_peak_deg": 5.956505760101766e-17,
+              "reverse_flow_fraction": 0.0
+            }
+          }
+        },
+        "short_time_rating_applicable": false,
+        "elapsed_s": 0.5339026000001468,
+        "backend": "Python / azimuth blade elements + steady PP + first harmonic flap + six-component trim",
+        "power_accounting": {
+          "components": [
+            {
+              "role": "main",
+              "shaft_power_w": 30153.162235007032,
+              "torque_nm": 178.2919437604916,
+              "omega_rad_s": 169.12240451825053,
+              "efficiency": 0.96,
+              "input_power_w": 31409.543994798994,
+              "loss_w": 1256.381759791962,
+              "omega_q_residual_w": 0.0,
+              "inflow": "steady_pitt_peters",
+              "tip_loss": "none",
+              "flap": "hinged",
+              "precone_deg": 0,
+              "position_m": [
+                0,
+                0,
+                -0.6
+              ],
+              "thrust_axis_body": [
+                0,
+                0,
+                -1
+              ],
+              "yaw_thrust_arm_m": 0.0,
+              "force_body_n": [
+                8.75280660087148,
+                -31.329143128323672,
+                -1971.2826013645704
+              ],
+              "moment_cg_body_nm": [
+                -14.218250883929608,
+                -15.371830253465054,
+                178.2919437604916
+              ],
+              "solved_flap_deg": [
+                0.7184016456129947,
+                0.20836776828684822,
+                -0.16394366946939654
+              ],
+              "collective_deg": 13.026038364740241
+            },
+            {
+              "role": "tail",
+              "shaft_power_w": 1724.5479988911359,
+              "torque_nm": 2.1957627089820857,
+              "omega_rad_s": 785.3981633974483,
+              "efficiency": 0.93,
+              "input_power_w": 1854.3526869797158,
+              "loss_w": 129.80468808858,
+              "omega_q_residual_w": 0.0,
+              "inflow": "steady_pitt_peters",
+              "tip_loss": "none",
+              "flap": "fixed",
+              "precone_deg": 0,
+              "position_m": [
+                -1.7,
+                0,
+                -0.15
+              ],
+              "thrust_axis_body": [
+                0,
+                1,
+                0
+              ],
+              "yaw_thrust_arm_m": -1.7,
+              "force_body_n": [
+                -1.7650589713785876,
+                105.87855274166466,
+                -0.021141441416348685
+              ],
+              "moment_cg_body_nm": [
+                14.218250883927253,
+                -1.9669443136830904,
+                -178.2919437604885
+              ],
+              "solved_flap_deg": [
+                1.2267636473586007e-17,
+                7.185702957310457e-18,
+                -4.6760026779630743e-17
+              ],
+              "collective_deg": 12.601349980321297
+            }
+          ],
+          "accessory_power_w": 700,
+          "required_power_w": 33963.89668177871,
+          "sum_residual_w": 0.0,
+          "continuous_available_w": 45000.0,
+          "short_time_available_w": 55000.0,
+          "selected_available_w": 45000.0,
+          "rating": "continuous",
+          "requested_duration_s": 600,
+          "short_time_duration_s": 120,
+          "margin_residual_w": 0.0,
+          "download": {
+            "strategy": "none",
+            "effective_fraction": 0.0,
+            "configured_hover_fraction": 0.03,
+            "six_dof_strategy": "none",
+            "applied_at": "cg",
+            "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+            "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+            "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+          },
+          "download_force_body_n": [
+            -0.0,
+            -0.0,
+            0.0
+          ],
+          "residual_force_body_n": [
+            8.924527783449321e-13,
+            -2.842170943040401e-14,
+            1.9326762412674725e-12
+          ],
+          "residual_moment_body_nm": [
+            -2.355449169044732e-12,
+            8.18935197433035e-12,
+            3.097966327914037e-12
+          ],
+          "attitude_deg": [
+            -2.178570797165155,
+            -0.8768073587755746
+          ],
+          "cyclic_deg": [
+            1.8832469345973168,
+            -3.0408799946556067
+          ],
+          "nonrotor_loads": {
+            "fuselage": {
+              "force_body_n": [
+                -37.159774308563925,
+                -0.0,
+                0.09093561026240198
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.07559263865329277,
+                0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": -0.8774414709575401,
+              "beta_deg": 0.0
+            },
+            "horizontal_tail": {
+              "force_body_n": [
+                0.40662565806942186,
+                0.0,
+                11.52993746259738
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                17.213581062282184,
+                -0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": -7.245968325342318,
+              "incidence_deg": 0.0,
+              "reverse_flow_estimate": false
+            },
+            "vertical_tail": {
+              "force_body_n": [
+                -0.24800433110428516,
+                0.0,
+                0.0
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.049600866220857034,
+                0.0
+              ],
+              "power_w": 0,
+              "alpha_deg": 0.0,
+              "incidence_deg": 0.0,
+              "reverse_flow_estimate": false
+            },
+            "download": {
+              "force_body_n": [
+                -0.0,
+                -0.0,
+                0.0
+              ],
+              "moment_cg_body_nm": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "power_w": 0.0,
+              "magnitude_n": 0.0,
+              "strategy": "none",
+              "effective_fraction": 0.0,
+              "configured_hover_fraction": 0.03,
+              "six_dof_strategy": "none",
+              "applied_at": "cg",
+              "scope": "附加残余比例力；独立于已有机身和尾翼气动载荷，无速度硬切换。",
+              "note": "六分量分析未附加残余下载；机身下洗/下载尚未完整建模。",
+              "comparison_note": "悬停预算使用经验比例，六分量分析不附加该项；比较功率前须同时核对模型差异。"
+            }
+          },
+          "scope": "稳态气动轴功率；下载和机身/尾翼通过载荷改变旋翼需求，不重复相加。",
+          "transient_scope": "未包含转速变化、挥舞储能变化及瞬态轴端传递功率；不能用此账目判定瞬态动力峰值。"
+        }
+      }
+    }
+  ],
+  "warnings": [
+    "同一飞行质量、速度、高度、空气环境及维持时间的稳态方案比较；不自动评价最优方案。几何变化不自动更新质量矩/惯量，尺寸方案尚需结构与重量复核。全部结果为低阶模型估算；接近的差值应结合输入不确定性判断。开环排序仍受R19限制。"
+  ],
+  "evidence_status": "model_estimate",
+  "common_task": {
+    "schema_version": 3,
+    "model": "helicopter",
+    "analysis": "trim",
+    "altitude_m": 0,
+    "speed_m_s": 15,
+    "climb_m_s": 0,
+    "requested_duration_s": 600,
+    "radial_stations": 80,
+    "azimuth_stations": 36
+  },
+  "common_mass_kg": 200,
+  "elapsed_s": 2.7664969000034034
+}

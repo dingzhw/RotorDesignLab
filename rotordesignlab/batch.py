@@ -64,6 +64,9 @@ def plot_performance(rows, axes, output, model='aircraft_rotor'):
 
 
 def run_batch(spec, base, output):
+    if isinstance(spec, dict) and spec.get('kind') == 'helicopter_design_comparison':
+        from .design_comparison import run_comparison
+        return run_comparison(spec, Path(base), Path(output))
     if isinstance(spec, dict) and spec.get('kind') == 'rotor_module_sweep':
         from .module_batch import run_batch as run_module_batch
         return run_module_batch(spec, base, output)

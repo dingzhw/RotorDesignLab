@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "helicopter_design_comparison",
+  "case_json": "case.json",
+  "variants": [
+    {
+      "name": "基准方案",
+      "overrides": {},
+      "geometry_rule": "preserve_chord",
+      "provenance": "复用B包200 kg合成机的冻结输入；全部参数是流程演示与工程估计，无实测整机精度依据。"
+    },
+    {
+      "name": "主桨加大5%",
+      "overrides": {"main_radius_m": 1.155},
+      "geometry_rule": "preserve_chord",
+      "provenance": "相对基准仅将主桨半径增加5%，保留实际弦长及扭转、总质量和质量矩；用于固定飞行质量下的气动敏感性分析，需另行复核结构与重量。"
+    },
+    {
+      "name": "主桨降速5%",
+      "overrides": {"main_rpm": 1615},
+      "geometry_rule": "preserve_chord",
+      "provenance": "相对基准仅将主桨转速降低5%；本冻结装配尾桨采用独立给定转速，不假定存在主尾桨固定速比。其余参数保持基准。"
+    }
+  ]
+}

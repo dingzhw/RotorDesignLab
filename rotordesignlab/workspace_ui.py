@@ -12,6 +12,7 @@ from .parameter_fields import label,help_text,location
 from .model_scope import OPEN_LOOP_LABEL, SPATIAL_SCOPE, RESPONSE_DURATION_BOUNDS
 
 TASKS={'孤立旋翼':'rotor','整机悬停预算':'hover_budget','整机配平':'trim',OPEN_LOOP_LABEL:'open_loop'}
+from .comparison_ui import LABEL as DESIGN_COMPARISON
 
 
 def setting(task,name,title,default,options=None,help=None,**kwargs):
@@ -146,12 +147,15 @@ def case_controls(task, hover=False):
     st.caption(f"当前整机质量 {aircraft['mass_properties']['mass_kg']:g} kg；重心 {aircraft['mass_properties']['cg_m']} m。质量和重心在整机装配的详细设置中统一修改。")
     case=dict(schema_version=3,model='helicopter',analysis=task)
     if task=='hover_budget':
-        mode=task_setting(task,'mode','预算任务','单点预算',['单点预算','预算—配平功率对照','质量—高度图','主桨尺寸—转速图','尾桨尺寸—力臂图','三方案比较'],help='功率对照使用同一装配、环境和持续时间分别计算预算与六分量悬停配平；保留各自假设和失败原因。')
+        mode=task_setting(task,'mode','预算任务','单点预算',['单点预算','预算—配平功率对照',DESIGN_COMPARISON,'质量—高度图','主桨尺寸—转速图','尾桨尺寸—力臂图','三方案比较'],help='方法对照比较同装配的两种模型；同任务三方案用同一配平模型比较设计参数；原三方案比较仍为预算变体。')
+        if mode == DESIGN_COMPARISON:
+            case.update(analysis='trim', speed_m_s=0., climb_m_s=0.)
         if mode == '预算—配平功率对照':
             case['analysis'] = 'hover_comparison'
-        st.caption('功率与载荷预算：闭合垂向力和偏航力矩，同时报告剩余侧力；此任务不标记为六分量配平。')
+        st.caption('三方案分别求六分量悬停配平，同时报告动力与操纵余量。' if mode == DESIGN_COMPARISON else
+                   '功率与载荷预算：闭合垂向力和偏航力矩，同时报告剩余侧力；此任务不标记为六分量配平。')
     elif task=='trim':
-        mode = '单点配平' if hover else task_setting(task,'mode','配平任务','单点配平',['单点配平','速度曲线','速度—质量比较','速度—重心比较'],help='单点求一个速度下的六分量平衡；扫描逐点改变速度，并可比较不同质量或纵向重心。')
+        mode = '单点配平' if hover else task_setting(task,'mode','配平任务','单点配平',['单点配平',DESIGN_COMPARISON,'速度曲线','速度—质量比较','速度—重心比较'],help='同任务三方案共用速度、环境和持续时间，比较设计参数；扫描保留原语义。')
         st.caption('同一整机方程求解六分量平衡；悬停、正爬升、无侧滑前飞，μ≤0.25且受局部气动表域限制。')
     else:
         mode = setting(task, 'mode', '开环任务', '线化、模态与频响',
@@ -192,10 +196,12 @@ def case_controls(task, hover=False):
             case['climb_m_s'] = task_setting(task,'climb_m_s','爬升率 / (m/s)',0.,min_value=0.,max_value=15.,help='正值向上爬升；下降涡环态尚未覆盖。')
     with st.expander('分析网格与扫描设置'):
         case['radial_stations']=task_setting(task,'radial_stations','每桨径向叶素数',80,min_value=8,max_value=2000)
-        if task != 'hover_budget' or case['analysis'] == 'hover_comparison':
+        if task != 'hover_budget' or case['analysis'] in ('hover_comparison', 'trim'):
             case['azimuth_stations'] = task_setting(task, 'azimuth_stations', '整周方位角站数', 36,
                 min_value=12, max_value=720, help='六分量配平采用的方位离散；轴流预算只使用径向网格。')
-        if task=='hover_budget' and '图' in mode:
+        if mode == DESIGN_COMPARISON:
+            st.caption('候选方案在下方逐项设置；三方案采用相同分析网格。')
+        elif task=='hover_budget' and '图' in mode:
             tail=next(r for r in aircraft['rotors'] if r['role']=='tail');mass=aircraft['mass_properties']['mass_kg']
             options={'质量—高度图':(('mass_kg','altitude_m'),([mass*.9,mass,mass*1.1],[0,1500,3000])),
                      '主桨尺寸—转速图':(('main_radius_m','main_rpm'),([main['radius_m']*.95,main['radius_m']], [main['defaults']['rpm']*.95,main['defaults']['rpm']])),
@@ -222,6 +228,9 @@ def case_controls(task, hover=False):
             if mode=='速度—重心比较':group='cg_x_m';default=str(aircraft['mass_properties']['cg_m'][0])
             groups=task_setting(task,group+'-scan','质量扫描 / kg' if group=='mass_kg' else '重心 x 扫描 / m',default,help='用逗号分隔候选值。质量单位kg；重心x相对机型原点、向前为正。') if group else None
             batch=lambda:dict(schema_version=1,kind='helicopter_trim_sweep',axes={'speed_m_s':values(speed),**({group:values(groups)} if group else {})},continuation=True)
+    if mode == DESIGN_COMPARISON:
+        from .comparison_ui import candidate_form
+        batch = candidate_form(aircraft, setting, 'design-comparison')
     if case['analysis'] == 'response':
         from .presentation import CONTROL_LABELS
         modern = current()['settings'].get('_workspace_revision', 3) >= 4
@@ -317,6 +326,28 @@ def show_result(record,is_current):
     st.caption('求解：'+text(answer.get('solver_status',answer['status']))+'；数据域：'+text(answer.get('support_status','见诊断'))+'；设计限制：'+text(answer.get('design_limits_status','见诊断'))+'；验证依据：'+{'model_estimate':'模型估算'}.get(answer.get('evidence_status'), '见逐项验证记录'))
     if answer.get('model_maturity'):
         st.info(answer['model_maturity'])
+    if 'design-comparison.csv' in files:
+        table = pd.read_csv(BytesIO(files['design-comparison.csv']))
+        st.subheader('同任务三方案 · 功率与裕度')
+        columns = [c for c in table.columns if c in ('方案','求解','支持范围','设计限制','验证依据','失败原因') or c.endswith('_kW')]
+        st.dataframe(table[columns], hide_index=True)
+        with st.expander('关键设计参数、配平与双向操纵余量', expanded=True):
+            st.dataframe(table[[c for c in table.columns if c == '方案' or c not in columns]], hide_index=True)
+        st.download_button('下载三方案中文对照表', table.to_csv(index=False).encode('utf-8-sig'), '同任务三方案.csv')
+        for entry in answer.get('candidates', []):
+            with st.expander(entry['name']+'：来源、假设与诊断'):
+                st.write(entry['change']['provenance'])
+                for key, source in entry.get('sources', {}).items():
+                    title = {'aircraft':'原装配来源', 'mass_properties':'质量惯量来源',
+                             'rotors':'旋翼来源', 'powerplant':'动力来源'}[key]
+                    st.write(title+'：'+str(source))
+                st.caption(entry['geometry_rule']+'；'+entry['mass_inertia_update'])
+                if entry['result'].get('error'):
+                    st.error(entry['result']['error'])
+                for warning in entry['result'].get('warnings', []):
+                    st.caption(warning)
+        if 'report.md' in files:
+            st.download_button('下载三方案分析摘要', files['report.md'], '同任务三方案.md')
     if 'power-comparison.csv' in files:
         if answer.get('power_feasibility_depends_on_method'):
             st.warning('功率可行性依赖模型假设：预算与配平给出不同判定，请查看分项和所用假设。')
