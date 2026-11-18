@@ -16,7 +16,7 @@ with TemporaryDirectory() as tmp,patch.object(designs,'LIBRARY',Path(tmp)):
         if title=='载入桨叶几何 CSV':return BytesIO(payload) if payload else None
         return original(title,*args,**kwargs)
     with patch.object(st,'file_uploader',side_effect=upload):
-        app=AppTest.from_file(str(ROOT/'app.py'),default_timeout=60).run()
+        app=AppTest.from_file(str(ROOT/'tests/legacy_workspace_app.py'),default_timeout=60).run()
         field(app.selectbox,'参数分组').set_value('主旋翼').run()
         field(app.radio,'旋翼设置内容').set_value('桨叶几何表').run();ok(app)
         name=app.session_state['design']['aircraft']['rotors'][0]['geometry_csv']

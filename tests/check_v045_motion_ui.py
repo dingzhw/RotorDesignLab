@@ -11,7 +11,7 @@ from check_workspace_ui import field, ok, run, replay, ROOT
 
 
 with TemporaryDirectory() as directory, patch.object(designs, 'LIBRARY', Path(directory)):
-    app = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=120).run()
+    app = AppTest.from_file(str(ROOT / 'tests/legacy_workspace_app.py'), default_timeout=120).run()
     ok(app)
     assert field(app.selectbox, '速度输入视角').value == 'motion'
     for title, value in [('水平前向速度 / (m/s)', 12.), ('水平右向速度 / (m/s)', 1.), ('上升速度 / (m/s)', 3.),

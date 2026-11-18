@@ -10,7 +10,7 @@ from rotordesignlab.model_scope import OPEN_LOOP_LABEL
 from check_workspace_ui import field, ok, ROOT
 
 with TemporaryDirectory() as directory, patch.object(designs, 'LIBRARY', Path(directory)):
-    app = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=180).run()
+    app = AppTest.from_file(str(ROOT / 'tests/legacy_workspace_app.py'), default_timeout=180).run()
     ok(app)
     old = deepcopy(app.session_state['design'])
     old['settings'] = {'_workspace_revision': 3}

@@ -166,7 +166,7 @@ def analysis_checks(app,tasks=None):
 
 def main(tasks=None):
     with TemporaryDirectory(prefix='rdl-ui-library-') as library,patch.object(designs,'LIBRARY',Path(library)):
-        app=AppTest.from_file(str(ROOT/'app.py'),default_timeout=120).run();ok(app)
+        app=AppTest.from_file(str(ROOT/'tests/legacy_workspace_app.py'),default_timeout=120).run();ok(app)
         assert field(app.radio,'分析任务').options==['孤立旋翼','整机悬停预算','整机配平','开环初评（低频模型·试验性）']
         assert not any('JSON' in w.label for w in app.text_input)
         editor_checks(app)
@@ -178,7 +178,7 @@ def main(tasks=None):
         field(app.button,'保存方案').click().run();ok(app)
         saved_id=app.session_state['design_id'];expected=deepcopy(app.session_state['design'])
         # A fresh browser session loads both the model and its last task/case.
-        app=AppTest.from_file(str(ROOT/'app.py'),default_timeout=120).run()
+        app=AppTest.from_file(str(ROOT/'tests/legacy_workspace_app.py'),default_timeout=120).run()
         field(app.selectbox,'已保存方案').set_value(saved_id).run()
         field(app.checkbox,'确认替换当前草稿（新建、重开、导入或恢复模板时使用）').check().run()
         field(app.button,'重新打开').click().run();ok(app)

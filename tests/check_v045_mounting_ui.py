@@ -12,7 +12,7 @@ from check_workspace_ui import field, ok, run, replay, ROOT
 
 
 with TemporaryDirectory() as directory, patch.object(designs, 'LIBRARY', Path(directory)):
-    app = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=150).run()
+    app = AppTest.from_file(str(ROOT / 'tests/legacy_workspace_app.py'), default_timeout=150).run()
     ok(app)
     for template in list(designs.TEMPLATES)[:2]:
         app.session_state['design'] = designs.from_template(template)

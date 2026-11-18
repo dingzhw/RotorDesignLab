@@ -6,7 +6,7 @@
 
 2026-11-16 已完成0.4.4-A/B：速度/Mach边界、模态可靠性、错误恢复与试验性标识，以及共享扰动输入和显式下载策略。新建方案可直接选择平滑脉冲/双脉冲/阶跃并导出实际输入，旧方案保留原计算语义。0.4.5-A已接入运动速度与空气XYZ双视角及非水平姿态，旧方案保持原语义；新主桨模板使用实际机尾零方位，安装角和旋向可在页面修改；增加高度/ISA温差、kW输入、中文结果表及布局/几何/翼型预览。88项回归和页面检查通过，正式0.4.5待同事实测。[整改跟踪表](docs/reviews/RotorDesignLab-v0.4.3-评审意见回复书.md) · [开发路线](docs/roadmap.md) · [0.4.4检查](docs/v044-work.md) · [0.4.5检查](docs/v045-work.md)。软件小版本与模型成熟度分别管理，完整动态挥舞及独立操稳验证仍待完成。
 
-已发布v0.3.0整机配平。当前开发版 `0.4.6.dev3` 已完成旧方案模型兼容、模态中文和参数提示修正，并建立独立桨毂传力核；整机动力学接入仍在进行。孤立旋翼支持总距、转速、X/Y/Z来流、周期变距及六分量气动载荷，保留原轴流算法。共用方案支持保存重开和四类分析。开环仍采用6自由度机体、动态入流与准定常挥舞，**铰接旋翼交叉耦合问题尚未关闭，仅开放故障诊断，不用于稳定性判断或方案排序**；尚未发布正式v0.4。[桨毂传力进展](docs/hub-loads.md) · [孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [环境与预览](docs/environment-and-previews.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
+已发布v0.3.0整机配平。当前开发版 `0.4.6.dev4` 已完成旧方案模型兼容、模态中文和参数提示修正，并建立独立桨毂传力核；整机动力学接入仍在进行。孤立旋翼支持总距、转速、X/Y/Z来流、周期变距及六分量气动载荷，保留原轴流算法。独立旋翼模块与整机方案分别保存；左侧五入口组织配置和分析，模块装配将在M3接通。开环仍采用6自由度机体、动态入流与准定常挥舞，**铰接旋翼交叉耦合问题尚未关闭，仅开放故障诊断，不用于稳定性判断或方案排序**；尚未发布正式v0.4。[桨毂传力进展](docs/hub-loads.md) · [孤立旋翼三方向来流](docs/isolated-3d.md) · [网页方案用法](docs/design-workspace.md) · [环境与预览](docs/environment-and-previews.md) · [开环用法与范围](docs/open-loop.md) · [配平](docs/trim.md) · [悬停预算](docs/hover-budget.md)
 
 旋翼验证保留 [XV-15](docs/xv15-validation.md) 与 [Caradonna–Tung](docs/caradonna-tung-validation.md)：原环带模型 XV-15 同拉力功率平均低估约5.44%，C–T 同总距拉力高估约29.09%；接入旧表局部Re后仍为28.87%，真实Re气动与非局部尾迹继续排查。均匀入流核 C–T 偏差39.5%。UH‑60 与 NASA TM‑85890 姿态及部分导数作带配置差异的数学模型对照，所有通用整机结果标记为模型估算。公开参数和工程估计分别注明；已发布标签保持可复算。
 
@@ -74,4 +74,4 @@ $env:PYTHONPATH = (Get-Location).Path
 
 原始 J‑GenHel 代码由 Umberto Saetti 编写，依 [MIT 许可](src/LICENSE) 使用。引用 Saetti & Horn, *Flight Simulation and Control using the Julia Language*, AIAA 2022‑2354。 [原作者仓库](https://github.com/terragord7/J-GenHel) · [论文 DOI](https://doi.org/10.2514/6.2022-2354)
 
-独立旋翼模块M1已提供无需整机参数的配置、计算、保存和复算入口，支持旧方案另存提取。参见[模块用法与样例](docs/rotor-modules.md)。模块网页工作区和装配入口继续按M2/M3推进，当前网页仍为原工作台。
+独立旋翼模块M1及网页工作区M2已完成。左侧选择“孤立旋翼”，无需整机参数即可编辑旋翼、正算/反求/扫描、保存重开和导出复算；质量矩、桨毂和挥舞参数归旋翼。参见[网页操作说明](docs/module-workspace.md)、[模块用法与样例](docs/rotor-modules.md)和[M2检查记录](docs/m2-work.md)。下一步M3接通模块装配及固定快照，A2继续后置。

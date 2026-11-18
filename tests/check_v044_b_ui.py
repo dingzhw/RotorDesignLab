@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     with TemporaryDirectory(prefix='rdl-v044-ui-') as directory, patch.object(designs, 'LIBRARY', Path(directory)):
-        app = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=180).run()
+        app = AppTest.from_file(str(ROOT / 'tests/legacy_workspace_app.py'), default_timeout=180).run()
         field(app.radio, '分析任务').set_value(OPEN_LOOP_LABEL).run()
         field(app.selectbox, '开环任务').set_value('小扰动阶跃响应').run()
         ok(app)

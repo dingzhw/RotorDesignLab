@@ -1,0 +1,38 @@
+{
+  "version": "0.4.6.dev4",
+  "baseline": "7920148c8f2ad8ee3fc11571856e2c55b5c0d391",
+  "full_regression": {
+    "passed": 101,
+    "seconds": 116.181
+  },
+  "final_service_tests": 3,
+  "app_test": "passed",
+  "legacy_model_guard_app_test": "passed",
+  "physical_validation": "unchanged",
+  "replays": [
+    {
+      "mode": "single",
+      "returncode": 0,
+      "identical": true,
+      "summary": {
+        "thrust_n": 2011.1019505610288,
+        "torque_nm": 205.98196026399398,
+        "power_w": 36669.646744451995,
+        "rpm": 1699.9999999999998,
+        "collective_deg": 13,
+        "flap_coning_deg": 0.6592003762946539,
+        "flap_cos_deg": 7.583582600502767e-14,
+        "flap_sin_deg": 1.639715466639243e-14
+      }
+    },
+    {
+      "mode": "batch",
+      "returncode": 0,
+      "identical": true,
+      "summary": {
+        "points": 2,
+        "converged_points": 2
+      }
+    }
+  ]
+}

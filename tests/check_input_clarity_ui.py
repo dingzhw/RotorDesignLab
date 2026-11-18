@@ -10,7 +10,7 @@ from check_workspace_ui import field, ok, run, replay, ROOT
 
 
 with TemporaryDirectory() as directory, patch.object(designs, 'LIBRARY', Path(directory)):
-    app = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=180).run()
+    app = AppTest.from_file(str(ROOT / 'tests/legacy_workspace_app.py'), default_timeout=180).run()
     ok(app)
     assert field(app.selectbox, '参数分组').options == ['主旋翼', '基本信息']
     assert not any('填写当地声速' in c.label for c in app.checkbox)

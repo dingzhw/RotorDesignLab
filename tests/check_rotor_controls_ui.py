@@ -7,7 +7,7 @@ from rotordesignlab import designs
 from check_workspace_ui import field,ok,run,replay,ROOT
 
 with TemporaryDirectory() as tmp,patch.object(designs,'LIBRARY',Path(tmp)):
-    app=AppTest.from_file(str(ROOT/'app.py'),default_timeout=120).run();ok(app)
+    app=AppTest.from_file(str(ROOT/'tests/legacy_workspace_app.py'),default_timeout=120).run();ok(app)
     # Inspect the ordinary page, without opening or selecting any parameter group.
     pitch=field(app.number_input,'本次总距 θ₀ / °')
     rpm=field(app.number_input,'本次旋翼转速 / rpm')
