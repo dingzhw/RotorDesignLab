@@ -1,0 +1,46 @@
+[
+  {
+    "label": "synthetic-15-n24",
+    "minimum_distance_to_alpha_knot_deg": 0.0010095924847632887,
+    "amplitudes": [
+      {
+        "amplitude_deg": 0.02,
+        "crossing_elements": 3
+      },
+      {
+        "amplitude_deg": 0.01,
+        "crossing_elements": 2
+      },
+      {
+        "amplitude_deg": 0.002,
+        "crossing_elements": 1
+      },
+      {
+        "amplitude_deg": 0.001,
+        "crossing_elements": 0
+      }
+    ]
+  },
+  {
+    "label": "oh6-20.58-n24",
+    "minimum_distance_to_alpha_knot_deg": 0.00016483729154970206,
+    "amplitudes": [
+      {
+        "amplitude_deg": 0.02,
+        "crossing_elements": 6
+      },
+      {
+        "amplitude_deg": 0.01,
+        "crossing_elements": 3
+      },
+      {
+        "amplitude_deg": 0.002,
+        "crossing_elements": 1
+      },
+      {
+        "amplitude_deg": 0.001,
+        "crossing_elements": 0
+      }
+    ]
+  }
+]

@@ -1,0 +1,282 @@
+[
+  {
+    "label": "oh6-0-n24",
+    "mass_properties": {
+      "mass_kg": 1157.0,
+      "cg_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "inertia_cg_kg_m2": [
+        [
+          647.4316941234808,
+          -2.045933908246194,
+          -136.6439564243446
+        ],
+        [
+          -2.045933908246194,
+          1452.0925767655056,
+          -0.07955345128035211
+        ],
+        [
+          -136.6439564243446,
+          -0.07955345128035211,
+          1293.9578445579668
+        ]
+      ],
+      "provenance": "NASA CR-3144 Fig. II-3 Nominal Weight: m=1157 kg (2550 lb), FS 100, WL 49.6, Ix=446, Iy=1219, Iz=979, Ixz=128 kg*m^2 (J_xz=-128). A3 alternative hypothesis ONLY: original tensor assigned to nonrotating core; new total tensor assembled from core and estimated rotor parts, total mass/CG retained. Original core-candidate tensor=[[446.0, 0.0, -128.0], [0.0, 1219.0, 0.0], [-128.0, 0.0, 979.0]]. Not confirmed source interpretation."
+    },
+    "dynamics": {
+      "model": "harmonic_hub_v1",
+      "mass_reference": "total_at_reference_flap",
+      "reference_flap_deg": {
+        "main": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "tail": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "provenance": "NASA CR-3144 Fig. II-3 Nominal Weight: m=1157 kg (2550 lb), FS 100, WL 49.6, Ix=446, Iy=1219, Iz=979, Ixz=128 kg*m^2 (J_xz=-128). A3 alternative hypothesis ONLY: original tensor assigned to nonrotating core; new total tensor assembled from core and estimated rotor parts, total mass/CG retained. Original core-candidate tensor=[[446.0, 0.0, -128.0], [0.0, 1219.0, 0.0], [-128.0, 0.0, 979.0]]. Not confirmed source interpretation."
+    },
+    "rotors": [
+      {
+        "id": "main",
+        "role": "main",
+        "position_m": [
+          -0.0,
+          0.0,
+          -0.84836
+        ],
+        "thrust_axis_body": [
+          0.05233595624294383,
+          0.0,
+          -0.9986295347545737
+        ],
+        "blade_mass": {
+          "mass_kg": 17.9663,
+          "first_mass_moment_kg_m": 24.5908,
+          "inertia_kg_m2": 63.49,
+          "provenance": "NTRS19710023917 Table I p54 whole blade 17.9663kg; outboard/configuration equivalence unconfirmed; mass_factor=1"
+        },
+        "hub": {
+          "mass_kg": 5.0,
+          "cg_rotor_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "inertia_cg_kg_m2": [
+            [
+              0.05,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.05,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.08000000000000002
+            ]
+          ],
+          "provenance": "A3 synthetic axisymmetric rotating hub: base mass 5kg, Jxx=0.05kgm2, factor=1; not measured"
+        }
+      },
+      {
+        "id": "tail",
+        "role": "tail",
+        "position_m": [
+          -4.6228,
+          -0.29464,
+          -0.11938
+        ],
+        "thrust_axis_body": [
+          0.0,
+          1.0,
+          -0.0
+        ],
+        "blade_mass": {
+          "mass_kg": 0.5,
+          "first_mass_moment_kg_m": 0.1782,
+          "inertia_kg_m2": 0.07768224,
+          "provenance": "A3 synthetic tail: 0.5kg uniform 0.1R..R, all moments scaled together; not measured; mass_factor=1"
+        },
+        "hub": {
+          "mass_kg": 0.5,
+          "cg_rotor_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "inertia_cg_kg_m2": [
+            [
+              0.002,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.002,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032
+            ]
+          ],
+          "provenance": "A3 synthetic axisymmetric rotating hub: base mass 0.5kg, Jxx=0.002kgm2, factor=1; not measured"
+        }
+      }
+    ]
+  },
+  {
+    "label": "uh60-0-n24",
+    "mass_properties": {
+      "mass_kg": 7438.914868000001,
+      "cg_m": [
+        -0.06095999999999999,
+        0,
+        0.0254
+      ],
+      "inertia_cg_kg_m2": [
+        [
+          14047.809211370099,
+          -70.1301784653513,
+          -2478.309142558815
+        ],
+        [
+          -70.1301784653513,
+          62620.83680245693,
+          -18.303466505316212
+        ],
+        [
+          -2478.309142558815,
+          -18.303466505316216,
+          61863.114142795224
+        ]
+      ],
+      "provenance": "NASA TM-85890 Table 1 mass/CG/inertia; Ixz tensor entry=-product. Coordinates relative to FS358/WL248.2. A3 alternative hypothesis ONLY: original tensor assigned to nonrotating core; new total tensor assembled from core and estimated rotor parts, total mass/CG retained. Original core-candidate tensor=[[7631.899232618388, 0.0, -2264.215974146866], [0.0, 54232.71794363751, 0.0], [-2264.215974146866, 0.0, 50436.42768758288]]. Not confirmed source interpretation."
+    },
+    "dynamics": {
+      "model": "harmonic_hub_v1",
+      "mass_reference": "total_at_reference_flap",
+      "reference_flap_deg": {
+        "main": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "tail": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "provenance": "NASA TM-85890 Table 1 mass/CG/inertia; Ixz tensor entry=-product. Coordinates relative to FS358/WL248.2. A3 alternative hypothesis ONLY: original tensor assigned to nonrotating core; new total tensor assembled from core and estimated rotor parts, total mass/CG retained. Original core-candidate tensor=[[7631.899232618388, 0.0, -2264.215974146866], [0.0, 54232.71794363751, 0.0], [-2264.215974146866, 0.0, 50436.42768758288]]. Not confirmed source interpretation."
+    },
+    "rotors": [
+      {
+        "id": "main",
+        "role": "main",
+        "position_m": [
+          0.42545,
+          0,
+          -1.6967200000000002
+        ],
+        "thrust_axis_body": [
+          0.052335956242943835,
+          0,
+          -0.9986295347545738
+        ],
+        "blade_mass": {
+          "mass_kg": 116.527879853,
+          "first_mass_moment_kg_m": 385.6608141169104,
+          "inertia_kg_m2": 2050.8102290386523,
+          "provenance": "J-GenHel H60_constants.jl WBLADE=256.9lb; outboard/configuration equivalence unconfirmed; mass_factor=1"
+        },
+        "hub": {
+          "mass_kg": 30.0,
+          "cg_rotor_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "inertia_cg_kg_m2": [
+            [
+              0.5,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.5,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.8
+            ]
+          ],
+          "provenance": "A3 synthetic axisymmetric rotating hub: base mass 30kg, Jxx=0.5kgm2, factor=1; not measured"
+        }
+      },
+      {
+        "id": "tail",
+        "role": "tail",
+        "position_m": [
+          -9.4996,
+          -0.35559999999999997,
+          -1.9430999999999998
+        ],
+        "thrust_axis_body": [
+          0,
+          0.9396926207859084,
+          -0.3420201433256687
+        ],
+        "blade_mass": {
+          "mass_kg": 4.727163975499867,
+          "first_mass_moment_kg_m": 3.6394540495461816,
+          "inertia_kg_m2": 4.2030356406319065,
+          "provenance": "A3 tail mass=1.5*m1^2/I lower-bound sensitivity; published moments retained, not measured mass; mass_factor=1"
+        },
+        "hub": {
+          "mass_kg": 2.0,
+          "cg_rotor_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "inertia_cg_kg_m2": [
+            [
+              0.02,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.02,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.032
+            ]
+          ],
+          "provenance": "A3 synthetic axisymmetric rotating hub: base mass 2kg, Jxx=0.02kgm2, factor=1; not measured"
+        }
+      }
+    ]
+  }
+]
