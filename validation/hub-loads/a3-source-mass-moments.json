@@ -1,0 +1,138 @@
+{
+  "source": "NASA CR-166155 Tables 13/22, printed pp76/85; PDF pp81/90",
+  "source_url": "https://ntrs.nasa.gov/citations/19830004795",
+  "interpretation": "Same-report main-blade moments only; not same-configuration aircraft closure",
+  "radius_from_rounded_segments_m": 8.178602999999999,
+  "hinge_m": 0.381,
+  "integrated_m0_m1_m2_si": [
+    119.03013376999988,
+    386.4015569410516,
+    2052.1314761479925
+  ],
+  "printed_m0_m1_m2_si": [
+    118.82,
+    386.27466862599124,
+    2053.2
+  ],
+  "segment_vs_summary_relative_difference": [
+    0.001768505049653868,
+    0.00032849245722399445,
+    -0.0005204187862883902
+  ],
+  "prior_main_blade": {
+    "mass_kg": 116.527879853,
+    "first_mass_moment_kg_m": 385.6608141169104,
+    "inertia_kg_m2": 2050.8102290386523,
+    "provenance": "J-GenHel H60_constants.jl WBLADE=256.9lb; outboard/configuration equivalence unconfirmed; mass_factor=1"
+  },
+  "original_partition": {
+    "total_mass_kg": 7438.914868000001,
+    "total_inertia_kg_m2": [
+      [
+        7631.899232618388,
+        0.0,
+        -2264.215974146866
+      ],
+      [
+        0.0,
+        54232.71794363751,
+        0.0
+      ],
+      [
+        -2264.215974146866,
+        0.0,
+        50436.42768758288
+      ]
+    ],
+    "remaining_mass_kg": 6921.894692686001,
+    "remaining_cg_relative_m": [
+      -0.006351487586310337,
+      0.0010741449225755086,
+      0.12937530816513748
+    ],
+    "remaining_inertia_kg_m2": [
+      [
+        1215.9892538666784,
+        70.1301784653513,
+        -2050.1228057349167
+      ],
+      [
+        70.1301784653513,
+        45844.59908481809,
+        18.303466505316212
+      ],
+      [
+        -2050.1228057349167,
+        18.303466505316216,
+        39009.741232370536
+      ]
+    ],
+    "remaining_principal_inertia_kg_m2": [
+      1104.992899623824,
+      39120.593639082115,
+      45844.7430323494
+    ],
+    "triangle_margin_kg_m2": -5619.156493643459,
+    "minimum_mass_second_moment_eigenvalue_kg_m2": -2809.578246821727,
+    "realizable": false,
+    "interpretation": "Contradiction among total interpretation and adopted rotor data; does not prove core-inertia interpretation."
+  },
+  "updated_main_only_partition": {
+    "total_mass_kg": 7438.914868000001,
+    "total_inertia_kg_m2": [
+      [
+        7631.899232618388,
+        0.0,
+        -2264.215974146866
+      ],
+      [
+        0.0,
+        54232.71794363751,
+        0.0
+      ],
+      [
+        -2264.215974146866,
+        0.0,
+        50436.42768758288
+      ]
+    ],
+    "remaining_mass_kg": 6912.726212098002,
+    "remaining_cg_relative_m": [
+      -0.007005046543345465,
+      0.001075569581468271,
+      0.13183098169694515
+    ],
+    "remaining_inertia_kg_m2": [
+      [
+        1178.1197003716466,
+        70.12531917736045,
+        -2058.165250514274
+      ],
+      [
+        70.12531917736045,
+        45804.51783138789,
+        18.321724727889777
+      ],
+      [
+        -2058.165250514274,
+        18.32172472788978,
+        38994.76849305086
+      ]
+    ],
+    "remaining_principal_inertia_kg_m2": [
+      1066.3214953239908,
+      39106.422604921645,
+      45804.661924564774
+    ],
+    "triangle_margin_kg_m2": -5631.917824319142,
+    "minimum_mass_second_moment_eigenvalue_kg_m2": -2815.9589121595736,
+    "realizable": false,
+    "interpretation": "Contradiction among total interpretation and adopted rotor data; does not prove core-inertia interpretation."
+  },
+  "remaining_gaps": [
+    "Main hub mass/tensor",
+    "Tail blade/hub same-configuration mass moments",
+    "Reference configuration and total inertia compatibility with TM-85890"
+  ],
+  "nps_status": "Appendix C searchable BMASS text has repeated station 22; original image not checked; 369D/E adapted to 369C; not adopted"
+}
