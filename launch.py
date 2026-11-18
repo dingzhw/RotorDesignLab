@@ -47,7 +47,7 @@ class LocalServer:
         else:raise RuntimeError('8501–8600 端口均被占用，请关闭闲置程序后重试。')
         self.url=f'http://127.0.0.1:{port}/{self.path}/'
         self.log=(self.directory/'server.log').open('w',encoding='utf-8')
-        args=[sys.executable,'-m','streamlit','run',str(self.root/'app.py'),
+        args=[sys.executable,'-X','utf8','-m','streamlit','run',str(self.root/'app.py'),
               '--server.address=127.0.0.1',f'--server.port={port}',f'--server.baseUrlPath={self.path}',
               '--server.headless=true','--browser.gatherUsageStats=false']
         env=dict(os.environ,PYTHONUTF8='1')

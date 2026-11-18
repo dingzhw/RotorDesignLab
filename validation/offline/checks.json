@@ -1,0 +1,44 @@
+{
+  "version": "0.4.6.dev14",
+  "platform": "Windows-11-10.0.26320-SP0",
+  "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "isolated_import_paths": {
+    "numpy": "runtime\\Lib\\site-packages\\numpy\\__init__.py",
+    "scipy": "runtime\\Lib\\site-packages\\scipy\\__init__.py",
+    "pandas": "runtime\\Lib\\site-packages\\pandas\\__init__.py",
+    "matplotlib": "runtime\\Lib\\site-packages\\matplotlib\\__init__.py",
+    "streamlit": "runtime\\Lib\\site-packages\\streamlit\\__init__.py",
+    "tkinter": "runtime\\Lib\\tkinter\\__init__.py"
+  },
+  "manifest_sha256": "53e11031f21d0257f2452fcddc8fbc915bd010ba86cd4df5cdadccdca18700cb",
+  "focused_tests": 3,
+  "webpage_exports_and_replay": "passed",
+  "native_windows": "passed",
+  "elapsed_s": 54.06279290000384,
+  "external_connection_attempts": [],
+  "network_scope": "Test process blocks external socket connects; server subprocess uses localhost config. OS network unchanged.",
+  "human_acceptance": "pending",
+  "browser_callback": "captured automatically; real colleague browser acceptance pending",
+  "schema_version": 1,
+  "stage": "C3-B",
+  "source_baseline": "a11f9e0a7d42064b5591e11852b4c5bc2430eb77",
+  "source_regression": {
+    "tests": 147,
+    "elapsed_s": 215.345,
+    "exit_code": 0
+  },
+  "source_ui": "C2 webpage outputs replayed by new ZIP entry; save/reopen/import failure protection passed",
+  "probe_archive_sha256": "77aaf7017454c89de0805b5aabcf973e8ca4ff59a52809f3c372a051eef92e4d",
+  "probe_archive_bytes": 159649122,
+  "probe_manifest_files": 12548,
+  "probe_inventory": "Git reviewed public payload; no private/runs/.git/.venv or four untracked original papers/reviews",
+  "environment_isolation": "Invalid PYTHONHOME and PYTHONPATH supplied; all selected imports resolved inside payload",
+  "initial_warning": "Tk poll callback survived destroyed replay window; original log retained",
+  "correction": "Destroy binding cancels timer; native replay plus launcher rechecked; no pending after callbacks remain",
+  "final_delivery": "Built from committed source; final artifact hash, extraction and runtime checks saved alongside local ZIP, not a release tag",
+  "retained_limits": [
+    "Old numerical inputs/models unchanged",
+    "R19 open; no stability ranking",
+    "Windows 10 and other colleague machines pending"
+  ]
+}

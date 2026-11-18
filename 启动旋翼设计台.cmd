@@ -1,7 +1,11 @@
 @echo off
 chcp 65001 >nul
+if exist "%~dp0runtime\pythonw.exe" goto portable
 if not exist "%~dp0.venv\Scripts\pythonw.exe" goto missing
-start "" "%~dp0.venv\Scripts\pythonw.exe" "%~dp0launch.py"
+start "" "%~dp0.venv\Scripts\pythonw.exe" -X utf8 "%~dp0launch.py"
+exit /b 0
+:portable
+start "" "%~dp0runtime\pythonw.exe" -X utf8 "%~dp0launch.py"
 exit /b 0
 :missing
 echo 未找到项目运行环境 .venv。
