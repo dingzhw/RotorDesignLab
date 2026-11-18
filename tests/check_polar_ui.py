@@ -20,7 +20,7 @@ def main():
             patch.object(analysis_history, 'LIBRARY', Path(directory)/'results'):
         app = AppTest.from_file(str(ROOT/'app.py'), default_timeout=120).run()
         before = deepcopy(app.session_state['module-draft'])
-        get(app.selectbox, '旋翼参数分组').select('几何与旋向').run()
+        get(app.selectbox, '旋翼参数分组').select('总体参数').run()
         assert app.session_state['module-draft'] == before
         get(app.selectbox, '翼型攻角插值').set_value('pchip_alpha_v1').run()
         assert not app.exception
@@ -30,12 +30,13 @@ def main():
         assert not app.exception
         first = deepcopy(app.session_state['module-result']['answer'])
         assert first['status'] == 'converged', first
-        get(app.button, '保存旋翼算例').click().run()
+        get(app.button, '保存').click().run()
         saved = deepcopy(app.session_state['module-draft'])
         assert store.load(app.session_state['module-id'])[0] == saved
         get(app.selectbox, '翼型攻角插值').set_value('linear_v1').run()
-        get(app.checkbox, '允许替换当前旋翼草稿').check().run()
-        get(app.button, '重新打开旋翼算例').click().run()
+        get(app.button, '打开所选方案').click().run()
+        get(app.radio, '处理未保存修改').set_value('放弃修改并继续').run()
+        get(app.button, '确认选择').click().run()
         assert app.session_state['module-draft'] == saved
         get(app.button, '运行旋翼计算').click().run()
         assert app.session_state['module-result']['answer']['summary'] == first['summary']

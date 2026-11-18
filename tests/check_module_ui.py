@@ -45,7 +45,7 @@ def main():
         field(app.number_input, '总距 / °').set_value(13.).run()
         assert '当前草稿已修改' in ' '.join(e.value for e in app.subheader)
         assert app.session_state['module-result'] == result
-        field(app.button, '保存旋翼算例').click().run()
+        field(app.button, '保存').click().run()
         ok(app)
         identifier = app.session_state['module-id']
         saved = deepcopy(app.session_state['module-draft'])
@@ -74,10 +74,10 @@ def main():
         aircraft = deepcopy(app.session_state['design'])
         field(app.number_input, '总距 / °').set_value(14.).run()
         assert app.session_state['design'] == aircraft
-        field(app.button, '重新打开旋翼算例').click().run()
+        field(app.button, '打开所选方案').click().run()
         assert app.session_state['module-draft']['case']['collective_deg'] == 14., 'Dirty draft replaced'
-        field(app.checkbox, '允许替换当前旋翼草稿').check().run()
-        field(app.button, '重新打开旋翼算例').click().run()
+        field(app.radio, '处理未保存修改').set_value('放弃修改并继续').run()
+        field(app.button, '确认选择').click().run()
         ok(app)
         assert app.session_state['module-draft'] == saved
         # Failed import and malformed tables must leave the draft intact.
@@ -85,14 +85,14 @@ def main():
         from io import BytesIO
         original_upload = st.file_uploader
         def upload(title, *args, **kwargs):
-            if title == '导入旋翼算例或模块包':
+            if title == '旋翼方案文件':
                 bad = BytesIO(b'broken package')
                 bad.name = 'broken.rdlc'
                 return bad
             return original_upload(title, *args, **kwargs)
         with patch.object(st, 'file_uploader', side_effect=upload):
             app.run()
-            field(app.button, '打开上传的旋翼包').click().run()
+            field(app.button, '打开方案文件').click().run()
             ok(app)
             assert any('导入失败' in item.value for item in app.error)
             assert app.session_state['module-draft'] == saved
@@ -121,8 +121,8 @@ def main():
         field(app.radio, '工作区').set_value('孤立旋翼').run()
         ok(app)
         assert app.session_state['module-draft'] == sweep, 'Sweep changed after page switch'
-        field(app.button, '保存旋翼算例').click().run()
-        field(app.button, '重新打开旋翼算例').click().run()
+        field(app.button, '保存').click().run()
+        field(app.button, '打开所选方案').click().run()
         ok(app)
         assert app.session_state['module-draft'] == sweep, 'Sweep changed after reopen'
         irregular = deepcopy(sweep)
@@ -132,10 +132,12 @@ def main():
         app.run()
         ok(app)
         assert app.session_state['module-draft']['sweep']['axes'] == {'collective_deg': [12., 12.2, 14.]}
-        field(app.checkbox, '允许替换当前旋翼草稿').check().run()
         field(app.selectbox, '旋翼起始模板').select('UH-60 公开基准旋翼').run()
-        field(app.button, '从旋翼模板新建').click().run()
-        field(app.selectbox, '旋翼参数分组').select('几何与翼型数据表').run()
+        field(app.button, '创建旋翼方案').click().run()
+        if any(item.label == '处理未保存修改' for item in app.radio):
+            field(app.radio, '处理未保存修改').set_value('放弃修改并继续').run()
+            field(app.button, '确认选择').click().run()
+        field(app.selectbox, '旋翼参数分组').select('翼型气动数据').run()
         ok(app)
         print('M2 UI passed: standalone, fields, flow, run, save/reopen, navigation, inverse, sweep, public polar')
 

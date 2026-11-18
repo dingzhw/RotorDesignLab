@@ -293,6 +293,13 @@ def run(case, base, output):
         moment = np.array([0.,0.,-selected['rotation_sign']*summary['torque_nm']])
         diagnostics = {'flapping': 'fixed', 'inflow_model': rotor.inflow_model}
     margins = {k: v-summary[k] for k,v in selected['limits'].items() if k in ('power_w','torque_nm')}
+    # A missing component rating leaves that design check unknown, not unlimited.
+    if any(value < 0 for value in margins.values()):
+        limits_status, feasible = 'exceeded', False
+    elif len(margins) == 2:
+        limits_status, feasible = 'satisfied', True
+    else:
+        limits_status, feasible = 'not_evaluated', None
     missing = [f'{group}/{key}' for group, keys in (
         ('blade_mass', ('mass_kg','first_mass_moment_kg_m','inertia_kg_m2')),
         ('hub', ('mass_kg','cg_rotor_m','inertia_cg_kg_m2')))
@@ -311,7 +318,6 @@ def run(case, base, output):
     return dict(summary=summary, force_rotor_n=force.tolist(), moment_hub_rotor_nm=moment.tolist(),
                 target_solution=target, diagnostics=diagnostics, warnings=warnings,
                 solver_status='converged', support_status='within_implemented_steady_domain',
-                design_limits_status='satisfied' if all(v>=0 for v in margins.values()) else 'exceeded',
-                feasible=all(v>=0 for v in margins.values()), evidence_status='model_estimate',
+                design_limits_status=limits_status, feasible=feasible, evidence_status='model_estimate',
                 atmosphere=air, missing_mass_data=missing, parameter_usage={'blade_mass_kg':'stored_only','hub':'stored_only',
                 'blade_mass_moments':'steady_flapping' if config['mode']=='hinged' else 'not_used_fixed'}), snapshot

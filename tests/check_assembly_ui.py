@@ -35,7 +35,7 @@ def main():
         field(app.number_input, '方位离散数').set_value(12).run()
         field(app.button, '运行旋翼计算').click().run()
         assert app.session_state['module-result']['answer']['status'] == 'converged'
-        field(app.button, '保存旋翼算例').click().run()
+        field(app.button, '保存').click().run()
         module_id = app.session_state['module-id']
         module_draft = deepcopy(app.session_state['module-draft'])
         page(app, '整机装配')

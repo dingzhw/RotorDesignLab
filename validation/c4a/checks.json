@@ -1,0 +1,91 @@
+{
+  "version": "0.4.6.dev16",
+  "baseline": "11c95f94f7759f5f65bc28adb23134dafc1aab7e",
+  "unit_tests": 148,
+  "unit_exit_code": 0,
+  "ui_checks": [
+    "check_c4a_ui",
+    "check_module_ui",
+    "check_assembly_ui",
+    "check_c2_ui",
+    "check_polar_ui"
+  ],
+  "ui_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "frozen_replay": [
+    {
+      "case": "hinged",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "305cc31b5d1bd10fa206932681d760c30dfa8d16d1b18356e52b3b153f4b1b3c"
+    },
+    {
+      "case": "fixed",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "18ea41517d721eddaabb247f7b84ff1689e00efc88203c1063fc89338e2488e9"
+    },
+    {
+      "case": "axial",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "832545beff6c615256fcd59c34253170ad0c9f6581299f88c3e698e5d0ad9535"
+    },
+    {
+      "case": "inverse",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "9b5941637d91aa18ade8b699b0ce84454eb64cd7e986d66c1fed9e4d642d3a18"
+    },
+    {
+      "case": "scan",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "279bbc83be677e3819961d81c397c99785466509bf3ce76e8be05b78e29e013f"
+    },
+    {
+      "case": "failure",
+      "status": "failed",
+      "numerical_values": "identical",
+      "package_sha256": "439dbb6cb11d5669177988fbe54eec85a14ba536eeb8fdb854670b0b228604a2"
+    }
+  ],
+  "limits": [
+    {
+      "limits": {},
+      "status": "not_evaluated",
+      "feasible": null
+    },
+    {
+      "limits": {
+        "power_w": 1000000000.0
+      },
+      "status": "not_evaluated",
+      "feasible": null
+    },
+    {
+      "limits": {
+        "power_w": 1000000000.0,
+        "torque_nm": 1000000000.0
+      },
+      "status": "satisfied",
+      "feasible": true
+    },
+    {
+      "limits": {
+        "power_w": 1.0
+      },
+      "status": "exceeded",
+      "feasible": false
+    }
+  ],
+  "manual_acceptance": "pending",
+  "C4-B": "pending",
+  "C4-C": "pending",
+  "R19": "unchanged"
+}

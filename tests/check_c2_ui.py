@@ -21,7 +21,7 @@ def main():
             patch.object(analysis_history,'LIBRARY',Path(directory)/'results'):
         app = AppTest.from_file(str(ROOT/'app.py'),default_timeout=120).run()
         initial = deepcopy(app.session_state['module-draft'])
-        field(app.selectbox,'旋翼参数分组').set_value('几何与翼型数据表').run()
+        field(app.selectbox,'旋翼参数分组').set_value('桨叶几何形状').run()
         ok(app)
         assert app.session_state['module-draft'] == initial
         field(app.number_input,'有效桨根扭转 / °').set_value(10.).run()
@@ -66,9 +66,9 @@ def main():
         assert field(app.button,'运行旋翼计算').disabled
         assert app.session_state['module-result'] == record
         field(app.number_input,'步长1').set_value(.5).run()
-        field(app.button,'保存旋翼算例').click().run()
+        field(app.button,'保存').click().run()
         saved = deepcopy(app.session_state['module-draft'])
-        field(app.button,'重新打开旋翼算例').click().run()
+        field(app.button,'打开所选方案').click().run()
         assert app.session_state['module-draft'] == saved
         field(app.radio,'工作区').set_value('全机配平').run()
         assert app.session_state['design']['aircraft']['name'] == '千机-200轻型无人直升机'
@@ -111,10 +111,12 @@ def main():
         assert comparison['answer']['status'] == 'converged'
         replay(comparison)
         field(app.radio,'工作区').set_value('孤立旋翼').run()
-        field(app.checkbox,'允许替换当前旋翼草稿').check().run()
         field(app.selectbox,'旋翼起始模板').set_value('UH-60 公开基准旋翼').run()
-        field(app.button,'从旋翼模板新建').click().run()
-        field(app.selectbox,'旋翼参数分组').set_value('几何与翼型数据表').run()
+        field(app.button,'创建旋翼方案').click().run()
+        if any(item.label == '处理未保存修改' for item in app.radio):
+            field(app.radio,'处理未保存修改').set_value('放弃修改并继续').run()
+            field(app.button,'确认选择').click().run()
+        field(app.selectbox,'旋翼参数分组').set_value('翼型气动数据').run()
         grid = json.loads(app.session_state['module-draft']['assets']['polar.json'])
         section = grid['sections'][0]
         layer = section.get('reynolds_slices',[section])[0]['cl']

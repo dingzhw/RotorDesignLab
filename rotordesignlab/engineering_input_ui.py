@@ -7,7 +7,7 @@ from .engineering_inputs import generate_geometry, export_table, import_table
 from .parameter_fields import label
 
 
-def geometry_generator(frame, reference, key, apply):
+def geometry_generator(frame, reference, key, apply, optional_source=False):
     with st.expander('生成直线变弦与线性扭转桨叶'):
         st.caption('根部指有效气动桨根。扭转增加表示桨距增加；求解时扣除总距参考站扭转。生成几何不改变半径、质量矩、桨毂或挥舞参数。')
         try:
@@ -27,7 +27,12 @@ def geometry_generator(frame, reference, key, apply):
                   for name, title, default in specs]
         count = st.number_input('生成几何站数', value=min(1000, max(2, len(frame))), min_value=2, max_value=1000, key=key('stations'),
                                 help='几何描述站数，不是求解叶素数；线性几何无需用很多站点。')
-        source = st.text_input('生成几何的来源说明', value='总体设计参数化估算；结构质量及惯量未重估。', key=key('source'))
+        if optional_source:
+            with st.expander('生成备注（可选）'):
+                source = st.text_input('生成几何的来源说明', value='', key=key('source'))
+            source = source.strip() or '用户参数化生成（工程估计）；结构质量及惯量未重估。'
+        else:
+            source = st.text_input('生成几何的来源说明', value='总体设计参数化估算；结构质量及惯量未重估。', key=key('source'))
         try:
             generated = generate_geometry(*values, count, reference)
             st.dataframe(generated.rename(columns={'r_over_R':'半径比 r/R', 'chord_m':'实际弦长 / m', 'twist_deg':'几何扭转 / °'}), hide_index=True)
@@ -39,7 +44,7 @@ def geometry_generator(frame, reference, key, apply):
             st.error(str(error))
 
 
-def table_exchange(frame, title, source, key, apply):
+def table_exchange(frame, title, source, key, apply, optional_source=False):
     st.download_button('下载'+title+'中文 CSV', export_table(frame, source), title+'.csv', key=key('download'))
     upload = st.file_uploader('导入'+title+' CSV/TXT', type=['csv','txt'], key=key('upload'),
                               help='可用Excel打开下载的CSV；支持中文或原英文字段，UTF-8/GB18030，逗号或制表符。来源说明随表保存。')
@@ -48,8 +53,14 @@ def table_exchange(frame, title, source, key, apply):
             incoming = import_table(upload.getvalue(), list(frame.columns))
             st.caption('导入预览（点击应用后才替换当前表）')
             st.dataframe(incoming.rename(columns={column:label(column) for column in incoming.columns}), hide_index=True)
-            note = st.text_input(title+'导入来源说明', value=incoming.attrs['source'], key=key('source'),
-                                 help='填写资料名称、工况及测量/数字化/工程估计性质。旧来源会保留。')
+            if optional_source:
+                with st.expander('导入备注（可选）'):
+                    note = st.text_input(title+'导入来源说明', value=incoming.attrs['source'], key=key('source'),
+                                         help='自动读取表内来源；缺项可留空，按用户导入待核记录。')
+                note = note.strip() or '用户导入（来源待核）'
+            else:
+                note = st.text_input(title+'导入来源说明', value=incoming.attrs['source'], key=key('source'),
+                                     help='填写资料名称、工况及测量/数字化/工程估计性质。旧来源会保留。')
             if st.button('应用'+title+'导入', key=key('apply')):
                 if not note.strip():
                     raise ValueError('请补充数据来源说明。')
