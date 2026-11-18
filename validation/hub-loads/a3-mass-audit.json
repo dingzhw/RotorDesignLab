@@ -1,0 +1,106 @@
+{
+  "oh6": {
+    "total_mass_kg": 1157.0,
+    "total_inertia_kg_m2": [
+      [
+        446.0,
+        0.0,
+        -128.0
+      ],
+      [
+        0.0,
+        1219.0,
+        0.0
+      ],
+      [
+        -128.0,
+        0.0,
+        979.0
+      ]
+    ],
+    "remaining_mass_kg": 1078.6347999999998,
+    "remaining_cg_relative_m": [
+      0.006428681885657687,
+      0.0004097401641408192,
+      0.060621473618318426
+    ],
+    "remaining_inertia_kg_m2": [
+      [
+        244.5683058765192,
+        2.045933908246194,
+        -119.35604357565542
+      ],
+      [
+        2.045933908246194,
+        985.9074232344944,
+        0.07955345128035211
+      ],
+      [
+        -119.35604357565542,
+        0.0795534512803521,
+        664.0421554420332
+      ]
+    ],
+    "remaining_principal_inertia_kg_m2": [
+      212.97985685425513,
+      695.624751936038,
+      985.9132757627539
+    ],
+    "triangle_margin_kg_m2": -77.30866697246074,
+    "minimum_mass_second_moment_eigenvalue_kg_m2": -38.654333486230556,
+    "realizable": false,
+    "interpretation": "Contradiction among total interpretation and adopted rotor data; does not prove core-inertia interpretation."
+  },
+  "uh60": {
+    "total_mass_kg": 7438.914868000001,
+    "total_inertia_kg_m2": [
+      [
+        7631.899232618388,
+        0.0,
+        -2264.215974146866
+      ],
+      [
+        0.0,
+        54232.71794363751,
+        0.0
+      ],
+      [
+        -2264.215974146866,
+        0.0,
+        50436.42768758288
+      ]
+    ],
+    "remaining_mass_kg": 6921.894692686001,
+    "remaining_cg_relative_m": [
+      -0.006351487586310337,
+      0.0010741449225755086,
+      0.12937530816513748
+    ],
+    "remaining_inertia_kg_m2": [
+      [
+        1215.9892538666784,
+        70.1301784653513,
+        -2050.1228057349167
+      ],
+      [
+        70.1301784653513,
+        45844.59908481809,
+        18.303466505316212
+      ],
+      [
+        -2050.1228057349167,
+        18.303466505316216,
+        39009.741232370536
+      ]
+    ],
+    "remaining_principal_inertia_kg_m2": [
+      1104.992899623824,
+      39120.593639082115,
+      45844.7430323494
+    ],
+    "triangle_margin_kg_m2": -5619.156493643459,
+    "minimum_mass_second_moment_eigenvalue_kg_m2": -2809.578246821727,
+    "realizable": false,
+    "interpretation": "Contradiction among total interpretation and adopted rotor data; does not prove core-inertia interpretation."
+  }
+}
