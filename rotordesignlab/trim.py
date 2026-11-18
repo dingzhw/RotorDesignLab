@@ -219,4 +219,6 @@ def run_trim(case,base,output):
              '控制定义与双向余量见result.json；旋翼内部残差与初值见trim-diagnostics.json。',
              '零侧滑直线前飞，纯垂直爬升保留姿态变换产生的机体系侧向速度。全输入可用run case.json复算。']
     (output/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+    from .power_accounting import attach
+    attach(aircraft, case, result, output)
     return result,snapshot

@@ -179,6 +179,8 @@ def run_budget(case, base, output):
         validation_basis=['docs/hover-budget.md','docs/xv15-validation.md','docs/caradonna-tung-validation.md'])
     write_csv(output/'budget.csv', ['quantity','value'], summary.items())
     write_report(result, output)
+    from .power_accounting import attach
+    attach(aircraft, case, result, output)
     return result, snapshot
 
 

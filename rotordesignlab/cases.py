@@ -134,7 +134,10 @@ def run_case(case, base, output):
             result.update(summary={"weighted_trim_residual": residual}, backend="Julia 1.12.4")
             result["warnings"] = ["频响采用局部线化，开环时程采用完整非线性方程。"]
         elif case.get('model') == 'helicopter':
-            if case.get('analysis') == 'trim':
+            if case.get('analysis') == 'hover_comparison':
+                from .hover_comparison import run_comparison
+                payload, snapshot = run_comparison(case, base, output)
+            elif case.get('analysis') == 'trim':
                 from .trim import run_trim
                 payload, snapshot = run_trim(case, base, output)
             elif case.get('analysis') in ('linearize','response'):

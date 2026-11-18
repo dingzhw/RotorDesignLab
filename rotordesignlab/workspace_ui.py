@@ -146,7 +146,9 @@ def case_controls(task, hover=False):
     st.caption(f"当前整机质量 {aircraft['mass_properties']['mass_kg']:g} kg；重心 {aircraft['mass_properties']['cg_m']} m。质量和重心在整机装配的详细设置中统一修改。")
     case=dict(schema_version=3,model='helicopter',analysis=task)
     if task=='hover_budget':
-        mode=task_setting(task,'mode','预算任务','单点预算',['单点预算','质量—高度图','主桨尺寸—转速图','尾桨尺寸—力臂图','三方案比较'],help='单点给功率收支；性能图扫描两类参数；方案比较可在下表逐行填写候选方案。')
+        mode=task_setting(task,'mode','预算任务','单点预算',['单点预算','预算—配平功率对照','质量—高度图','主桨尺寸—转速图','尾桨尺寸—力臂图','三方案比较'],help='功率对照使用同一装配、环境和持续时间分别计算预算与六分量悬停配平；保留各自假设和失败原因。')
+        if mode == '预算—配平功率对照':
+            case['analysis'] = 'hover_comparison'
         st.caption('功率与载荷预算：闭合垂向力和偏航力矩，同时报告剩余侧力；此任务不标记为六分量配平。')
     elif task=='trim':
         mode = '单点配平' if hover else task_setting(task,'mode','配平任务','单点配平',['单点配平','速度曲线','速度—质量比较','速度—重心比较'],help='单点求一个速度下的六分量平衡；扫描逐点改变速度，并可比较不同质量或纵向重心。')
@@ -170,7 +172,10 @@ def case_controls(task, hover=False):
         st.caption('低频模型估算：六自由度机体、动态入流、准定常挥舞；桨叶变距角输入。完整动态挥舞和惯性耦合仍待补充。')
     from .download import settings as download_settings
     download = download_settings(aircraft, case['analysis'])
-    st.caption(f"本次附加下载比例：{download['effective_fraction']:.1%}。" + download['note'])
+    if case['analysis'] == 'hover_comparison':
+        st.caption(f"预算下载比例：{aircraft['hover']['download_fraction']:.1%}；六分量配平比例：{download['effective_fraction']:.1%}。")
+    else:
+        st.caption(f"本次附加下载比例：{download['effective_fraction']:.1%}。" + download['note'])
     st.caption(download['comparison_note'])
     a,b,c=st.columns(3)
     with a:case['altitude_m']=task_setting(task,'altitude_m','飞行高度 / m',0.,min_value=0.,max_value=11000.)
@@ -187,7 +192,9 @@ def case_controls(task, hover=False):
             case['climb_m_s'] = task_setting(task,'climb_m_s','爬升率 / (m/s)',0.,min_value=0.,max_value=15.,help='正值向上爬升；下降涡环态尚未覆盖。')
     with st.expander('分析网格与扫描设置'):
         case['radial_stations']=task_setting(task,'radial_stations','每桨径向叶素数',80,min_value=8,max_value=2000)
-        if task!='hover_budget':case['azimuth_stations']=task_setting(task,'azimuth_stations','整周方位角站数',36,min_value=12,max_value=720,help='对一整周离散；加密用于数值收敛检查。')
+        if task != 'hover_budget' or case['analysis'] == 'hover_comparison':
+            case['azimuth_stations'] = task_setting(task, 'azimuth_stations', '整周方位角站数', 36,
+                min_value=12, max_value=720, help='六分量配平采用的方位离散；轴流预算只使用径向网格。')
         if task=='hover_budget' and '图' in mode:
             tail=next(r for r in aircraft['rotors'] if r['role']=='tail');mass=aircraft['mass_properties']['mass_kg']
             options={'质量—高度图':(('mass_kg','altitude_m'),([mass*.9,mass,mass*1.1],[0,1500,3000])),
@@ -305,11 +312,27 @@ def show_result(record,is_current):
             'within_implemented_steady_domain':'在当前稳态模型范围内','within_implemented_reduced_domain':'在当前低频模型范围内',
             'outside_implemented_domain':'超出当前模型范围','outside_implemented_reduced_domain':'超出当前低频模型范围',
             'derivative_step_sensitive':'导数对差分步长敏感','response_stopped':'响应积分已停止',
-            'not_evaluated':'未检查','unknown':'待检查','per_point':'见逐点状态'}
+            'not_evaluated':'未检查','unknown':'待检查','per_point':'见逐点状态','per_method':'见两种方法各自状态'}
     text=lambda value:states.get(str(value),str(value))
     st.caption('求解：'+text(answer.get('solver_status',answer['status']))+'；数据域：'+text(answer.get('support_status','见诊断'))+'；设计限制：'+text(answer.get('design_limits_status','见诊断'))+'；验证依据：'+{'model_estimate':'模型估算'}.get(answer.get('evidence_status'), '见逐项验证记录'))
     if answer.get('model_maturity'):
         st.info(answer['model_maturity'])
+    if 'power-comparison.csv' in files:
+        if answer.get('power_feasibility_depends_on_method'):
+            st.warning('功率可行性依赖模型假设：预算与配平给出不同判定，请查看分项和所用假设。')
+        st.dataframe(pd.read_csv(BytesIO(files['power-comparison.csv'])), hide_index=True)
+        st.download_button('下载功率方法对照表', files['power-comparison.csv'], '功率方法对照.csv')
+    for method, item in answer.get('methods', {}).items():
+        title = '悬停预算' if method == 'hover_budget' else '六分量配平'
+        st.caption(title+'：求解 '+text(item.get('solver_status', item['status']))+
+                   '；数据域 '+text(item.get('support_status', 'unknown'))+
+                   '；设计限制 '+text(item.get('design_limits_status', 'not_evaluated'))+'；依据：模型估算。')
+        if item['status'] != 'converged':
+            st.caption(item.get('error', '计算失败，详见该方法诊断。'))
+        if 'power_accounting' in item:
+            show_power_accounting(item['power_accounting'], title)
+    if 'power_accounting' in answer:
+        show_power_accounting(answer['power_accounting'], '本次计算')
     if answer.get('download_model'):
         download = answer['download_model']
         st.caption(f"实际附加下载比例：{download['effective_fraction']:.1%}。" + download['note'])
@@ -354,6 +377,32 @@ def show_result(record,is_current):
     with ZipFile(archive,'w',ZIP_DEFLATED) as z:
         for name,data in files.items():z.writestr(name,data)
     st.download_button('下载本次结果、方案与复算工况',archive.getvalue(),'rotordesignlab-result.zip',key='download-result')
+
+
+def show_power_accounting(accounting, title):
+    with st.expander(title+'：功率分账与模型假设'):
+        rows = []
+        inflow = {'uniform': '均匀轴流', 'annular': '环带轴流', 'steady_pitt_peters': '稳态三状态入流'}
+        for item in accounting['components']:
+            rows.append({'部件': '主桨' if item['role'] == 'main' else '尾桨',
+                         '气动轴功率_kW': item['shaft_power_w']/1000, '传动效率': item['efficiency'],
+                         '传动损失_kW': item['loss_w']/1000, '入流': inflow[item['inflow']],
+                         '尖损失': 'Prandtl' if item['tip_loss'] == 'prandtl' else '不附加',
+                         '桨叶运动': {'fixed_axial': '轴流固定', 'fixed': '固定', 'hinged': '铰接挥舞'}[item['flap']],
+                         '预锥角_deg': item['precone_deg'],
+                         '计算挥舞[锥度,cos,sin]_deg': str(item['solved_flap_deg']) if item['solved_flap_deg'] is not None else '固定预锥',
+                         '偏航推力臂_m': item['yaw_thrust_arm_m']})
+        st.dataframe(pd.DataFrame(rows), hide_index=True)
+        rating = '短时' if accounting['rating'] == 'short_time' else '连续'
+        st.caption(f"附件 {accounting['accessory_power_w']/1000:.4g} kW；持续 {accounting['requested_duration_s']:g} s，"
+                   f"采用{rating}可用功率 {accounting['selected_available_w']/1000:.4g} kW。")
+        st.caption(f"连续可用 {accounting['continuous_available_w']/1000:.4g} kW；短时可用 "
+                   f"{accounting['short_time_available_w']/1000:.4g} kW，限时 {accounting['short_time_duration_s']:g} s。")
+        st.caption(f"实际附加下载比例 {accounting['download']['effective_fraction']:.1%}；"
+                   '下载力[X,Y,Z] / N：'+str(accounting['download_force_body_n']))
+        st.caption(accounting['scope']+' '+accounting['transient_scope'])
+        st.caption('机体系剩余力 / N：'+str(accounting['residual_force_body_n'])+
+                   '；重心剩余力矩 / (N·m)：'+str(accounting['residual_moment_body_nm']))
 
 
 def render(task_label, edit_design=True, hover=False, result_key=None):

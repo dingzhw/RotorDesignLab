@@ -1,0 +1,14 @@
+{
+  "inputs\\oh6\\aircraft.json": "7658c4da5a990d29ffdd104d68bd9137d5cb99d6ab47be5e29a7ac565ee64d69",
+  "inputs\\oh6\\case.json": "f99fb1d8c3de97cc60ce3b835387359eadc8500ec1254608fbba92b67d0b621c",
+  "inputs\\oh6\\rotor-0-geometry.csv": "952f72a2b4a70f4b28363c1f5dc8b2d5e41710938b9ee3bfbc7e50d8213d3dce",
+  "inputs\\oh6\\rotor-0-polar.csv": "fff76dce8f5f22bbbc607cd3fecc270d6521dd00822899dc73a2c533411da77f",
+  "inputs\\oh6\\rotor-1-geometry.csv": "552be3c4c04adba40e2fe7722889d7270d59cc6843955c30451cfc306f4d9f5f",
+  "inputs\\oh6\\rotor-1-polar.csv": "fff76dce8f5f22bbbc607cd3fecc270d6521dd00822899dc73a2c533411da77f",
+  "inputs\\synthetic\\aircraft.json": "ee721dd22d859980a1b8c3712bfbcf487826649c1bc9de209631473d442f2d65",
+  "inputs\\synthetic\\case.json": "f99fb1d8c3de97cc60ce3b835387359eadc8500ec1254608fbba92b67d0b621c",
+  "inputs\\synthetic\\rotor-0-geometry.csv": "9791f289674e9522a0ee80f8d6b9be2abcdb7e22f23e826c835c5ed6cb879a7c",
+  "inputs\\synthetic\\rotor-0-polar.csv": "01a90f4633c502661b3cc0acd6a92f530d2fc9eef07605d5f3917b2708b5f3c2",
+  "inputs\\synthetic\\rotor-1-geometry.csv": "2c2678ef8ae74b6e6bc48ca33393b0aa76824cbd63b11a61fbf676f504687bbe",
+  "inputs\\synthetic\\rotor-1-polar.csv": "01a90f4633c502661b3cc0acd6a92f530d2fc9eef07605d5f3917b2708b5f3c2"
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 3,
+  "model": "helicopter",
+  "analysis": "hover_comparison",
+  "aircraft_json": "aircraft.json",
+  "altitude_m": 0.0,
+  "requested_duration_s": 600.0,
+  "radial_stations": 80,
+  "azimuth_stations": 36
+}
