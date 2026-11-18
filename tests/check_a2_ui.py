@@ -20,7 +20,7 @@ with TemporaryDirectory() as temporary, patch.object(designs,'LIBRARY',Path(temp
     assert any('填写来源' in item.value for item in app.error)
     assert 'dynamics' not in app.session_state['design']['aircraft']
     # Template supplies explicit synthetic mass distribution, not inferred data.
-    selectors=[item for item in app.selectbox if '千机-200轻型无人直升机（A2质量分账，试验性）' in item.options]
+    selectors=[item for item in app.selectbox if item.label == '新建所用模板']
     assert len(selectors)==1
     selectors[0].set_value('千机-200轻型无人直升机（A2质量分账，试验性）')
     field(app.checkbox,'确认替换当前草稿（新建、重开、导入或恢复模板时使用）').check()

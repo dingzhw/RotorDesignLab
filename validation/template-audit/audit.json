@@ -1,0 +1,6510 @@
+{
+  "schema_version": 1,
+  "scope": "仓库来源链与假设审核；不是新增试验验证或原报告全部逐页复核",
+  "templates": [
+    {
+      "name": "千机-200轻型无人直升机",
+      "classification": "工程估计演示模板",
+      "use": "总体设计流程、固定质量参数敏感性和软件复算",
+      "limitations": "几何、翼型、质量惯量、机身尾翼、动力曲线均含工程估计；不是实测机型。尺寸变化后的结构重量另核。",
+      "input_sha256": {
+        "examples/templates/v045/synthetic.json": "3cf0addad307b18bd60cdde3e0c301e7d2526fbc3c807d07e6d37e4f9931db11",
+        "examples/public-helicopter/synthetic-geometry.csv": "9791f289674e9522a0ee80f8d6b9be2abcdb7e22f23e826c835c5ed6cb879a7c",
+        "examples/public-helicopter/synthetic-polar.csv": "01a90f4633c502661b3cc0acd6a92f530d2fc9eef07605d5f3917b2708b5f3c2",
+        "examples/public-helicopter/synthetic-tail-geometry.csv": "bfd6f78e9d67df6d3c8d647454b1fba8476498fc9afad13bf87f4158454558cb"
+      },
+      "parameter_count": 119
+    },
+    {
+      "name": "UH-60 公开部件模型（含工程估计）",
+      "classification": "公开模型转录＋工程假设",
+      "use": "公开部件与模型互校、方法差异分析",
+      "limitations": "公开几何/系数不等于整机验证。尾桨一阶质量矩、下洗、冻结平尾控制和动力额定含估算；T700真实可用功率未接入。R19开环限制保持。",
+      "input_sha256": {
+        "examples/templates/v045/uh60-public.json": "de81b26b6ac53676f28f24879b983f093389965c5fa3815d64f0aac8f2042511",
+        "examples/public-helicopter/uh60-main-geometry.csv": "3515491ccc8540f62daa40231996d1ee773a7b3d82305d951c8cdd01fffd33cb",
+        "validation/aero-upgrade/gh-full.json": "ba39acc25b484d77fa452e8354738ec130a085d3855bab9572cb38ff94011705",
+        "examples/public-helicopter/uh60-tail-geometry.csv": "b24f7f0e22057c6ba64076703d38c06c03756ef55170a37ae8fddb35c062b8d0",
+        "validation/aero-upgrade/naca0012-re.json": "99e32aea3e2246debc690a0987cfec5b3c83275ee0e3d8419dbbc7c338055f63"
+      },
+      "parameter_count": 132
+    },
+    {
+      "name": "三桨叶孤立旋翼示例（兼容旧版）",
+      "classification": "历史估算模板",
+      "use": "旧格式复算与接口兼容",
+      "limitations": "保留原参数语义；新建独立旋翼优先使用模块入口。不提供完整整机验证依据。",
+      "input_sha256": {
+        "examples/synthetic-aircraft.json": "3479028da0a3edf333f6e1d6646f5fd6e948e6ce908851d92e5cb09583923c4c",
+        "examples/synthetic-geometry.csv": "9791f289674e9522a0ee80f8d6b9be2abcdb7e22f23e826c835c5ed6cb879a7c",
+        "examples/synthetic-polar.csv": "01a90f4633c502661b3cc0acd6a92f530d2fc9eef07605d5f3917b2708b5f3c2"
+      },
+      "parameter_count": 29
+    },
+    {
+      "name": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "classification": "构造的质量分账检查模板",
+      "use": "质量归属和隐式耦合数值检查",
+      "limitations": "桨叶/桨毂质量矩与整机惯量为一致性构造，不是测量数据。R19未关闭，仅作开环故障诊断。",
+      "input_sha256": {
+        "examples/templates/a2/synthetic.json": "cb6db587c58414bf4f022ad8d2395d88a9b3d69e0d817ffd75a6f0b053c795b3",
+        "examples/templates/a2/rotor-0-geometry.csv": "782cf3d00328778ef1babf477482846b524c079446f81469e7828fa6d7fc387f",
+        "examples/templates/a2/rotor-0-polar.csv": "38ba78888699ceadc1b119c931db4f2d2bfe0de487353e03496c7b4ffa8c9ecd",
+        "examples/templates/a2/rotor-1-geometry.csv": "bfd6f78e9d67df6d3c8d647454b1fba8476498fc9afad13bf87f4158454558cb",
+        "examples/templates/a2/rotor-1-polar.csv": "38ba78888699ceadc1b119c931db4f2d2bfe0de487353e03496c7b4ffa8c9ecd"
+      },
+      "parameter_count": 142
+    },
+    {
+      "name": "合成三桨叶旋翼（工程估计）",
+      "classification": "独立旋翼估算模板",
+      "use": "旋翼配置、几何/气动敏感性、保存复算",
+      "limitations": "单片质量与桨毂属性仍有缺项；不得从已有一阶/二阶矩反推真实质量。",
+      "input_sha256": {
+        "examples/rotor-modules/synthetic/module.json": "0536f7800c13a3dd1189a94357415ab3d6aa93ffcd955831caadb000a7bab6bb",
+        "examples/rotor-modules/synthetic/geometry.csv": "9791f289674e9522a0ee80f8d6b9be2abcdb7e22f23e826c835c5ed6cb879a7c",
+        "examples/rotor-modules/synthetic/polar.csv": "01a90f4633c502661b3cc0acd6a92f530d2fc9eef07605d5f3917b2708b5f3c2"
+      },
+      "parameter_count": 32
+    },
+    {
+      "name": "UH-60 公开基准旋翼",
+      "classification": "从公开部件模板提取的旋翼",
+      "use": "坐标/载荷与旧算例同输入对照",
+      "limitations": "使用公开主桨模型气动表；不是独立旋翼实测全域验证。Re、斜流修正和非定常失速覆盖有限。",
+      "input_sha256": {
+        "examples/rotor-modules/uh60-public/module.json": "30acc8a1bd5663ab628fe315a49243ccc41ab7e8fa237286edefc69e98d62552",
+        "examples/rotor-modules/uh60-public/geometry.csv": "3515491ccc8540f62daa40231996d1ee773a7b3d82305d951c8cdd01fffd33cb",
+        "examples/rotor-modules/uh60-public/polar.json": "ba39acc25b484d77fa452e8354738ec130a085d3855bab9572cb38ff94011705"
+      },
+      "parameter_count": 26
+    }
+  ],
+  "parameters": [
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/schema_version",
+      "value": 2,
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/kind",
+      "value": "aircraft",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/id",
+      "value": "synthetic-hover-v045",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/name",
+      "value": "200 kg 合成无人直升机 · 六分量配平",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/description",
+      "value": "公开/合成旋翼 + 显式工程机身尾翼；完整稳态平衡，精度待验证。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/provenance",
+      "value": "Synthetic example; no measured aircraft data; v0.4.4 template: six-DOF residual download=none; original public-helicopter template retained. v0.4.5: main azimuth zero points aft; original templates unchanged.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/units",
+      "value": "SI",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/axes",
+      "value": "x_forward_y_right_z_down",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/mass_properties/mass_kg",
+      "value": 200,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/mass_properties/cg_m",
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/mass_properties/inertia_cg_kg_m2",
+      "value": [
+        [
+          30,
+          0,
+          0
+        ],
+        [
+          0,
+          45,
+          0
+        ],
+        [
+          0,
+          0,
+          60
+        ]
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/mass_properties/provenance",
+      "value": "Synthetic rigid-body inertia estimate; not measured, symmetric tensor in body axes",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/id",
+      "value": "main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/description",
+      "value": "三片叶主旋翼",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/provenance",
+      "value": "Same synthetic geometry and polar as v0.1.0",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/blade_count",
+      "value": 3,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/radius_m",
+      "value": 1.1,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/geometry_csv",
+      "value": "../../public-helicopter/synthetic-geometry.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/polar_csv",
+      "value": "../../public-helicopter/synthetic-polar.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/position_m",
+      "value": [
+        0,
+        0,
+        -0.6
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/thrust_axis_body",
+      "value": [
+        0,
+        0,
+        -1
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/rotation_sign",
+      "value": 1,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/defaults/rpm",
+      "value": 1700,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/defaults/collective_deg",
+      "value": 13,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/defaults/radial_stations",
+      "value": 80,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/limits/rpm",
+      "value": [
+        800,
+        2100
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/limits/power_w",
+      "value": 80000,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/limits/torque_nm",
+      "value": 450,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/role",
+      "value": "main",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/transmission_efficiency",
+      "value": 0.96,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/x_reference_body",
+      "value": [
+        -1,
+        0,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/cyclic_cos_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/cyclic_sin_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/mode",
+      "value": "hinged",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/hinge_offset_m",
+      "value": 0.04,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/precone_deg",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/inertia_kg_m2",
+      "value": 1.2,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/first_mass_moment_kg_m",
+      "value": 1.5,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/spring_nm_rad",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/flapping/damper_nms_rad",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/0/flight/provenance",
+      "value": "All flap mass/hinge/limits synthetic",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/id",
+      "value": "tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/description",
+      "value": "合成双叶尾桨",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/provenance",
+      "value": "Synthetic: all dimensions, rpm, limits and installation estimated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/blade_count",
+      "value": 2,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/radius_m",
+      "value": 0.24,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/geometry_csv",
+      "value": "../../public-helicopter/synthetic-tail-geometry.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/polar_csv",
+      "value": "../../public-helicopter/synthetic-polar.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/position_m",
+      "value": [
+        -1.7,
+        0,
+        -0.15
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/thrust_axis_body",
+      "value": [
+        0,
+        1,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/rotation_sign",
+      "value": 1,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/defaults/rpm",
+      "value": 7500,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/defaults/collective_deg",
+      "value": 12,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/defaults/radial_stations",
+      "value": 80,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/limits/rpm",
+      "value": [
+        4000,
+        9000
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/limits/power_w",
+      "value": 8000,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/limits/torque_nm",
+      "value": 12,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/role",
+      "value": "tail",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/transmission_efficiency",
+      "value": 0.93,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/x_reference_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/cyclic_cos_deg",
+      "value": [
+        -1,
+        1
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/cyclic_sin_deg",
+      "value": [
+        -1,
+        1
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/flapping/mode",
+      "value": "fixed",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/flapping/hinge_offset_m",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/flapping/precone_deg",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/rotors/1/flight/provenance",
+      "value": "Fixed rigid tail blade assumption; no cyclic, delta3 or teeter dynamics in this template",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/hover/download_fraction",
+      "value": 0.03,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/hover/provenance",
+      "value": "Synthetic download = 0.03 * main thrust; applied at CG",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/powerplant/altitude_m",
+      "value": [
+        0,
+        3000,
+        6000,
+        11000
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/powerplant/continuous_power_w",
+      "value": [
+        45000,
+        36000,
+        24000,
+        12000
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/powerplant/short_time_power_w",
+      "value": [
+        55000,
+        44000,
+        30000,
+        15000
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/powerplant/short_time_duration_s",
+      "value": 120,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/powerplant/accessory_power_w",
+      "value": 700,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/powerplant/provenance",
+      "value": "Synthetic shaft-power curves, losses and 120 s rating; not a specific engine",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/roll_deg",
+      "value": [
+        -20,
+        20
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/pitch_deg",
+      "value": [
+        -25,
+        25
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/position_m",
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/area_m2",
+      "value": 0.45,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/length_m",
+      "value": 2,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/alpha_table/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/alpha_table/cx",
+      "value": [
+        0.6,
+        0.5954423259036624,
+        0.5819077862357724,
+        0.5598076211353314,
+        0.5298133329356933,
+        0.4928362829059617,
+        0.45000000000000007,
+        0.4026060429977007,
+        0.352094453300079,
+        0.29999999999999993,
+        0.2479055466999209,
+        0.19739395700229942,
+        0.14999999999999988,
+        0.10716371709403813,
+        0.07018666706430658,
+        0.04019237886466843,
+        0.018092213764227476,
+        0.004557674096337588,
+        -2.2496396739927864e-33,
+        -0.004557674096337578,
+        -0.018092213764227497,
+        -0.0401923788646684,
+        -0.07018666706430662,
+        -0.10716371709403821,
+        -0.15000000000000005,
+        -0.19739395700229934,
+        -0.2479055466999209,
+        -0.30000000000000004,
+        -0.35209445330007905,
+        -0.4026060429977006,
+        -0.45000000000000007,
+        -0.4928362829059617,
+        -0.5298133329356934,
+        -0.5598076211353317,
+        -0.5819077862357724,
+        -0.5954423259036624,
+        -0.6,
+        -0.5954423259036624,
+        -0.5819077862357724,
+        -0.5598076211353317,
+        -0.5298133329356934,
+        -0.4928362829059617,
+        -0.45000000000000007,
+        -0.4026060429977006,
+        -0.35209445330007905,
+        -0.30000000000000004,
+        -0.2479055466999209,
+        -0.19739395700229934,
+        -0.15000000000000005,
+        -0.10716371709403821,
+        -0.07018666706430662,
+        -0.0401923788646684,
+        -0.018092213764227497,
+        -0.004557674096337578,
+        -2.2496396739927864e-33,
+        0.004557674096337588,
+        0.018092213764227476,
+        0.04019237886466843,
+        0.07018666706430658,
+        0.10716371709403813,
+        0.14999999999999988,
+        0.19739395700229942,
+        0.2479055466999209,
+        0.29999999999999993,
+        0.352094453300079,
+        0.4026060429977007,
+        0.45000000000000007,
+        0.4928362829059617,
+        0.5298133329356933,
+        0.5598076211353314,
+        0.5819077862357724,
+        0.5954423259036624,
+        0.6
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/alpha_table/cz",
+      "value": [
+        1.6497357609280436e-32,
+        0.008355735843285571,
+        0.03316905856775036,
+        0.0736860279185589,
+        0.1286755562845622,
+        0.19646681467240343,
+        0.2749999999999999,
+        0.361888921170882,
+        0.4544935022831886,
+        0.5500000000000002,
+        0.6455064977168117,
+        0.7381110788291176,
+        0.8250000000000002,
+        0.9035331853275969,
+        0.9713244437154381,
+        1.0263139720814416,
+        1.0668309414322494,
+        1.0916442641567146,
+        1.1,
+        1.0916442641567146,
+        1.0668309414322494,
+        1.0263139720814416,
+        0.9713244437154378,
+        0.9035331853275966,
+        0.825,
+        0.7381110788291179,
+        0.6455064977168117,
+        0.5500000000000002,
+        0.4544935022831883,
+        0.36188892117088217,
+        0.2749999999999999,
+        0.1964668146724034,
+        0.1286755562845621,
+        0.07368602791855873,
+        0.03316905856775038,
+        0.008355735843285566,
+        -0.0,
+        -0.008355735843285566,
+        -0.03316905856775038,
+        -0.07368602791855873,
+        -0.1286755562845621,
+        -0.1964668146724034,
+        -0.2749999999999999,
+        -0.36188892117088217,
+        -0.4544935022831883,
+        -0.5500000000000002,
+        -0.6455064977168117,
+        -0.7381110788291179,
+        -0.825,
+        -0.9035331853275966,
+        -0.9713244437154378,
+        -1.0263139720814416,
+        -1.0668309414322494,
+        -1.0916442641567146,
+        -1.1,
+        -1.0916442641567146,
+        -1.0668309414322494,
+        -1.0263139720814416,
+        -0.9713244437154381,
+        -0.9035331853275969,
+        -0.8250000000000002,
+        -0.7381110788291176,
+        -0.6455064977168117,
+        -0.5500000000000002,
+        -0.4544935022831886,
+        -0.361888921170882,
+        -0.2749999999999999,
+        -0.19646681467240343,
+        -0.1286755562845622,
+        -0.0736860279185589,
+        -0.03316905856775036,
+        -0.008355735843285571,
+        -1.6497357609280436e-32
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/alpha_table/cm",
+      "value": [
+        -4.898587196589413e-18,
+        -0.003472963553338608,
+        -0.006840402866513372,
+        -0.010000000000000009,
+        -0.012855752193730792,
+        -0.015320888862379563,
+        -0.017320508075688773,
+        -0.018793852415718168,
+        -0.019696155060244164,
+        -0.02,
+        -0.01969615506024416,
+        -0.018793852415718168,
+        -0.01732050807568877,
+        -0.015320888862379558,
+        -0.012855752193730785,
+        -0.010000000000000002,
+        -0.006840402866513373,
+        -0.0034729635533386097,
+        2.4492935982947064e-18,
+        0.0034729635533386058,
+        0.006840402866513377,
+        0.009999999999999998,
+        0.01285575219373079,
+        0.015320888862379561,
+        0.017320508075688773,
+        0.018793852415718168,
+        0.01969615506024416,
+        0.02,
+        0.01969615506024416,
+        0.018793852415718168,
+        0.017320508075688773,
+        0.015320888862379561,
+        0.012855752193730785,
+        0.009999999999999998,
+        0.006840402866513375,
+        0.0034729635533386066,
+        -0.0,
+        -0.0034729635533386066,
+        -0.006840402866513375,
+        -0.009999999999999998,
+        -0.012855752193730785,
+        -0.015320888862379561,
+        -0.017320508075688773,
+        -0.018793852415718168,
+        -0.01969615506024416,
+        -0.02,
+        -0.01969615506024416,
+        -0.018793852415718168,
+        -0.017320508075688773,
+        -0.015320888862379561,
+        -0.01285575219373079,
+        -0.009999999999999998,
+        -0.006840402866513377,
+        -0.0034729635533386058,
+        -2.4492935982947064e-18,
+        0.0034729635533386097,
+        0.006840402866513373,
+        0.010000000000000002,
+        0.012855752193730785,
+        0.015320888862379558,
+        0.01732050807568877,
+        0.018793852415718168,
+        0.01969615506024416,
+        0.02,
+        0.019696155060244164,
+        0.018793852415718168,
+        0.017320508075688773,
+        0.015320888862379563,
+        0.012855752193730792,
+        0.010000000000000009,
+        0.006840402866513372,
+        0.003472963553338608,
+        4.898587196589413e-18
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/beta_table/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/beta_table/cy",
+      "value": [
+        9.797174393178826e-17,
+        0.06972459419812656,
+        0.13891854213354424,
+        0.2070552360820168,
+        0.2736161146605351,
+        0.33809460939255964,
+        0.39999999999999997,
+        0.45886114908083675,
+        0.5142300877492316,
+        0.5656854249492381,
+        0.6128355544951825,
+        0.6553216354311934,
+        0.692820323027551,
+        0.7250462296293201,
+        0.7517540966287268,
+        0.7727406610312547,
+        0.7878462024097664,
+        0.7969557584733965,
+        0.8,
+        0.7969557584733965,
+        0.7878462024097664,
+        0.7727406610312547,
+        0.7517540966287267,
+        0.72504622962932,
+        0.6928203230275509,
+        0.6553216354311935,
+        0.6128355544951825,
+        0.5656854249492381,
+        0.5142300877492314,
+        0.45886114908083686,
+        0.39999999999999997,
+        0.3380946093925596,
+        0.273616114660535,
+        0.2070552360820166,
+        0.13891854213354426,
+        0.06972459419812653,
+        -0.0,
+        -0.06972459419812653,
+        -0.13891854213354426,
+        -0.2070552360820166,
+        -0.273616114660535,
+        -0.3380946093925596,
+        -0.39999999999999997,
+        -0.45886114908083686,
+        -0.5142300877492314,
+        -0.5656854249492381,
+        -0.6128355544951825,
+        -0.6553216354311935,
+        -0.6928203230275509,
+        -0.72504622962932,
+        -0.7517540966287267,
+        -0.7727406610312547,
+        -0.7878462024097664,
+        -0.7969557584733965,
+        -0.8,
+        -0.7969557584733965,
+        -0.7878462024097664,
+        -0.7727406610312547,
+        -0.7517540966287268,
+        -0.7250462296293201,
+        -0.692820323027551,
+        -0.6553216354311934,
+        -0.6128355544951825,
+        -0.5656854249492381,
+        -0.5142300877492316,
+        -0.45886114908083675,
+        -0.39999999999999997,
+        -0.33809460939255964,
+        -0.2736161146605351,
+        -0.2070552360820168,
+        -0.13891854213354424,
+        -0.06972459419812656,
+        -9.797174393178826e-17
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/beta_table/cl",
+      "value": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/beta_table/cn",
+      "value": [
+        -2.4492935982947064e-18,
+        -0.0017431148549531639,
+        -0.0034729635533386058,
+        -0.005176380902050421,
+        -0.006840402866513377,
+        -0.00845236523481399,
+        -0.009999999999999998,
+        -0.011471528727020919,
+        -0.01285575219373079,
+        -0.014142135623730952,
+        -0.015320888862379561,
+        -0.016383040885779833,
+        -0.017320508075688773,
+        -0.018126155740733,
+        -0.018793852415718168,
+        -0.019318516525781367,
+        -0.01969615506024416,
+        -0.019923893961834912,
+        -0.02,
+        -0.019923893961834912,
+        -0.01969615506024416,
+        -0.019318516525781367,
+        -0.018793852415718168,
+        -0.018126155740733,
+        -0.017320508075688773,
+        -0.016383040885779836,
+        -0.015320888862379561,
+        -0.014142135623730952,
+        -0.012855752193730785,
+        -0.01147152872702092,
+        -0.009999999999999998,
+        -0.00845236523481399,
+        -0.006840402866513375,
+        -0.005176380902050415,
+        -0.0034729635533386066,
+        -0.0017431148549531634,
+        0.0,
+        0.0017431148549531634,
+        0.0034729635533386066,
+        0.005176380902050415,
+        0.006840402866513375,
+        0.00845236523481399,
+        0.009999999999999998,
+        0.01147152872702092,
+        0.012855752193730785,
+        0.014142135623730952,
+        0.015320888862379561,
+        0.016383040885779836,
+        0.017320508075688773,
+        0.018126155740733,
+        0.018793852415718168,
+        0.019318516525781367,
+        0.01969615506024416,
+        0.019923893961834912,
+        0.02,
+        0.019923893961834912,
+        0.01969615506024416,
+        0.019318516525781367,
+        0.018793852415718168,
+        0.018126155740733,
+        0.017320508075688773,
+        0.016383040885779833,
+        0.015320888862379561,
+        0.014142135623730952,
+        0.01285575219373079,
+        0.011471528727020919,
+        0.009999999999999998,
+        0.00845236523481399,
+        0.006840402866513377,
+        0.005176380902050421,
+        0.0034729635533386058,
+        0.0017431148549531639,
+        2.4492935982947064e-18
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/wake_fraction",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/fuselage/provenance",
+      "value": "Engineering estimate: projected drag and small moments; NOT measured UH-60 fuselage tables. Download separately applied.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/id",
+      "value": "horizontal_tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/position_m",
+      "value": [
+        -1.5,
+        0,
+        -0.2
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/chord_axis_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/normal_axis_body",
+      "value": [
+        0,
+        0,
+        -1
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/area_m2",
+      "value": 0.16,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/incidence_deg",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/polar/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/polar/cl",
+      "value": [
+        5.51091059616309e-16,
+        0.3774635370519584,
+        0.6789308902631749,
+        0.8808858235252103,
+        1.0022903337894606,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.1102078535761257,
+        1.0715486247834947,
+        1.0022903337894604,
+        0.8808858235252098,
+        0.6789308902631751,
+        0.37746353705195856,
+        -2.755455298081545e-16,
+        -0.3774635370519582,
+        -0.6789308902631753,
+        -0.8808858235252097,
+        -1.0022903337894606,
+        -1.0715486247834947,
+        -1.110207853576126,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894604,
+        -0.8808858235252097,
+        -0.6789308902631752,
+        -0.37746353705195823,
+        0.0,
+        0.37746353705195823,
+        0.6789308902631752,
+        0.8808858235252097,
+        1.0022903337894604,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.110207853576126,
+        1.0715486247834947,
+        1.0022903337894606,
+        0.8808858235252097,
+        0.6789308902631753,
+        0.3774635370519582,
+        2.755455298081545e-16,
+        -0.37746353705195856,
+        -0.6789308902631751,
+        -0.8808858235252098,
+        -1.0022903337894604,
+        -1.0715486247834947,
+        -1.1102078535761257,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894606,
+        -0.8808858235252103,
+        -0.6789308902631749,
+        -0.3774635370519584,
+        -5.51091059616309e-16
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/polar/cd",
+      "value": [
+        0.015,
+        0.028673022289012754,
+        0.0692766412926824,
+        0.13557713659400547,
+        0.22556000119291997,
+        0.33649115128211476,
+        0.4649999999999999,
+        0.6071818710068978,
+        0.758716640099763,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931015,
+        1.3650000000000002,
+        1.4935088487178856,
+        1.6044399988070803,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070799,
+        1.4935088487178854,
+        1.3649999999999998,
+        1.2228181289931017,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.7587166400997626,
+        0.607181871006898,
+        0.4649999999999999,
+        0.33649115128211465,
+        0.22556000119291975,
+        0.1355771365940052,
+        0.06927664129268245,
+        0.028673022289012744,
+        0.015,
+        0.028673022289012744,
+        0.06927664129268245,
+        0.1355771365940052,
+        0.22556000119291975,
+        0.33649115128211465,
+        0.4649999999999999,
+        0.607181871006898,
+        0.7587166400997626,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931017,
+        1.3649999999999998,
+        1.4935088487178854,
+        1.6044399988070799,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070803,
+        1.4935088487178856,
+        1.3650000000000002,
+        1.2228181289931015,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.758716640099763,
+        0.6071818710068978,
+        0.4649999999999999,
+        0.33649115128211476,
+        0.22556000119291997,
+        0.13557713659400547,
+        0.0692766412926824,
+        0.028673022289012754,
+        0.015
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/wake_fraction",
+      "value": 0.15,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/0/provenance",
+      "value": "Engineering geometry/polar/wake estimate; smooth full-angle lift/drag; not flight-test calibrated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/id",
+      "value": "vertical_tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/position_m",
+      "value": [
+        -1.5,
+        0,
+        -0.2
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/chord_axis_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/normal_axis_body",
+      "value": [
+        0,
+        1,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/area_m2",
+      "value": 0.12,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/incidence_deg",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/polar/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/polar/cl",
+      "value": [
+        5.51091059616309e-16,
+        0.3774635370519584,
+        0.6789308902631749,
+        0.8808858235252103,
+        1.0022903337894606,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.1102078535761257,
+        1.0715486247834947,
+        1.0022903337894604,
+        0.8808858235252098,
+        0.6789308902631751,
+        0.37746353705195856,
+        -2.755455298081545e-16,
+        -0.3774635370519582,
+        -0.6789308902631753,
+        -0.8808858235252097,
+        -1.0022903337894606,
+        -1.0715486247834947,
+        -1.110207853576126,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894604,
+        -0.8808858235252097,
+        -0.6789308902631752,
+        -0.37746353705195823,
+        0.0,
+        0.37746353705195823,
+        0.6789308902631752,
+        0.8808858235252097,
+        1.0022903337894604,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.110207853576126,
+        1.0715486247834947,
+        1.0022903337894606,
+        0.8808858235252097,
+        0.6789308902631753,
+        0.3774635370519582,
+        2.755455298081545e-16,
+        -0.37746353705195856,
+        -0.6789308902631751,
+        -0.8808858235252098,
+        -1.0022903337894604,
+        -1.0715486247834947,
+        -1.1102078535761257,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894606,
+        -0.8808858235252103,
+        -0.6789308902631749,
+        -0.3774635370519584,
+        -5.51091059616309e-16
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/polar/cd",
+      "value": [
+        0.015,
+        0.028673022289012754,
+        0.0692766412926824,
+        0.13557713659400547,
+        0.22556000119291997,
+        0.33649115128211476,
+        0.4649999999999999,
+        0.6071818710068978,
+        0.758716640099763,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931015,
+        1.3650000000000002,
+        1.4935088487178856,
+        1.6044399988070803,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070799,
+        1.4935088487178854,
+        1.3649999999999998,
+        1.2228181289931017,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.7587166400997626,
+        0.607181871006898,
+        0.4649999999999999,
+        0.33649115128211465,
+        0.22556000119291975,
+        0.1355771365940052,
+        0.06927664129268245,
+        0.028673022289012744,
+        0.015,
+        0.028673022289012744,
+        0.06927664129268245,
+        0.1355771365940052,
+        0.22556000119291975,
+        0.33649115128211465,
+        0.4649999999999999,
+        0.607181871006898,
+        0.7587166400997626,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931017,
+        1.3649999999999998,
+        1.4935088487178854,
+        1.6044399988070799,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070803,
+        1.4935088487178856,
+        1.3650000000000002,
+        1.2228181289931015,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.758716640099763,
+        0.6071818710068978,
+        0.4649999999999999,
+        0.33649115128211476,
+        0.22556000119291997,
+        0.13557713659400547,
+        0.0692766412926824,
+        0.028673022289012754,
+        0.015
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/wake_fraction",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/surfaces/1/provenance",
+      "value": "Engineering geometry/polar/wake estimate; smooth full-angle lift/drag; not flight-test calibrated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/provenance",
+      "value": "Demonstration steady airframe; estimated passive tails, fixed incidence and explicit wake fractions; no schedule/blockage correction",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机",
+      "parameter": "/trim/download_policy",
+      "value": "none",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/schema_version",
+      "value": 2,
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/kind",
+      "value": "aircraft",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/id",
+      "value": "uh60-public-components-v045",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/name",
+      "value": "UH-60 公开部件模型（含显式假设）",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/description",
+      "value": "Public tables + blade-element tail with delta3; explicit approximate wake and frozen-control assumptions. Low-frequency open-loop model estimate.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/provenance",
+      "value": "src/H60_constants.jl at baseline 05f3872; see docs/hover-budget.md for conversions and estimated fields; v0.4.4 template: six-DOF residual download=none; original public-helicopter template retained. v0.4.5: main azimuth zero points aft; original templates unchanged.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/units",
+      "value": "SI",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/axes",
+      "value": "x_forward_y_right_z_down",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/mass_properties/mass_kg",
+      "value": 7438.914868000001,
+      "classification": "公开数学模型转录",
+      "source": "tools/prepare_public_helicopter.py 引用 NASA TM-85890 Table 1；含坐标/惯量积符号转换，同配置旋翼分账仍缺"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/mass_properties/cg_m",
+      "value": [
+        -0.06095999999999999,
+        0,
+        0.0254
+      ],
+      "classification": "公开数学模型转录",
+      "source": "tools/prepare_public_helicopter.py 引用 NASA TM-85890 Table 1；含坐标/惯量积符号转换，同配置旋翼分账仍缺"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/mass_properties/inertia_cg_kg_m2",
+      "value": [
+        [
+          7631.899232618388,
+          0.0,
+          -2264.215974146866
+        ],
+        [
+          0.0,
+          54232.71794363751,
+          0.0
+        ],
+        [
+          -2264.215974146866,
+          0.0,
+          50436.42768758288
+        ]
+      ],
+      "classification": "公开数学模型转录",
+      "source": "tools/prepare_public_helicopter.py 引用 NASA TM-85890 Table 1；含坐标/惯量积符号转换，同配置旋翼分账仍缺"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/mass_properties/provenance",
+      "value": "NASA TM-85890 Table 1 mass/CG/inertia; Ixz tensor entry=-product. Coordinates relative to FS358/WL248.2.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/id",
+      "value": "main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/description",
+      "value": "公开主桨几何及原模型BT/UT分段全攻角气动表；未引入斜流修正",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/provenance",
+      "value": "H60_constants: R, NB, chord, twist, OMEGA, ITHSH, FS/WL; limits and efficiency estimated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/blade_count",
+      "value": 4,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/radius_m",
+      "value": 8.177783999999999,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/geometry_csv",
+      "value": "../../public-helicopter/uh60-main-geometry.csv",
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/position_m",
+      "value": [
+        0.42545,
+        0,
+        -1.6967200000000002
+      ],
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/thrust_axis_body",
+      "value": [
+        0.052335956242943835,
+        0,
+        -0.9986295347545738
+      ],
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/rotation_sign",
+      "value": 1,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/defaults/rpm",
+      "value": 257.8310078088705,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/defaults/collective_deg",
+      "value": 8,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/defaults/radial_stations",
+      "value": 80,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/limits/rpm",
+      "value": [
+        200,
+        300
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/role",
+      "value": "main",
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/transmission_efficiency",
+      "value": 0.96,
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/polar_json",
+      "value": "../../public-helicopter/../../validation/aero-upgrade/gh-full.json",
+      "classification": "公开表转录＋分段处理",
+      "source": "tools/prepare_public_helicopter.py；validation/aero-upgrade，按表内provenance核对，不视为实测全域"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/x_reference_body",
+      "value": [
+        -1,
+        0,
+        0
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/cyclic_cos_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/cyclic_sin_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/mode",
+      "value": "hinged",
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/hinge_offset_m",
+      "value": 0.381,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/precone_deg",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/inertia_kg_m2",
+      "value": 2050.8102290386523,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/first_mass_moment_kg_m",
+      "value": 385.6608141169104,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/spring_nm_rad",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/flapping/damper_nms_rad",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/0/flight/provenance",
+      "value": "UH-60 H60_constants IBETA/MBETA/HOFFSET converted SI; control/flap limits estimated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/id",
+      "value": "tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/description",
+      "value": "公开尾桨尺寸/安装；根切与转向为显式假设",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/provenance",
+      "value": "H60_constants / GenHel: RTR, CHRDTR, twistTR, OmegaTR, CantTR, BLDSTR=4; root=0.2R, rotation_sign=1, limits and efficiency estimated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/blade_count",
+      "value": 4,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/radius_m",
+      "value": 1.6764000000000001,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/geometry_csv",
+      "value": "../../public-helicopter/uh60-tail-geometry.csv",
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/position_m",
+      "value": [
+        -9.4996,
+        -0.35559999999999997,
+        -1.9430999999999998
+      ],
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/thrust_axis_body",
+      "value": [
+        0,
+        0.9396926207859084,
+        -0.3420201433256687
+      ],
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/rotation_sign",
+      "value": 1,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/defaults/rpm",
+      "value": 1190.03334048672,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/defaults/collective_deg",
+      "value": 12,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/defaults/radial_stations",
+      "value": 80,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/limits/rpm",
+      "value": [
+        1000,
+        1300
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/role",
+      "value": "tail",
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/transmission_efficiency",
+      "value": 0.93,
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/x_reference_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/cyclic_cos_deg",
+      "value": [
+        -1,
+        1
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/cyclic_sin_deg",
+      "value": [
+        -1,
+        1
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/mode",
+      "value": "hinged",
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/hinge_offset_m",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/precone_deg",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/delta3_deg",
+      "value": 34.999998530987746,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/inertia_kg_m2",
+      "value": 4.2030356406319065,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py；尾桨根切0.2R仍属估计"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/first_mass_moment_kg_m",
+      "value": 3.6394540495461816,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/spring_nm_rad",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/flapping/damper_nms_rad",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/flight/provenance",
+      "value": "Public IbTR=3.10 slug ft2 and tan(delta3)=0.7002075; first mass moment from uniform blade 0.2R..R (estimate). Independent hinged blades, no teeter constraint or VT blockage.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/rotors/1/polar_json",
+      "value": "../../public-helicopter/../../validation/aero-upgrade/naca0012-re.json",
+      "classification": "公开翼型＋Re工程估计",
+      "source": "tools/prepare_public_helicopter.py；validation/aero-upgrade，按表内provenance核对，不视为实测全域"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/hover/download_fraction",
+      "value": 0.03,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/hover/provenance",
+      "value": "Engineering assumption, not a UH-60 measured download",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/powerplant/altitude_m",
+      "value": [
+        0,
+        3000,
+        6000,
+        11000
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/powerplant/continuous_power_w",
+      "value": [
+        2400000,
+        1800000,
+        1200000,
+        600000
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/powerplant/short_time_power_w",
+      "value": [
+        2800000,
+        2100000,
+        1400000,
+        700000
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/powerplant/short_time_duration_s",
+      "value": 120,
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/powerplant/accessory_power_w",
+      "value": 20000,
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/powerplant/provenance",
+      "value": "Illustrative available shaft power only; NOT T700 ratings. Transmission efficiencies .96/.93 estimated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/roll_deg",
+      "value": [
+        -20,
+        20
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/pitch_deg",
+      "value": [
+        -25,
+        25
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/position_m",
+      "value": [
+        0.3175,
+        0,
+        0.3606799999999997
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/area_m2",
+      "value": 1,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/length_m",
+      "value": 1,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wake_fraction",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/provenance",
+      "value": "Public H60fuselage.mat dimensional wind coefficients, ft2/ft3 converted SI; original GenHel wind/body signs. Fuselage downwash disabled; residual download separately estimated.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/alpha/angle_deg",
+      "value": [
+        -90,
+        -80,
+        -70,
+        -60,
+        -50,
+        -40,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/alpha/cd_m2",
+      "value": [
+        13.935456,
+        13.470940800000001,
+        12.35610432,
+        10.59094656,
+        8.17546752,
+        5.66708544,
+        4.1880690432000005,
+        3.4912962432,
+        2.9431683072,
+        2.5529755392,
+        2.3281501824,
+        2.1906536832,
+        2.1906536832,
+        2.3300082432,
+        2.5622658432,
+        2.9060070912000002,
+        3.3983932032,
+        4.0022629632,
+        4.7454872832,
+        6.13160064,
+        7.803855360000001,
+        10.219334400000001,
+        12.26320128,
+        13.470940800000001,
+        13.935456
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/alpha/cl_m2",
+      "value": [
+        -2.2296729600000003,
+        -5.01676416,
+        -6.689018880000001,
+        -7.525146240000001,
+        -7.8967584,
+        -7.7109523200000005,
+        -6.5032128,
+        -4.83095808,
+        -3.2516064,
+        -2.322576,
+        -1.20773952,
+        -0.4645152,
+        0.09290304,
+        0.9290304,
+        1.8580608,
+        2.322576,
+        2.7870912000000003,
+        3.15870336,
+        3.4374124800000003,
+        3.9948307200000004,
+        4.4593459200000005,
+        4.645152,
+        4.4593459200000005,
+        3.62321856,
+        2.04386688
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/alpha/cm_m3",
+      "value": [
+        -5.663369318400001,
+        -13.308917898240002,
+        -18.264366051840003,
+        -20.671298012160005,
+        -21.520803409920003,
+        -21.520803409920003,
+        -20.954466478080004,
+        -19.821792614400003,
+        -17.839613352960004,
+        -14.724760227840003,
+        -10.760401704960001,
+        -6.512874716160001,
+        -2.5485161932800002,
+        0.28316846592000006,
+        2.8316846592000005,
+        8.211885511680002,
+        12.742580966400002,
+        16.990107955200003,
+        21.237634944000003,
+        22.936645739520003,
+        23.361398438400002,
+        22.087140341760005,
+        18.405950284800003,
+        13.308917898240002,
+        5.663369318400001
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/beta/angle_deg",
+      "value": [
+        -90,
+        -80,
+        -70,
+        -60,
+        -50,
+        -40,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/beta/cy_m2",
+      "value": [
+        -3.4374124800000003,
+        -5.94579456,
+        -7.803855360000001,
+        -9.290304,
+        -9.569013120000001,
+        -8.547079680000001,
+        -6.689018880000001,
+        -6.038697600000001,
+        -4.645152,
+        -3.2516064,
+        -2.1367699200000003,
+        -1.02193344,
+        0.0,
+        1.02193344,
+        2.1367699200000003,
+        3.2516064,
+        4.645152,
+        6.038697600000001,
+        6.689018880000001,
+        8.547079680000001,
+        9.569013120000001,
+        9.290304,
+        7.803855360000001,
+        5.94579456,
+        3.4374124800000003
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/beta/cl_m2",
+      "value": [
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        1.8580608,
+        1.1148364800000001,
+        0.65032128,
+        0.27870912000000003,
+        0.18580608,
+        0.0,
+        0.18580608,
+        0.4645152,
+        0.9290304,
+        1.3935456000000002,
+        2.04386688,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003,
+        2.7870912000000003
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/beta/roll_m3",
+      "value": [
+        2.8316846592000005,
+        2.8316846592000005,
+        2.8316846592000005,
+        2.8600015057920003,
+        2.9166351989760004,
+        3.0015857387520004,
+        3.1148531251200007,
+        3.3980215910400005,
+        2.1237634944000003,
+        0.8495053977600001,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.8495053977600001,
+        -2.1237634944000003,
+        -3.3980215910400005,
+        -3.1148531251200007,
+        -3.0015857387520004,
+        -2.9166351989760004,
+        -2.8600015057920003,
+        -2.8316846592000005,
+        -2.8316846592000005,
+        -2.8316846592000005
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/beta/yaw_m3",
+      "value": [
+        12.459412500480003,
+        11.100203864064001,
+        9.401193068544002,
+        7.334063267328001,
+        4.530695454720001,
+        1.1326738636800002,
+        -3.9643585228800005,
+        -5.380200852480001,
+        -6.796043182080001,
+        -6.229706250240001,
+        -5.0970323865600005,
+        -2.8316846592000005,
+        0.0,
+        2.8316846592000005,
+        5.0970323865600005,
+        6.229706250240001,
+        6.796043182080001,
+        5.380200852480001,
+        3.9643585228800005,
+        1.6706939489280002,
+        -0.8495053977600001,
+        -3.5396058240000006,
+        -6.229706250240001,
+        -9.061390909440002,
+        -11.893075568640002
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/abs_beta/angle_deg",
+      "value": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/abs_beta/cd_m2",
+      "value": [
+        0.0,
+        0.09290304,
+        0.37161216,
+        0.8361273600000001,
+        1.5143195520000001,
+        2.60128512,
+        3.5767670400000005,
+        7.10708256,
+        10.544495040000001,
+        13.145780160000001,
+        15.282550080000002,
+        15.747065280000001,
+        15.83996832
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/fuselage/wind_tables/abs_beta/cm_m3",
+      "value": [
+        0.0,
+        0.28316846592000006,
+        0.5663369318400001,
+        1.4158423296000002,
+        2.5485161932800002,
+        3.6811900569600007,
+        5.0970323865600005,
+        5.0970323865600005,
+        5.0970323865600005,
+        5.0970323865600005,
+        5.0970323865600005,
+        5.0970323865600005,
+        5.0970323865600005
+      ],
+      "classification": "公开原模型气动表转录",
+      "source": "data/H60fuselage.mat；tools/prepare_public_helicopter.py，ft²/ft³转SI及风轴符号"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/id",
+      "value": "horizontal_tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/position_m",
+      "value": [
+        -8.6868,
+        0,
+        0.1066799999999997
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/chord_axis_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/normal_axis_body",
+      "value": [
+        0,
+        0,
+        -1
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/area_m2",
+      "value": 4.1806368,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/incidence_deg",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/polar/angle_deg",
+      "value": [
+        -90,
+        -80,
+        -70,
+        -60,
+        -50,
+        -40,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/polar/cl",
+      "value": [
+        0.0,
+        -0.294,
+        -0.558,
+        -0.745,
+        -0.847,
+        -0.847,
+        -0.97,
+        -1.03,
+        -1.03,
+        -0.93,
+        -0.71,
+        -0.356,
+        0.0,
+        0.356,
+        0.71,
+        0.93,
+        1.03,
+        1.03,
+        0.97,
+        0.847,
+        0.847,
+        0.745,
+        0.558,
+        0.294,
+        0.0
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/polar/cd",
+      "value": [
+        1.2,
+        1.161,
+        1.05,
+        0.888,
+        0.702,
+        0.531,
+        0.43,
+        0.37,
+        0.36,
+        0.19,
+        0.04,
+        0.022,
+        0.01,
+        0.022,
+        0.04,
+        0.19,
+        0.36,
+        0.37,
+        0.43,
+        0.531,
+        0.702,
+        0.888,
+        1.05,
+        1.161,
+        1.2
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/wake_fraction",
+      "value": 1.8,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/provenance",
+      "value": "H60_constants geometry/CLTAIL/CDTAIL within +/-90deg; outside uses explicit symmetric reversed-chord estimate (CL sign reversed, CD held at mirrored alpha), no test data. TM-85890 pressure/wake factors. HT schedule freezes collective reference at 50%, ignores q/acceleration feedback. No control-system replication.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/pressure_ratio",
+      "value": 0.4,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/tail_wake_fraction",
+      "value": 0,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/reverse_flow_symmetry",
+      "value": true,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/incidence_schedule/speed_m_s",
+      "value": [
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0,
+        12.0,
+        14.0,
+        16.0,
+        18.0,
+        20.0,
+        22.0,
+        24.0,
+        26.0,
+        28.0,
+        30.0,
+        32.0,
+        34.0,
+        36.0,
+        38.0,
+        40.0,
+        42.0,
+        44.0,
+        46.0,
+        48.0,
+        50.0,
+        52.0,
+        54.0,
+        56.0,
+        58.0,
+        60.0,
+        62.0,
+        64.0,
+        66.0,
+        68.0,
+        70.0,
+        72.0,
+        74.0,
+        76.0,
+        78.0,
+        80.0
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/0/incidence_schedule/angle_deg",
+      "value": [
+        39.0,
+        39.0,
+        39.0,
+        39.0,
+        39.0,
+        39.0,
+        39.0,
+        39.0,
+        39.0,
+        38.32934514038877,
+        35.469094600431966,
+        32.608844060475164,
+        29.748593520518355,
+        26.888342980561553,
+        24.028092440604752,
+        21.16784190064795,
+        18.307591360691145,
+        15.447340820734343,
+        12.587090280777542,
+        9.726839740820736,
+        6.8665892008639275,
+        5.030319654427644,
+        4.595287257019437,
+        4.160254859611229,
+        3.725222462203022,
+        3.290190064794815,
+        2.855157667386608,
+        2.4201252699784006,
+        1.9850928725701933,
+        1.550060475161986,
+        1.115028077753779,
+        0.6799956803455718,
+        0.24496328293736447,
+        -0.19006911447084285,
+        -0.6251015118790502,
+        -1.0601339092872575,
+        -1.4951663066954648,
+        -1.9301987041036712,
+        -2.2833000000000014,
+        -2.2833000000000014,
+        -2.2833000000000014
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/id",
+      "value": "vertical_tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/position_m",
+      "value": [
+        -8.5598,
+        0,
+        -0.6299200000000003
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/chord_axis_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/normal_axis_body",
+      "value": [
+        0,
+        1,
+        0
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/area_m2",
+      "value": 3.000768192,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/incidence_deg",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/polar/angle_deg",
+      "value": [
+        -90,
+        -80,
+        -70,
+        -60,
+        -50,
+        -40,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/polar/cl",
+      "value": [
+        0.0,
+        -0.12,
+        -0.28,
+        -0.46,
+        -0.66,
+        -0.88,
+        -1.0,
+        -1.0,
+        -0.93,
+        -0.73,
+        -0.5,
+        -0.28,
+        -0.06,
+        0.16,
+        0.38,
+        0.61,
+        0.82,
+        0.89,
+        0.89,
+        0.8,
+        0.63,
+        0.48,
+        0.32,
+        0.17,
+        0.0
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/polar/cd",
+      "value": [
+        1.1,
+        1.025,
+        0.965,
+        0.875,
+        0.745,
+        0.575,
+        0.36,
+        0.265,
+        0.174,
+        0.118,
+        0.066,
+        0.033,
+        0.018,
+        0.021,
+        0.044,
+        0.092,
+        0.162,
+        0.248,
+        0.355,
+        0.58,
+        0.75,
+        0.875,
+        0.965,
+        1.02,
+        1.08
+      ],
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/wake_fraction",
+      "value": 0,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/provenance",
+      "value": "H60_constants geometry/CLTAIL/CDTAIL within +/-90deg; outside uses explicit symmetric reversed-chord estimate (CL sign reversed, CD held at mirrored alpha), no test data. TM-85890 pressure/wake factors. HT schedule freezes collective reference at 50%, ignores q/acceleration feedback. No control-system replication.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/pressure_ratio",
+      "value": 0.651,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/tail_wake_fraction",
+      "value": 1.0,
+      "classification": "公开模型参数/表格转录",
+      "source": "src/H60_constants.jl；tools/prepare_public_helicopter.py 引用TM-85890；下洗为模型系数"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/surfaces/1/reverse_flow_symmetry",
+      "value": true,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/provenance",
+      "value": "Demonstration steady airframe; estimated passive tails, fixed incidence and explicit wake fractions; no schedule/blockage correction",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开部件模型（含工程估计）",
+      "parameter": "/trim/download_policy",
+      "value": "none",
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/schema_version",
+      "value": 1,
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/kind",
+      "value": "aircraft",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/id",
+      "value": "synthetic-helicopter",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/name",
+      "value": "通用无人直升机工程演示",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/description",
+      "value": "合成参数，仅用于功能和数值检查；当前计算选定孤立主旋翼。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/provenance",
+      "value": "Synthetic example; no measured aircraft data",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/units",
+      "value": "SI",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/axes",
+      "value": "x_forward_y_right_z_down",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/mass_properties/mass_kg",
+      "value": 200,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/mass_properties/cg_m",
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/mass_properties/inertia_cg_kg_m2",
+      "value": [
+        [
+          65,
+          0,
+          0
+        ],
+        [
+          0,
+          120,
+          0
+        ],
+        [
+          0,
+          0,
+          140
+        ]
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/id",
+      "value": "main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/description",
+      "value": "三片叶主旋翼",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/provenance",
+      "value": "Same synthetic geometry and polar as v0.1.0",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/blade_count",
+      "value": 3,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/radius_m",
+      "value": 1.1,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/geometry_csv",
+      "value": "synthetic-geometry.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/polar_csv",
+      "value": "synthetic-polar.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/position_m",
+      "value": [
+        0,
+        0,
+        -0.6
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/thrust_axis_body",
+      "value": [
+        0,
+        0,
+        -1
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/rotation_sign",
+      "value": 1,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/defaults/rpm",
+      "value": 1700,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/defaults/collective_deg",
+      "value": 17,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/defaults/radial_stations",
+      "value": 240,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/limits/rpm",
+      "value": [
+        800,
+        2100
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/limits/power_w",
+      "value": 80000,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "三桨叶孤立旋翼示例（兼容旧版）",
+      "parameter": "/rotors/0/limits/torque_nm",
+      "value": 450,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/schema_version",
+      "value": 2,
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/kind",
+      "value": "aircraft",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/id",
+      "value": "synthetic-a2-mass-partition",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/name",
+      "value": "200 kg 合成机 · A2质量分账与动态挥舞",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/description",
+      "value": "公开/合成旋翼 + 显式工程机身尾翼；完整稳态平衡，精度待验证。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/provenance",
+      "value": "Synthetic example; no measured aircraft data; v0.4.4 template: six-DOF residual download=none; original public-helicopter template retained. v0.4.5: main azimuth zero points aft; original templates unchanged.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/units",
+      "value": "SI",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/axes",
+      "value": "x_forward_y_right_z_down",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/mass_properties/mass_kg",
+      "value": 200,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/mass_properties/cg_m",
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/mass_properties/inertia_cg_kg_m2",
+      "value": [
+        [
+          30,
+          0,
+          0
+        ],
+        [
+          0,
+          45,
+          0
+        ],
+        [
+          0,
+          0,
+          60
+        ]
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/mass_properties/provenance",
+      "value": "Synthetic rigid-body inertia estimate; not measured, symmetric tensor in body axes",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/id",
+      "value": "main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/description",
+      "value": "三片叶主旋翼",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/provenance",
+      "value": "Same synthetic geometry and polar as v0.1.0",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/blade_count",
+      "value": 3,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/radius_m",
+      "value": 1.1,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/geometry_csv",
+      "value": "rotor-0-geometry.csv",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/polar_csv",
+      "value": "rotor-0-polar.csv",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/position_m",
+      "value": [
+        0,
+        0,
+        -0.6
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/thrust_axis_body",
+      "value": [
+        0,
+        0,
+        -1
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/rotation_sign",
+      "value": 1,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/defaults/rpm",
+      "value": 1700,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/defaults/collective_deg",
+      "value": 13,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/defaults/radial_stations",
+      "value": 80,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/limits/rpm",
+      "value": [
+        800,
+        2100
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/limits/power_w",
+      "value": 80000,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/limits/torque_nm",
+      "value": 450,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/role",
+      "value": "main",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/transmission_efficiency",
+      "value": 0.96,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/x_reference_body",
+      "value": [
+        -1,
+        0,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/cyclic_cos_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/cyclic_sin_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/mode",
+      "value": "hinged",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/hinge_offset_m",
+      "value": 0.04,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/precone_deg",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/inertia_kg_m2",
+      "value": 1.2,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/first_mass_moment_kg_m",
+      "value": 1.5,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/spring_nm_rad",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/flapping/damper_nms_rad",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/flight/provenance",
+      "value": "All flap mass/hinge/limits synthetic",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/blade_mass/mass_kg",
+      "value": 2.5,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/blade_mass/first_mass_moment_kg_m",
+      "value": 1.5,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/blade_mass/inertia_kg_m2",
+      "value": 1.2,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/blade_mass/provenance",
+      "value": "合成两质量点：距铰0.2 m处15/14 kg，0.9 m处10/7 kg；与历史一阶/二阶矩一致。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/hub/mass_kg",
+      "value": 1.0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/hub/cg_rotor_m",
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/hub/inertia_cg_kg_m2",
+      "value": [
+        [
+          0.005,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.008
+        ]
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/0/hub/provenance",
+      "value": "合成轴对称旋转桨毂；质量和惯量为数值验证假设。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/id",
+      "value": "tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/description",
+      "value": "合成双叶尾桨",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/provenance",
+      "value": "Synthetic: all dimensions, rpm, limits and installation estimated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/blade_count",
+      "value": 2,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/radius_m",
+      "value": 0.24,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/geometry_csv",
+      "value": "rotor-1-geometry.csv",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/polar_csv",
+      "value": "rotor-1-polar.csv",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/position_m",
+      "value": [
+        -1.7,
+        0,
+        -0.15
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/thrust_axis_body",
+      "value": [
+        0,
+        1,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/rotation_sign",
+      "value": 1,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/defaults/rpm",
+      "value": 7500,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/defaults/collective_deg",
+      "value": 12,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/defaults/radial_stations",
+      "value": 80,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/limits/rpm",
+      "value": [
+        4000,
+        9000
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/limits/power_w",
+      "value": 8000,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/limits/torque_nm",
+      "value": 12,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/role",
+      "value": "tail",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/transmission_efficiency",
+      "value": 0.93,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/x_reference_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/cyclic_cos_deg",
+      "value": [
+        -1,
+        1
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/cyclic_sin_deg",
+      "value": [
+        -1,
+        1
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/flapping/mode",
+      "value": "fixed",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/flapping/hinge_offset_m",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/flapping/precone_deg",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/flapping/first_mass_moment_kg_m",
+      "value": 0.0135,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/flapping/inertia_kg_m2",
+      "value": 0.00219,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/flight/provenance",
+      "value": "Fixed rigid tail blade assumption; no cyclic, delta3 or teeter dynamics in this template",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/blade_mass/mass_kg",
+      "value": 0.1,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/blade_mass/first_mass_moment_kg_m",
+      "value": 0.0135,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/blade_mass/inertia_kg_m2",
+      "value": 0.00219,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/blade_mass/provenance",
+      "value": "合成均匀线质量：每片0.1 kg，距铰0.03至0.24 m；未采用实测资料。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/hub/mass_kg",
+      "value": 0.05,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/hub/cg_rotor_m",
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/hub/inertia_cg_kg_m2",
+      "value": [
+        [
+          0.0001,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0001,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.00015
+        ]
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/rotors/1/hub/provenance",
+      "value": "合成轴对称尾桨桨毂；数值验证假设。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/hover/download_fraction",
+      "value": 0.03,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/hover/provenance",
+      "value": "Synthetic download = 0.03 * main thrust; applied at CG",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/powerplant/altitude_m",
+      "value": [
+        0,
+        3000,
+        6000,
+        11000
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/powerplant/continuous_power_w",
+      "value": [
+        45000,
+        36000,
+        24000,
+        12000
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/powerplant/short_time_power_w",
+      "value": [
+        55000,
+        44000,
+        30000,
+        15000
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/powerplant/short_time_duration_s",
+      "value": 120,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/powerplant/accessory_power_w",
+      "value": 700,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/powerplant/provenance",
+      "value": "Synthetic shaft-power curves, losses and 120 s rating; not a specific engine",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/roll_deg",
+      "value": [
+        -20,
+        20
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/pitch_deg",
+      "value": [
+        -25,
+        25
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/position_m",
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/area_m2",
+      "value": 0.45,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/length_m",
+      "value": 2,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/alpha_table/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/alpha_table/cx",
+      "value": [
+        0.6,
+        0.5954423259036624,
+        0.5819077862357724,
+        0.5598076211353314,
+        0.5298133329356933,
+        0.4928362829059617,
+        0.45000000000000007,
+        0.4026060429977007,
+        0.352094453300079,
+        0.29999999999999993,
+        0.2479055466999209,
+        0.19739395700229942,
+        0.14999999999999988,
+        0.10716371709403813,
+        0.07018666706430658,
+        0.04019237886466843,
+        0.018092213764227476,
+        0.004557674096337588,
+        -2.2496396739927864e-33,
+        -0.004557674096337578,
+        -0.018092213764227497,
+        -0.0401923788646684,
+        -0.07018666706430662,
+        -0.10716371709403821,
+        -0.15000000000000005,
+        -0.19739395700229934,
+        -0.2479055466999209,
+        -0.30000000000000004,
+        -0.35209445330007905,
+        -0.4026060429977006,
+        -0.45000000000000007,
+        -0.4928362829059617,
+        -0.5298133329356934,
+        -0.5598076211353317,
+        -0.5819077862357724,
+        -0.5954423259036624,
+        -0.6,
+        -0.5954423259036624,
+        -0.5819077862357724,
+        -0.5598076211353317,
+        -0.5298133329356934,
+        -0.4928362829059617,
+        -0.45000000000000007,
+        -0.4026060429977006,
+        -0.35209445330007905,
+        -0.30000000000000004,
+        -0.2479055466999209,
+        -0.19739395700229934,
+        -0.15000000000000005,
+        -0.10716371709403821,
+        -0.07018666706430662,
+        -0.0401923788646684,
+        -0.018092213764227497,
+        -0.004557674096337578,
+        -2.2496396739927864e-33,
+        0.004557674096337588,
+        0.018092213764227476,
+        0.04019237886466843,
+        0.07018666706430658,
+        0.10716371709403813,
+        0.14999999999999988,
+        0.19739395700229942,
+        0.2479055466999209,
+        0.29999999999999993,
+        0.352094453300079,
+        0.4026060429977007,
+        0.45000000000000007,
+        0.4928362829059617,
+        0.5298133329356933,
+        0.5598076211353314,
+        0.5819077862357724,
+        0.5954423259036624,
+        0.6
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/alpha_table/cz",
+      "value": [
+        1.6497357609280436e-32,
+        0.008355735843285571,
+        0.03316905856775036,
+        0.0736860279185589,
+        0.1286755562845622,
+        0.19646681467240343,
+        0.2749999999999999,
+        0.361888921170882,
+        0.4544935022831886,
+        0.5500000000000002,
+        0.6455064977168117,
+        0.7381110788291176,
+        0.8250000000000002,
+        0.9035331853275969,
+        0.9713244437154381,
+        1.0263139720814416,
+        1.0668309414322494,
+        1.0916442641567146,
+        1.1,
+        1.0916442641567146,
+        1.0668309414322494,
+        1.0263139720814416,
+        0.9713244437154378,
+        0.9035331853275966,
+        0.825,
+        0.7381110788291179,
+        0.6455064977168117,
+        0.5500000000000002,
+        0.4544935022831883,
+        0.36188892117088217,
+        0.2749999999999999,
+        0.1964668146724034,
+        0.1286755562845621,
+        0.07368602791855873,
+        0.03316905856775038,
+        0.008355735843285566,
+        -0.0,
+        -0.008355735843285566,
+        -0.03316905856775038,
+        -0.07368602791855873,
+        -0.1286755562845621,
+        -0.1964668146724034,
+        -0.2749999999999999,
+        -0.36188892117088217,
+        -0.4544935022831883,
+        -0.5500000000000002,
+        -0.6455064977168117,
+        -0.7381110788291179,
+        -0.825,
+        -0.9035331853275966,
+        -0.9713244437154378,
+        -1.0263139720814416,
+        -1.0668309414322494,
+        -1.0916442641567146,
+        -1.1,
+        -1.0916442641567146,
+        -1.0668309414322494,
+        -1.0263139720814416,
+        -0.9713244437154381,
+        -0.9035331853275969,
+        -0.8250000000000002,
+        -0.7381110788291176,
+        -0.6455064977168117,
+        -0.5500000000000002,
+        -0.4544935022831886,
+        -0.361888921170882,
+        -0.2749999999999999,
+        -0.19646681467240343,
+        -0.1286755562845622,
+        -0.0736860279185589,
+        -0.03316905856775036,
+        -0.008355735843285571,
+        -1.6497357609280436e-32
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/alpha_table/cm",
+      "value": [
+        -4.898587196589413e-18,
+        -0.003472963553338608,
+        -0.006840402866513372,
+        -0.010000000000000009,
+        -0.012855752193730792,
+        -0.015320888862379563,
+        -0.017320508075688773,
+        -0.018793852415718168,
+        -0.019696155060244164,
+        -0.02,
+        -0.01969615506024416,
+        -0.018793852415718168,
+        -0.01732050807568877,
+        -0.015320888862379558,
+        -0.012855752193730785,
+        -0.010000000000000002,
+        -0.006840402866513373,
+        -0.0034729635533386097,
+        2.4492935982947064e-18,
+        0.0034729635533386058,
+        0.006840402866513377,
+        0.009999999999999998,
+        0.01285575219373079,
+        0.015320888862379561,
+        0.017320508075688773,
+        0.018793852415718168,
+        0.01969615506024416,
+        0.02,
+        0.01969615506024416,
+        0.018793852415718168,
+        0.017320508075688773,
+        0.015320888862379561,
+        0.012855752193730785,
+        0.009999999999999998,
+        0.006840402866513375,
+        0.0034729635533386066,
+        -0.0,
+        -0.0034729635533386066,
+        -0.006840402866513375,
+        -0.009999999999999998,
+        -0.012855752193730785,
+        -0.015320888862379561,
+        -0.017320508075688773,
+        -0.018793852415718168,
+        -0.01969615506024416,
+        -0.02,
+        -0.01969615506024416,
+        -0.018793852415718168,
+        -0.017320508075688773,
+        -0.015320888862379561,
+        -0.01285575219373079,
+        -0.009999999999999998,
+        -0.006840402866513377,
+        -0.0034729635533386058,
+        -2.4492935982947064e-18,
+        0.0034729635533386097,
+        0.006840402866513373,
+        0.010000000000000002,
+        0.012855752193730785,
+        0.015320888862379558,
+        0.01732050807568877,
+        0.018793852415718168,
+        0.01969615506024416,
+        0.02,
+        0.019696155060244164,
+        0.018793852415718168,
+        0.017320508075688773,
+        0.015320888862379563,
+        0.012855752193730792,
+        0.010000000000000009,
+        0.006840402866513372,
+        0.003472963553338608,
+        4.898587196589413e-18
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/beta_table/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/beta_table/cy",
+      "value": [
+        9.797174393178826e-17,
+        0.06972459419812656,
+        0.13891854213354424,
+        0.2070552360820168,
+        0.2736161146605351,
+        0.33809460939255964,
+        0.39999999999999997,
+        0.45886114908083675,
+        0.5142300877492316,
+        0.5656854249492381,
+        0.6128355544951825,
+        0.6553216354311934,
+        0.692820323027551,
+        0.7250462296293201,
+        0.7517540966287268,
+        0.7727406610312547,
+        0.7878462024097664,
+        0.7969557584733965,
+        0.8,
+        0.7969557584733965,
+        0.7878462024097664,
+        0.7727406610312547,
+        0.7517540966287267,
+        0.72504622962932,
+        0.6928203230275509,
+        0.6553216354311935,
+        0.6128355544951825,
+        0.5656854249492381,
+        0.5142300877492314,
+        0.45886114908083686,
+        0.39999999999999997,
+        0.3380946093925596,
+        0.273616114660535,
+        0.2070552360820166,
+        0.13891854213354426,
+        0.06972459419812653,
+        -0.0,
+        -0.06972459419812653,
+        -0.13891854213354426,
+        -0.2070552360820166,
+        -0.273616114660535,
+        -0.3380946093925596,
+        -0.39999999999999997,
+        -0.45886114908083686,
+        -0.5142300877492314,
+        -0.5656854249492381,
+        -0.6128355544951825,
+        -0.6553216354311935,
+        -0.6928203230275509,
+        -0.72504622962932,
+        -0.7517540966287267,
+        -0.7727406610312547,
+        -0.7878462024097664,
+        -0.7969557584733965,
+        -0.8,
+        -0.7969557584733965,
+        -0.7878462024097664,
+        -0.7727406610312547,
+        -0.7517540966287268,
+        -0.7250462296293201,
+        -0.692820323027551,
+        -0.6553216354311934,
+        -0.6128355544951825,
+        -0.5656854249492381,
+        -0.5142300877492316,
+        -0.45886114908083675,
+        -0.39999999999999997,
+        -0.33809460939255964,
+        -0.2736161146605351,
+        -0.2070552360820168,
+        -0.13891854213354424,
+        -0.06972459419812656,
+        -9.797174393178826e-17
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/beta_table/cl",
+      "value": [
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/beta_table/cn",
+      "value": [
+        -2.4492935982947064e-18,
+        -0.0017431148549531639,
+        -0.0034729635533386058,
+        -0.005176380902050421,
+        -0.006840402866513377,
+        -0.00845236523481399,
+        -0.009999999999999998,
+        -0.011471528727020919,
+        -0.01285575219373079,
+        -0.014142135623730952,
+        -0.015320888862379561,
+        -0.016383040885779833,
+        -0.017320508075688773,
+        -0.018126155740733,
+        -0.018793852415718168,
+        -0.019318516525781367,
+        -0.01969615506024416,
+        -0.019923893961834912,
+        -0.02,
+        -0.019923893961834912,
+        -0.01969615506024416,
+        -0.019318516525781367,
+        -0.018793852415718168,
+        -0.018126155740733,
+        -0.017320508075688773,
+        -0.016383040885779836,
+        -0.015320888862379561,
+        -0.014142135623730952,
+        -0.012855752193730785,
+        -0.01147152872702092,
+        -0.009999999999999998,
+        -0.00845236523481399,
+        -0.006840402866513375,
+        -0.005176380902050415,
+        -0.0034729635533386066,
+        -0.0017431148549531634,
+        0.0,
+        0.0017431148549531634,
+        0.0034729635533386066,
+        0.005176380902050415,
+        0.006840402866513375,
+        0.00845236523481399,
+        0.009999999999999998,
+        0.01147152872702092,
+        0.012855752193730785,
+        0.014142135623730952,
+        0.015320888862379561,
+        0.016383040885779836,
+        0.017320508075688773,
+        0.018126155740733,
+        0.018793852415718168,
+        0.019318516525781367,
+        0.01969615506024416,
+        0.019923893961834912,
+        0.02,
+        0.019923893961834912,
+        0.01969615506024416,
+        0.019318516525781367,
+        0.018793852415718168,
+        0.018126155740733,
+        0.017320508075688773,
+        0.016383040885779833,
+        0.015320888862379561,
+        0.014142135623730952,
+        0.01285575219373079,
+        0.011471528727020919,
+        0.009999999999999998,
+        0.00845236523481399,
+        0.006840402866513377,
+        0.005176380902050421,
+        0.0034729635533386058,
+        0.0017431148549531639,
+        2.4492935982947064e-18
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/wake_fraction",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/fuselage/provenance",
+      "value": "Engineering estimate: projected drag and small moments; NOT measured UH-60 fuselage tables. Download separately applied.",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/id",
+      "value": "horizontal_tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/position_m",
+      "value": [
+        -1.5,
+        0,
+        -0.2
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/chord_axis_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/normal_axis_body",
+      "value": [
+        0,
+        0,
+        -1
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/area_m2",
+      "value": 0.16,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/incidence_deg",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/polar/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/polar/cl",
+      "value": [
+        5.51091059616309e-16,
+        0.3774635370519584,
+        0.6789308902631749,
+        0.8808858235252103,
+        1.0022903337894606,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.1102078535761257,
+        1.0715486247834947,
+        1.0022903337894604,
+        0.8808858235252098,
+        0.6789308902631751,
+        0.37746353705195856,
+        -2.755455298081545e-16,
+        -0.3774635370519582,
+        -0.6789308902631753,
+        -0.8808858235252097,
+        -1.0022903337894606,
+        -1.0715486247834947,
+        -1.110207853576126,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894604,
+        -0.8808858235252097,
+        -0.6789308902631752,
+        -0.37746353705195823,
+        0.0,
+        0.37746353705195823,
+        0.6789308902631752,
+        0.8808858235252097,
+        1.0022903337894604,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.110207853576126,
+        1.0715486247834947,
+        1.0022903337894606,
+        0.8808858235252097,
+        0.6789308902631753,
+        0.3774635370519582,
+        2.755455298081545e-16,
+        -0.37746353705195856,
+        -0.6789308902631751,
+        -0.8808858235252098,
+        -1.0022903337894604,
+        -1.0715486247834947,
+        -1.1102078535761257,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894606,
+        -0.8808858235252103,
+        -0.6789308902631749,
+        -0.3774635370519584,
+        -5.51091059616309e-16
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/polar/cd",
+      "value": [
+        0.015,
+        0.028673022289012754,
+        0.0692766412926824,
+        0.13557713659400547,
+        0.22556000119291997,
+        0.33649115128211476,
+        0.4649999999999999,
+        0.6071818710068978,
+        0.758716640099763,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931015,
+        1.3650000000000002,
+        1.4935088487178856,
+        1.6044399988070803,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070799,
+        1.4935088487178854,
+        1.3649999999999998,
+        1.2228181289931017,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.7587166400997626,
+        0.607181871006898,
+        0.4649999999999999,
+        0.33649115128211465,
+        0.22556000119291975,
+        0.1355771365940052,
+        0.06927664129268245,
+        0.028673022289012744,
+        0.015,
+        0.028673022289012744,
+        0.06927664129268245,
+        0.1355771365940052,
+        0.22556000119291975,
+        0.33649115128211465,
+        0.4649999999999999,
+        0.607181871006898,
+        0.7587166400997626,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931017,
+        1.3649999999999998,
+        1.4935088487178854,
+        1.6044399988070799,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070803,
+        1.4935088487178856,
+        1.3650000000000002,
+        1.2228181289931015,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.758716640099763,
+        0.6071818710068978,
+        0.4649999999999999,
+        0.33649115128211476,
+        0.22556000119291997,
+        0.13557713659400547,
+        0.0692766412926824,
+        0.028673022289012754,
+        0.015
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/wake_fraction",
+      "value": 0.15,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/0/provenance",
+      "value": "Engineering geometry/polar/wake estimate; smooth full-angle lift/drag; not flight-test calibrated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/id",
+      "value": "vertical_tail",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/position_m",
+      "value": [
+        -1.5,
+        0,
+        -0.2
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/chord_axis_body",
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/normal_axis_body",
+      "value": [
+        0,
+        1,
+        0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/area_m2",
+      "value": 0.12,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/incidence_deg",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/polar/angle_deg",
+      "value": [
+        -180,
+        -175,
+        -170,
+        -165,
+        -160,
+        -155,
+        -150,
+        -145,
+        -140,
+        -135,
+        -130,
+        -125,
+        -120,
+        -115,
+        -110,
+        -105,
+        -100,
+        -95,
+        -90,
+        -85,
+        -80,
+        -75,
+        -70,
+        -65,
+        -60,
+        -55,
+        -50,
+        -45,
+        -40,
+        -35,
+        -30,
+        -25,
+        -20,
+        -15,
+        -10,
+        -5,
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        145,
+        150,
+        155,
+        160,
+        165,
+        170,
+        175,
+        180
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/polar/cl",
+      "value": [
+        5.51091059616309e-16,
+        0.3774635370519584,
+        0.6789308902631749,
+        0.8808858235252103,
+        1.0022903337894606,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.1102078535761257,
+        1.0715486247834947,
+        1.0022903337894604,
+        0.8808858235252098,
+        0.6789308902631751,
+        0.37746353705195856,
+        -2.755455298081545e-16,
+        -0.3774635370519582,
+        -0.6789308902631753,
+        -0.8808858235252097,
+        -1.0022903337894606,
+        -1.0715486247834947,
+        -1.110207853576126,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894604,
+        -0.8808858235252097,
+        -0.6789308902631752,
+        -0.37746353705195823,
+        0.0,
+        0.37746353705195823,
+        0.6789308902631752,
+        0.8808858235252097,
+        1.0022903337894604,
+        1.0715486247834947,
+        1.110207853576126,
+        1.1312609632638662,
+        1.1416999275780249,
+        1.1448543122159385,
+        1.1416999275780249,
+        1.1312609632638664,
+        1.110207853576126,
+        1.0715486247834947,
+        1.0022903337894606,
+        0.8808858235252097,
+        0.6789308902631753,
+        0.3774635370519582,
+        2.755455298081545e-16,
+        -0.37746353705195856,
+        -0.6789308902631751,
+        -0.8808858235252098,
+        -1.0022903337894604,
+        -1.0715486247834947,
+        -1.1102078535761257,
+        -1.1312609632638664,
+        -1.1416999275780249,
+        -1.1448543122159385,
+        -1.1416999275780249,
+        -1.1312609632638662,
+        -1.110207853576126,
+        -1.0715486247834947,
+        -1.0022903337894606,
+        -0.8808858235252103,
+        -0.6789308902631749,
+        -0.3774635370519584,
+        -5.51091059616309e-16
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/polar/cd",
+      "value": [
+        0.015,
+        0.028673022289012754,
+        0.0692766412926824,
+        0.13557713659400547,
+        0.22556000119291997,
+        0.33649115128211476,
+        0.4649999999999999,
+        0.6071818710068978,
+        0.758716640099763,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931015,
+        1.3650000000000002,
+        1.4935088487178856,
+        1.6044399988070803,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070799,
+        1.4935088487178854,
+        1.3649999999999998,
+        1.2228181289931017,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.7587166400997626,
+        0.607181871006898,
+        0.4649999999999999,
+        0.33649115128211465,
+        0.22556000119291975,
+        0.1355771365940052,
+        0.06927664129268245,
+        0.028673022289012744,
+        0.015,
+        0.028673022289012744,
+        0.06927664129268245,
+        0.1355771365940052,
+        0.22556000119291975,
+        0.33649115128211465,
+        0.4649999999999999,
+        0.607181871006898,
+        0.7587166400997626,
+        0.9150000000000003,
+        1.0712833599002372,
+        1.2228181289931017,
+        1.3649999999999998,
+        1.4935088487178854,
+        1.6044399988070799,
+        1.6944228634059948,
+        1.7607233587073172,
+        1.8013269777109873,
+        1.815,
+        1.8013269777109873,
+        1.7607233587073172,
+        1.6944228634059948,
+        1.6044399988070803,
+        1.4935088487178856,
+        1.3650000000000002,
+        1.2228181289931015,
+        1.0712833599002372,
+        0.9150000000000003,
+        0.758716640099763,
+        0.6071818710068978,
+        0.4649999999999999,
+        0.33649115128211476,
+        0.22556000119291997,
+        0.13557713659400547,
+        0.0692766412926824,
+        0.028673022289012754,
+        0.015
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/wake_fraction",
+      "value": 0,
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/surfaces/1/provenance",
+      "value": "Engineering geometry/polar/wake estimate; smooth full-angle lift/drag; not flight-test calibrated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/provenance",
+      "value": "Demonstration steady airframe; estimated passive tails, fixed incidence and explicit wake fractions; no schedule/blockage correction",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/trim/download_policy",
+      "value": "none",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/dynamics/model",
+      "value": "harmonic_hub_v1",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/dynamics/mass_reference",
+      "value": "total_at_reference_flap",
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/dynamics/reference_flap_deg/main",
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/dynamics/reference_flap_deg/tail",
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "classification": "工程构造/模型设定",
+      "source": "tools/build_a2_example.py；基础气动继承千机-200估算输入"
+    },
+    {
+      "template": "千机-200轻型无人直升机（A2质量分账，试验性）",
+      "parameter": "/dynamics/provenance",
+      "value": "合成验证：总质量200 kg、参考CG[0,0,0] m、总惯量diag(30,45,60) kg m²包含全部桨叶及旋转桨毂；两旋翼零锥度方位平均。不是实测机型。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/schema_version",
+      "value": 1,
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/kind",
+      "value": "rotor_module",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/id",
+      "value": "main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/name",
+      "value": "200 kg 合成无人直升机 · 六分量配平 / main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/axes",
+      "value": "right_handed_z_thrust_x_zero",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/blade_count",
+      "value": 3,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/radius_m",
+      "value": 1.1,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/geometry_csv",
+      "value": "geometry.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/polar_csv",
+      "value": "polar.csv",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/rotation_sign",
+      "value": 1,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/limits/rpm",
+      "value": [
+        800,
+        2100
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/limits/power_w",
+      "value": 80000,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/limits/torque_nm",
+      "value": 450,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/cyclic_cos_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/rotor/cyclic_sin_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/blade_mass/provenance",
+      "value": "合成验证分布：m0=2.5 kg，m1=1.5 kg m，Iβ=1.2 kg m²；不是实测桨叶。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/blade_mass/inertia_kg_m2",
+      "value": 1.2,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/blade_mass/first_mass_moment_kg_m",
+      "value": 1.5,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/blade_mass/mass_kg",
+      "value": 2.5,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/flapping/mode",
+      "value": "hinged",
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/flapping/hinge_offset_m",
+      "value": 0.04,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/flapping/precone_deg",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/flapping/spring_nm_rad",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/flapping/damper_nms_rad",
+      "value": 0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/hub/mass_kg",
+      "value": 2.0,
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/hub/cg_rotor_m",
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/hub/inertia_cg_kg_m2",
+      "value": [
+        [
+          0.02,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.02,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.03
+        ]
+      ],
+      "classification": "工程估计/模型设定",
+      "source": "examples/synthetic-aircraft.json；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/hub/provenance",
+      "value": "合成桨毂，用于字段及质量归属检查；当前稳态气动不使用这些质量属性。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "合成三桨叶旋翼（工程估计）",
+      "parameter": "/provenance",
+      "value": "Same synthetic geometry and polar as v0.1.0",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/schema_version",
+      "value": 1,
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/kind",
+      "value": "rotor_module",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/id",
+      "value": "main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/name",
+      "value": "UH-60 公开部件模型（含显式假设） / main",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/axes",
+      "value": "right_handed_z_thrust_x_zero",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/blade_count",
+      "value": 4,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/radius_m",
+      "value": 8.177783999999999,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/pitch_reference_r_over_R",
+      "value": 0.75,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/geometry_csv",
+      "value": "geometry.csv",
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/rotation_sign",
+      "value": 1,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/limits/rpm",
+      "value": [
+        200,
+        300
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/limits/collective_deg",
+      "value": [
+        2,
+        24
+      ],
+      "classification": "工程估计/设计限位",
+      "source": "tools/prepare_hover_templates.py；动力曲线为演示值，不是T700额定"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/polar_json",
+      "value": "polar.json",
+      "classification": "公开表转录＋分段处理",
+      "source": "tools/prepare_public_helicopter.py；validation/aero-upgrade，按表内provenance核对，不视为实测全域"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/cyclic_cos_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/rotor/cyclic_sin_deg",
+      "value": [
+        -15,
+        15
+      ],
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/blade_mass/provenance",
+      "value": "从旧旋翼字段原值提取；单片质量未提供，不由质量矩反推。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/blade_mass/inertia_kg_m2",
+      "value": 2050.8102290386523,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/blade_mass/first_mass_moment_kg_m",
+      "value": 385.6608141169104,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/flapping/mode",
+      "value": "hinged",
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/flapping/hinge_offset_m",
+      "value": 0.381,
+      "classification": "公开原模型转录/单位转换",
+      "source": "src/H60_constants.jl；tools/prepare_hover_templates.py；tools/prepare_trim_templates.py；单片质量缺项仍保留"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/flapping/precone_deg",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/flapping/max_flap_deg",
+      "value": 15,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/flapping/spring_nm_rad",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/flapping/damper_nms_rad",
+      "value": 0,
+      "classification": "模型约定/工程假设",
+      "source": "tools/prepare_public_helicopter.py；冻结平尾控制、反向来流对称延拓及未列公开来源的值保留为假设"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/hub/provenance",
+      "value": "旧文件未提供桨毂独立质量/重心惯量。",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    },
+    {
+      "template": "UH-60 公开基准旋翼",
+      "parameter": "/provenance",
+      "value": "H60_constants: R, NB, chord, twist, OMEGA, ITHSH, FS/WL; limits and efficiency estimated",
+      "classification": "标识/原来源文字",
+      "source": "原文件原值记录；该文字本身不构成独立验证"
+    }
+  ]
+}

@@ -6,6 +6,8 @@ from rotordesignlab.workspace_ui import TASKS,render
 st.set_page_config(page_title='RotorDesignLab｜旋翼设计台',layout='wide')
 st.title('RotorDesignLab｜旋翼设计台')
 st.caption(f'{__version__} · 旋翼模块 → 整机装配 → 工况分析 → 保存与复算')
+from rotordesignlab.template_audit import panel
+panel()
 if 'pending-workspace' in st.session_state:
     st.session_state['workspace-page'] = st.session_state.pop('pending-workspace')
 page = st.sidebar.radio('工作区', ['孤立旋翼', '整机装配', '悬停求解', '全机配平', '开环评估'],
