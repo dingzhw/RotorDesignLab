@@ -220,21 +220,22 @@ def csv_editor(rotor,index,key):
     name=rotor[key];data=pd.read_csv(StringIO(current()['assets'][name]))
     title='桨叶几何' if key=='geometry_csv' else '翼型极曲线'
     with st.expander(title+' CSV 载入与模板'):
-        st.caption('保留原有CSV载入功能；UTF-8编码，列顺序按下载模板填写。支持中文模板列名，也兼容原英文列名。')
-        st.download_button('下载'+title+' CSV 模板',data.rename(columns={k:label(k) for k in data.columns}).to_csv(index=False).encode('utf-8-sig'),
-                           title+'.csv',key=key_for(['csv-download',name]))
-        upload=st.file_uploader('载入'+title+' CSV',type='csv',key=key_for(['csv-upload',name]))
-        if st.button('应用'+title+' CSV',key=key_for(['csv-apply',name]),disabled=upload is None):
-            try:
-                text=upload.getvalue().decode('utf-8-sig')
-                incoming=pd.read_csv(StringIO(text)).rename(columns={label(k):k for k in data.columns})
-                if list(incoming.columns)!=list(data.columns):raise ValueError('CSV列名或顺序与模板不一致。')
-                content=incoming.to_csv(index=False);candidate=deepcopy(current());candidate['assets'][name]=content
-                problems=designs.issues(candidate)
-                if problems:raise ValueError('\n'.join(problems))
-                put_at(['assets',name],content)
-                st.session_state['design_epoch']+=1;st.session_state['table_bases']={};st.rerun()
-            except (ValueError,UnicodeError) as e:st.error(str(e))
+        from .engineering_input_ui import table_exchange, geometry_generator
+        def replace_table(incoming, source):
+            candidate = deepcopy(current())
+            candidate['assets'][name] = incoming.to_csv(index=False)
+            candidate['aircraft']['rotors'][index]['provenance'] = rotor.get('provenance', '')+'；'+source
+            problems = designs.issues(candidate)
+            if problems:
+                raise ValueError('\n'.join(problems))
+            put_at(['assets', name], candidate['assets'][name])
+            put_at(['aircraft', 'rotors', index, 'provenance'], candidate['aircraft']['rotors'][index]['provenance'])
+            st.session_state['design_epoch'] += 1
+            st.session_state['table_bases'] = {}
+            st.rerun()
+        table_exchange(data, title, rotor.get('provenance', ''), lambda v: key_for(['exchange',name,v]), replace_table)
+        if key == 'geometry_csv':
+            geometry_generator(data, rotor['pitch_reference_r_over_R'], lambda v: key_for(['generator',name,v]), replace_table)
     path=['assets',name]
     def apply(rows):put_at(path,pd.DataFrame(rows,columns=data.columns).to_csv(index=False))
     edit_table(data.to_dict('records'),path,apply,dynamic=True)

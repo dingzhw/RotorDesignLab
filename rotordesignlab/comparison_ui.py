@@ -1,5 +1,6 @@
 """Explicit candidate inputs persisted with the existing design/settings package."""
 import streamlit as st
+import csv
 
 LABEL = '同任务三方案（功率与配平）'
 
@@ -20,6 +21,7 @@ def candidate_form(aircraft, setting, namespace):
     st.info('三方案共用当前飞行质量、速度、高度、空气环境、维持时间和六分量配平模型。'
             '默认候选仅用于探索尺寸/转速趋势；几何变化后的结构质量与惯量须另核。')
     variants = []
+    table_rows = []
     for index, name in enumerate(('基准方案', '主桨加大5%', '主桨降速5%')):
         prefix = f'candidate-{index}-'
         with st.expander(f'候选{index+1}：设计参数与来源', expanded=index == 0):
@@ -46,4 +48,25 @@ def candidate_form(aircraft, setting, namespace):
                 overrides['tail_arm_m'] = values['tail_arm_m']
             variants.append(dict(name=title, overrides=overrides,
                                  geometry_rule=rule, provenance=source))
+            table_rows.append(dict(name=title, **values, geometry_rule=rule, provenance=source))
+    from .comparison_tables import export_candidates, import_candidates, COLUMNS
+    import pandas as pd
+    with st.expander('三方案中文表格导入导出'):
+        st.caption('CSV可直接用Excel打开。仅包含设计参数；质量、速度、环境等任务条件仍由上方统一设置。')
+        st.download_button('下载三方案参数中文 CSV', export_candidates(table_rows), '三方案参数.csv')
+        upload = st.file_uploader('导入三方案参数 CSV/TXT', type=['csv','txt'])
+        if upload is not None:
+            try:
+                incoming = import_candidates(upload.getvalue())
+                st.dataframe(pd.DataFrame(incoming).rename(columns=COLUMNS), hide_index=True)
+                if st.button('应用三方案参数导入'):
+                    from .design_ui import current
+                    cfg = current()['settings'].setdefault(namespace, {})
+                    for index, row in enumerate(incoming):
+                        for name, value in row.items():
+                            cfg[f'candidate-{index}-{name}'] = value
+                    st.session_state['design_epoch'] += 1
+                    st.rerun()
+            except (ValueError, UnicodeError, csv.Error) as error:
+                st.error('候选导入失败，原设置保留：'+str(error))
     return lambda: dict(schema_version=1, kind='helicopter_design_comparison', variants=variants)

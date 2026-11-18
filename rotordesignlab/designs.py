@@ -18,12 +18,14 @@ from . import __version__
 
 LIBRARY = ROOT / 'private/designs'
 TEMPLATES = {
-    '200 kg 合成无人直升机': ROOT/'examples/templates/v045/synthetic.json',
+    '千机-200轻型无人直升机': ROOT/'examples/templates/v045/synthetic.json',
     'UH-60 公开部件模型（含工程估计）': ROOT/'examples/templates/v045/uh60-public.json',
     '三桨叶孤立旋翼示例（兼容旧版）': ROOT/'examples/synthetic-aircraft.json',
-    '200 kg 合成机（A2质量分账，试验性）': ROOT/'examples/templates/a2/synthetic.json',
+    '千机-200轻型无人直升机（A2质量分账，试验性）': ROOT/'examples/templates/a2/synthetic.json',
 }
 TEMPLATE_ALIASES={'三片叶孤立旋翼示例（兼容旧版）':'三桨叶孤立旋翼示例（兼容旧版）'}
+TEMPLATE_ALIASES.update({'200 kg 合成无人直升机':'千机-200轻型无人直升机',
+                         '200 kg 合成机（A2质量分账，试验性）':'千机-200轻型无人直升机（A2质量分账，试验性）'})
 
 
 def digest(value):
@@ -33,6 +35,8 @@ def digest(value):
 def from_template(name):
     name=TEMPLATE_ALIASES.get(name,name)
     path=TEMPLATES[name]; aircraft=read_aircraft(path); assets={}
+    if name.startswith('千机-200'):
+        aircraft['name'] = name
     for i,rotor in enumerate(aircraft['rotors']):
         for key in ('geometry_csv','polar_csv','polar_json'):
             if key not in rotor:continue

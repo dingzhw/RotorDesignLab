@@ -1,0 +1,59 @@
+{
+  "version": "0.4.6.dev12",
+  "baseline": "e5a08a4a8324dcd89d167681714054397bd9172f",
+  "geometry_and_polar_roundtrip_exact": true,
+  "mass_moments_unchanged": true,
+  "isolated_result": {
+    "thrust_n": 1720.5564075386837,
+    "torque_nm": 166.08494555879463,
+    "power_w": 29567.037207564295,
+    "rpm": 1699.9999999999998,
+    "collective_deg": 13,
+    "flap_coning_deg": 0.5832194716062631,
+    "flap_cos_deg": -2.0638167881810716e-14,
+    "flap_sin_deg": 4.613753362975241e-14
+  },
+  "rename_trim_summary_exact": true,
+  "renamed_aircraft": "千机-200轻型无人直升机",
+  "trim_result": {
+    "speed_m_s": 15.0,
+    "climb_m_s": 0.0,
+    "altitude_m": 0.0,
+    "download_n": 0.0,
+    "mass_kg": 200,
+    "required_power_w": 33668.668538323924,
+    "transmission_loss_w": 1369.8514218770665,
+    "accessory_power_w": 700,
+    "continuous_margin_w": 11331.331461676076,
+    "short_time_margin_w": 21331.331461676076,
+    "duration_margin_w": 11331.331461676076,
+    "max_scaled_residual": 1.564179630790541e-11,
+    "max_internal_residual": 4.89391083937141e-12,
+    "main_collective_deg": 11.69770737967241,
+    "main_cos_deg": 1.809995657994018,
+    "main_sin_deg": -2.556627869010953,
+    "tail_collective_deg": 12.015163898163857,
+    "roll_deg": -2.0488502547127623,
+    "pitch_deg": -0.9396549465121383,
+    "main_thrust_n": 1971.5135384764794,
+    "main_torque_nm": 168.59885303613657,
+    "main_power_w": 30014.572025779536,
+    "tail_thrust_n": 100.18769001990204,
+    "tail_torque_nm": 2.0171234979901804,
+    "tail_power_w": 1584.2450906673243
+  },
+  "candidate_table_roundtrip_exact": true,
+  "step_example": [
+    0.0,
+    0.3,
+    0.6,
+    0.9
+  ],
+  "old_name_alias_preserved": true,
+  "csv_sha256": {
+    "三方案参数示例.csv": "7dcaad773a3ac41e6519232b86733d939e76333d1aa77182d588246c0e7e548e",
+    "桨叶几何示例.csv": "6338151fc47dbd62580330445d2034135378e3f3ba82327b25610be2ac109a7c",
+    "翼型极曲线示例.csv": "02b8ba41a7d1f5e91d6b4ae9daa17edccd162683ace64f6414f23a5677be9ef2"
+  },
+  "scope": "软件输入与复算验证；估算参数示例，未新增独立物理精度结论。"
+}

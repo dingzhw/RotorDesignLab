@@ -13,6 +13,7 @@ from .model_scope import OPEN_LOOP_LABEL, SPATIAL_SCOPE, RESPONSE_DURATION_BOUND
 
 TASKS={'孤立旋翼':'rotor','整机悬停预算':'hover_budget','整机配平':'trim',OPEN_LOOP_LABEL:'open_loop'}
 from .comparison_ui import LABEL as DESIGN_COMPARISON
+from .scan_ui import design_scan
 
 
 def setting(task,name,title,default,options=None,help=None,**kwargs):
@@ -136,13 +137,13 @@ def case_controls(task, hover=False):
             default = ('1000,1500,2000' if x == 'target_thrust_n' else '8,12,16' if x == 'collective_deg'
                        else '0,5,10' if x == 'flow_z_m_s' else '0,10,20' if x.startswith('motion_') else '0,-10,-20')
             title=('目标拉力扫描 / N' if x=='target_thrust_n' else '总距扫描 / °' if x=='collective_deg' else AXIS_LABELS[x]+'（扫描值）')
-            text=task_setting(task,x+'-scan',title,default,help='数值用逗号分隔；失败点会保留诊断。')
+            text=design_scan(task_setting,task,x+'-scan',title,default,help='按表头单位输入；失败点会保留诊断。')
             rpm=rotor['defaults']['rpm'];rotor_key='rpm-scan-'+selected
-            rpms=task_setting(task,rotor_key,'转速扫描 / rpm',f'{rpm*.95:g},{rpm:g}',help='数值用逗号分隔。')
+            rpms=design_scan(task_setting,task,rotor_key,'转速扫描 / rpm',f'{rpm*.95:g},{rpm:g}',help='参考旋翼转速，单位rpm。')
             batch=lambda:dict(schema_version=1,kind='rotor_sweep',axes={x:values(text),'rpm':values(rpms)})
         return case,batch
     if aircraft['schema_version']!=2:
-        st.info('当前是孤立旋翼模板。请从“200 kg 合成无人直升机”或“UH-60 公开部件模型”新建方案以进行整机分析。')
+        st.info('当前是孤立旋翼模板。请从“千机-200轻型无人直升机”或“UH-60 公开部件模型”新建方案以进行整机分析。')
         return None,None
     st.caption(f"当前整机质量 {aircraft['mass_properties']['mass_kg']:g} kg；重心 {aircraft['mass_properties']['cg_m']} m。质量和重心在整机装配的详细设置中统一修改。")
     case=dict(schema_version=3,model='helicopter',analysis=task)
@@ -208,7 +209,7 @@ def case_controls(task, hover=False):
                      '尾桨尺寸—力臂图':(('tail_radius_m','tail_arm_m'),([tail['radius_m']*.95,tail['radius_m']], [abs(tail['position_m'][0]-aircraft['mass_properties']['cg_m'][0])]))}
             keys,defaults=options[mode]
             from .presentation import AXIS_LABELS
-            strings=[setting(task,k+'-scan',AXIS_LABELS[k]+'（逗号分隔）',','.join(f'{v:g}' for v in vals),help='按表头单位输入多个数值，用逗号分隔。各参数组合逐点计算，失败点保留原因。') for k,vals in zip(keys,defaults)]
+            strings=[design_scan(setting,task,k+'-scan',AXIS_LABELS[k]+'（逗号分隔）',','.join(f'{v:g}' for v in vals),help='按表头单位输入；各参数组合逐点计算，失败点保留原因。') for k,vals in zip(keys,defaults)]
             batch=lambda:dict(schema_version=1,kind='helicopter_sweep',axes={k:values(s) for k,s in zip(keys,strings)})
         elif task=='hover_budget' and mode=='三方案比较':
             cfg=current()['settings'].setdefault(task,{})
@@ -222,11 +223,11 @@ def case_controls(task, hover=False):
                 'main_rpm':st.column_config.NumberColumn('主桨转速 / rpm')})
             batch=lambda:dict(schema_version=1,kind='helicopter_comparison',variants=[dict(name=r['name'],overrides={k:v for k,v in r.items() if k!='name'}) for r in cfg['variants']])
         elif task=='trim' and mode!='单点配平':
-            speed=task_setting(task,'speed-scan','速度扫描 / (m/s)','0,5,10,15,20',help='填写水平速度列表，用逗号分隔；从低速到高速可使用相邻工况续接。')
+            speed=design_scan(task_setting,task,'speed-scan','速度扫描 / (m/s)','0,5,10,15,20',help='填写水平速度列表；从低速到高速可使用相邻工况续接。')
             group=None
             if mode=='速度—质量比较':group='mass_kg';default=str(aircraft['mass_properties']['mass_kg'])
             if mode=='速度—重心比较':group='cg_x_m';default=str(aircraft['mass_properties']['cg_m'][0])
-            groups=task_setting(task,group+'-scan','质量扫描 / kg' if group=='mass_kg' else '重心 x 扫描 / m',default,help='用逗号分隔候选值。质量单位kg；重心x相对机型原点、向前为正。') if group else None
+            groups=design_scan(task_setting,task,group+'-scan','质量扫描 / kg' if group=='mass_kg' else '重心 x 扫描 / m',default,help='质量单位kg；重心x相对机型原点、向前为正。') if group else None
             batch=lambda:dict(schema_version=1,kind='helicopter_trim_sweep',axes={'speed_m_s':values(speed),**({group:values(groups)} if group else {})},continuation=True)
     if mode == DESIGN_COMPARISON:
         from .comparison_ui import candidate_form
@@ -257,6 +258,17 @@ def case_controls(task, hover=False):
                                       options=[.01, .005, .002, .001, .0005],
                                       help='需满足最快模型模态的步长限制；程序在输入跳变处自动拆步，观察窗口须为此步长整数倍。')
         st.caption('响应逐步重算旋翼载荷，耗时明显长于线化；可先缩短观察窗口检查输入。')
+    if batch:
+        spec = batch()
+        if spec['kind'] in ('helicopter_sweep', 'helicopter_trim_sweep'):
+            from .hover_batch import design_points, VARIABLES
+            allowed = VARIABLES
+            if spec['kind'] == 'helicopter_trim_sweep':
+                from .trim_batch import AXES
+                allowed = AXES
+            check = dict(schema_version=1, kind='helicopter_sweep', case_json='case.json', axes=spec['axes'])
+            points = design_points(check, allowed)
+            st.caption(f'本次共{len(points)}个工况；配平速度扫描按原模型升序续接。')
     return case,batch
 
 

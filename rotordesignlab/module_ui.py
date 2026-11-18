@@ -1,5 +1,6 @@
 """Chinese independent rotor workbench. Never creates an aircraft document."""
 from copy import deepcopy
+from decimal import Decimal
 from io import BytesIO
 import json
 
@@ -104,28 +105,29 @@ def table_assets():
         frame = pd.read_csv(BytesIO(assets[name]))
         def apply(frame, name=name):
             assets[name] = frame.to_csv(index=False).encode('utf-8')
+        def replace_table(frame, source, name=name):
+            if name == 'geometry.csv' and frame.iloc[0, 0] > current()['module']['rotor']['pitch_reference_r_over_R']:
+                raise ValueError('有效桨根超出总距参考站；请先核对模块几何定义。')
+            candidate = deepcopy(current())
+            candidate['assets'][name] = frame.to_csv(index=False).encode('utf-8')
+            candidate['module']['provenance'] += '；'+name+'：'+source
+            rotor_module.pack(candidate['module'], candidate['assets'])
+            current().update(candidate)
+            st.session_state['module-epoch'] += 1
+            st.session_state[key('detail-group')] = '几何与翼型数据表'
+            st.rerun()
+        from .engineering_input_ui import geometry_generator, table_exchange
+        if name == 'geometry.csv':
+            geometry_generator(frame, draft['module']['rotor']['pitch_reference_r_over_R'],
+                               lambda v: key('generator/'+v), replace_table)
         table(frame, name, apply, dynamic=True)
         from .previews import csv_figure, show
         try:
             show(csv_figure(assets[name].decode('utf-8-sig'), name == 'geometry.csv'))
         except (ValueError, TypeError, KeyError) as error:
             st.warning('表格尚不完整，暂不绘图：' + str(error))
-        st.download_button('下载' + title + ' CSV', assets[name], name, key=key('download-' + name))
-        upload = st.file_uploader('导入' + title + ' CSV/TXT', type=['csv', 'txt'], key=key('upload-' + name),
-                                  help='使用下载表的列名。TXT支持逗号或制表符分隔；几何为半径比、弦长m、扭转角°，极曲线为攻角°、CL、CD。')
-        if st.button('应用' + title + '导入', key=key('apply-' + name)) and upload:
-            try:
-                imported = pd.read_csv(BytesIO(upload.getvalue()), sep=None, engine='python')
-                if set(imported.columns) != set(frame.columns):
-                    raise ValueError('列名须与下载模板一致。')
-                imported = imported[frame.columns].apply(pd.to_numeric, errors='raise')
-                if not np.isfinite(imported.to_numpy()).all():
-                    raise ValueError('表中存在空值或非有限数。')
-                apply(imported)
-                st.session_state['module-epoch'] += 1
-                st.rerun()
-            except (ValueError, UnicodeError) as error:
-                st.error('导入失败，原表已保留：' + str(error))
+        table_exchange(frame, title, draft['module']['provenance'],
+                       lambda v, name=name: key('exchange/'+name+'/'+v), replace_table)
     if 'polar.json' in assets:
         grid = json.loads(assets['polar.json'])
         sections = grid['sections']
@@ -145,21 +147,25 @@ def table_assets():
             item['values'] = finite_rows(frame[columns[1:]])
             assets['polar.json'] = json.dumps(grid, ensure_ascii=False, allow_nan=False).encode()
         table(frame, f'grid/{station}/{layer}/{coefficient}', apply_grid, disabled=['alpha_deg'])
-        st.download_button('下载当前翼型数据层 CSV', frame.to_csv(index=False).encode('utf-8-sig'), 'airfoil-layer.csv')
-        upload = st.file_uploader('导入当前翼型数据层 CSV', type=['csv'], key=key('grid-upload'),
-                                  help='先下载当前层，在Excel中修改系数再导入。保持攻角及Mach列不变；其他站、Re层、高攻角分支保留。')
-        if st.button('应用当前数据层导入') and upload:
-            try:
-                imported = pd.read_csv(BytesIO(upload.getvalue()))
-                if list(imported.columns) != columns or not np.array_equal(imported['alpha_deg'], item['alpha_deg']):
-                    raise ValueError('攻角网格或Mach列不一致。')
-                if not np.isfinite(imported.to_numpy(dtype=float)).all():
-                    raise ValueError('存在非有限系数。')
-                apply_grid(imported)
-                st.session_state['module-epoch'] += 1
-                st.rerun()
-            except (ValueError, KeyError) as error:
-                st.error('导入失败，原表已保留：' + str(error))
+        def replace_layer(incoming, source):
+            if not np.array_equal(incoming['alpha_deg'], item['alpha_deg']):
+                raise ValueError('攻角网格不一致；数据层导入只替换当前系数值。')
+            candidate = deepcopy(current())
+            new_grid = deepcopy(grid)
+            new_slices = new_grid['sections'][station].get('reynolds_slices', [new_grid['sections'][station]])
+            new_slices[layer][coefficient]['values'] = finite_rows(incoming[columns[1:]])
+            new_grid['provenance'] = str(new_grid.get('provenance', ''))+'；'+source
+            from .airfoils import AirfoilGrid
+            AirfoilGrid(new_grid)
+            candidate['assets']['polar.json'] = json.dumps(new_grid, ensure_ascii=False, allow_nan=False).encode()
+            rotor_module.pack(candidate['module'], candidate['assets'])
+            current().update(candidate)
+            st.session_state['module-epoch'] += 1
+            st.session_state[key('detail-group')] = '几何与翼型数据表'
+            st.rerun()
+        from .engineering_input_ui import table_exchange
+        table_exchange(frame, '当前翼型数据层', str(grid.get('provenance', draft['module']['provenance'])),
+                       lambda v: key(f'layer-exchange/{station}/{layer}/{coefficient}/'+v), replace_layer)
         if 'outer_alpha' in item:
             outer = item['outer_alpha']
             st.caption('高攻角独立分支；保留原数据定义。')
@@ -368,12 +374,23 @@ def conditions():
                 old_values = previous.get(axis, [default, default+.5, default+1.])
                 start = st.number_input(f'起点{i+1}', value=float(old_values[0]), key=key(f'start{i}'), help=AXES[axis])
                 stop = st.number_input(f'终点{i+1}', value=float(old_values[-1]), key=key(f'stop{i}'), help=AXES[axis])
-                count = st.number_input(f'点数{i+1}', value=len(old_values), min_value=1, max_value=100, key=key(f'count{i}'), help='包含起点和终点。')
-                axes[axis] = (list(old_values) if start == old_values[0] and stop == old_values[-1] and count == len(old_values)
-                              else np.linspace(start, stop, count).tolist())
+                spacing = st.selectbox(f'点列生成方式{i+1}', ['原点列/点数', '步长'], key=key(f'spacing{i}'),
+                                       help='旧不等间隔点列原样保留；主动选择步长后才重新生成。')
+                if spacing == '步长':
+                    from .engineering_inputs import scan_range
+                    step = st.number_input(f'步长{i+1}', value=float(Decimal(str(old_values[1]))-Decimal(str(old_values[0]))) if len(old_values)>1 else 1.,
+                                           key=key(f'step{i}'), help=AXES[axis]+'；不补入偏离步长的终点。')
+                    axes[axis] = scan_range(start, stop, step, maximum=100)
+                else:
+                    count = st.number_input(f'点数{i+1}', value=len(old_values), min_value=1, max_value=100, key=key(f'count{i}'), help='包含起点和终点。')
+                    axes[axis] = (list(old_values) if start == old_values[0] and stop == old_values[-1] and count == len(old_values)
+                                  else np.linspace(start, stop, count).tolist())
                 st.caption('实际扫描点：' + ', '.join(f'{value:g}' for value in axes[axis]) +
                            '。导入点列保持原值；修改端点或点数后生成等间隔点列。')
             current()['sweep'] = dict(schema_version=1, kind='rotor_module_sweep', axes=axes)
+            from .module_batch import validate_spec
+            validate_spec(dict(current()['sweep'], case_json='case.json'))
+            st.caption(f'本次共{int(np.prod([len(v) for v in axes.values()]))}个工况；最多100点。')
 
 
 def manager():
@@ -547,12 +564,19 @@ def render():
     st.subheader('孤立旋翼')
     st.info('只配置一个旋翼：桨叶、桨毂、质量矩、挥舞和气动数据。工况中给定操纵、来流与试验姿态，无需整机参数。')
     manager()
-    conditions()
+    ready = True
+    previous_sweep = deepcopy(current().get('sweep'))
+    try:
+        conditions()
+    except (ValueError, TypeError) as error:
+        ready = False
+        current()['sweep'] = previous_sweep
+        st.error('扫描或工况需要修正，历史结果保留：'+str(error))
     try:
         details()
     except (ValueError, KeyError, TypeError) as error:
         st.error('详细设置需要修正，草稿保留：' + str(error))
-    if st.button('运行旋翼计算', type='primary', help='提交当前模块和工况；计算过程不会改写已保存方案或上次结果的输入。'):
+    if st.button('运行旋翼计算', type='primary', disabled=not ready, help='提交当前模块和工况；计算过程不会改写已保存方案或上次结果的输入。'):
         try:
             with st.spinner('正在计算旋翼…'):
                 st.session_state['module-result'] = store.execute(current())
