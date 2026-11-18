@@ -40,5 +40,22 @@
     "Old numerical inputs/models unchanged",
     "R19 open; no stability ranking",
     "Windows 10 and other colleague machines pending"
-  ]
+  ],
+  "cmd_fix": {
+    "version": "0.4.6.dev15",
+    "initial_result": "failed: LF-only new cmd files misparsed by Windows cmd.exe",
+    "correction": "Git eol=crlf plus builder normalization; real cmd dispatch and payload verification added",
+    "source_focused_tests": 4,
+    "source_elapsed_s": 7.154,
+    "source_exit_code": 0,
+    "original_failed_archive": "c0e946e56744af020253ae0add43069d7157126cefdcba0c130224819200214b",
+    "original_package_retained": true,
+    "rehearsal": {
+      "focused_tests": 4,
+      "verify_cmd_exit_code": 0,
+      "webpage_exports_and_replay": "passed",
+      "native_windows": "passed",
+      "elapsed_s": 60.64455140000064
+    }
+  }
 }

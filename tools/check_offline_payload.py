@@ -6,6 +6,7 @@ from pathlib import Path
 import platform
 import runpy
 import socket
+import subprocess
 import sys
 import time
 import unittest
@@ -26,6 +27,10 @@ def main(destination):
 
     assert Path(sys.prefix).resolve() == ROOT/'runtime', sys.prefix
     assert not verify(ROOT)
+    command = subprocess.run(['cmd', '/d', '/c', '验证分发包.cmd'], cwd=ROOT,
+                             input='\n', capture_output=True, encoding='utf-8')
+    assert command.returncode == 0, command.stdout+command.stderr
+    assert '分发文件哈希与运行依赖检查通过' in command.stdout
     packages = {}
     for module in (numpy, scipy, pandas, matplotlib, streamlit, tkinter):
         path = Path(module.__file__).resolve()
@@ -54,6 +59,7 @@ def main(destination):
     record = dict(version=__version__, platform=platform.platform(), python=sys.version,
                   isolated_import_paths=packages, manifest_sha256=sha256((ROOT/'distribution-manifest.json').read_bytes()).hexdigest(),
                   focused_tests=result.testsRun, webpage_exports_and_replay='passed', native_windows='passed',
+                  verify_cmd_exit_code=command.returncode,
                   elapsed_s=time.perf_counter()-started, external_connection_attempts=blocked,
                   network_scope='Test process blocks external socket connects; server subprocess uses localhost config. OS network unchanged.',
                   human_acceptance='pending', browser_callback='captured automatically; real colleague browser acceptance pending')

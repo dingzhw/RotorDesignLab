@@ -62,6 +62,9 @@ def build(output):
         target = output/path
         target.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy2(ROOT/path,target)
+        if path.suffix.lower()=='.cmd':
+            # Also cover newly created working files before a Git checkout normalizes EOL.
+            target.write_bytes((ROOT/path).read_text(encoding='utf-8').replace('\n','\r\n').encode('utf-8'))
     runtime = output/'runtime'
     runtime.mkdir()
     base = Path(sys.base_prefix)

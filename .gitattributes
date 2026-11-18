@@ -1,2 +1,4 @@
 # Preserve audited public input and result bytes, including source checksums.
 validation/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# cmd.exe can misread UTF-8 Chinese batch lines when a new file uses LF only.
+*.cmd text eol=crlf

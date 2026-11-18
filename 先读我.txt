@@ -1,4 +1,4 @@
-RotorDesignLab｜旋翼设计台  0.4.6.dev14 离线试用包
+RotorDesignLab｜旋翼设计台  0.4.6.dev15 离线试用包
 
 1. 把ZIP完整解压到本机可写目录，例如 D:\RotorDesignLab。
    不要在压缩包内直接运行，不要放到需要管理员权限的 Program Files。
