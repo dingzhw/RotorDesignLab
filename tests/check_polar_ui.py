@@ -22,7 +22,7 @@ def main():
         before = deepcopy(app.session_state['module-draft'])
         get(app.selectbox, '旋翼参数分组').select('总体参数').run()
         assert app.session_state['module-draft'] == before
-        get(app.selectbox, '翼型攻角插值').set_value('pchip_alpha_v1').run()
+        get(app.selectbox, '翼型插值').set_value('pchip_alpha_v1').run()
         assert not app.exception
         get(app.number_input, '径向叶素数').set_value(24).run()
         get(app.number_input, '方位离散数').set_value(12).run()
@@ -33,7 +33,7 @@ def main():
         get(app.button, '保存').click().run()
         saved = deepcopy(app.session_state['module-draft'])
         assert store.load(app.session_state['module-id'])[0] == saved
-        get(app.selectbox, '翼型攻角插值').set_value('linear_v1').run()
+        get(app.selectbox, '翼型插值').set_value('linear_v1').run()
         get(app.button, '打开所选方案').click().run()
         get(app.radio, '处理未保存修改').set_value('放弃修改并继续').run()
         get(app.button, '确认选择').click().run()

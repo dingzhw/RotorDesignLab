@@ -9,6 +9,10 @@ def new_scheme(name):
     draft = store.template(name)
     for limit in ('power_w', 'torque_nm'):
         draft['module']['rotor']['limits'].pop(limit, None)
+    draft['case']['method'] = 'spatial'
+    draft['trial'] = dict(schema_version=1, angles_deg=[0., 0., 0.], gravity_m_s2=9.80665)
+    from .rotor_trial import gravity
+    draft['case']['gravity_rotor_m_s2'] = gravity([0., 0., 0.], 9.80665).tolist()
     return draft
 
 

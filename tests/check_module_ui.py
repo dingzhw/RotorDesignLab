@@ -33,11 +33,11 @@ def main():
         field(app.number_input, '总距 / °').set_value(12.).run()
         field(app.number_input, '径向叶素数').set_value(24).run()
         field(app.number_input, '方位离散数').set_value(12).run()
-        field(app.number_input, '盘面内 x速度 / (m/s)').set_value(3.).run()
-        assert app.session_state['module-draft']['case']['flow_rotor_m_s'] == [-3., 0., 0.]
-        field(app.radio, '速度填写方式').set_value('空气相对桨毂速度').run()
-        assert field(app.number_input, '盘面内 x速度 / (m/s)').value == -3.
-        field(app.radio, '速度填写方式').set_value('旋翼相对空气运动速度').run()
+        field(app.number_input, '向前速度 / (m/s)').set_value(3.).run()
+        assert app.session_state['module-draft']['case']['flow_rotor_m_s'] == [3., 0., 0.]
+        field(app.radio, '速度填写方式').set_value('空气相对桨毂速度（桨盘坐标）').run()
+        assert field(app.number_input, '桨盘X来流 / (m/s)').value == 3.
+        field(app.radio, '速度填写方式').set_value('运动速度（前、右、下）').run()
         field(app.button, '运行旋翼计算').click().run()
         ok(app)
         result = deepcopy(app.session_state['module-result'])

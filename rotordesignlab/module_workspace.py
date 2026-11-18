@@ -41,6 +41,10 @@ def pack(draft):
     component = rotor_module.pack(draft['module'], draft['assets'])
     manifest = dict(schema_version=1, kind='rotor_workspace', case=draft['case'],
                     sweep=draft.get('sweep'), migration=draft.get('migration'), module_sha256=sha256(component).hexdigest())
+    if 'trial' in draft:
+        from .rotor_trial import validate
+        validate(draft['trial'], draft['case'])
+        manifest.update(schema_version=2, trial=draft['trial'])
     stream = BytesIO()
     with ZipFile(stream, 'w', ZIP_DEFLATED) as archive:
         archive.writestr('module.rdlr', component)
@@ -58,8 +62,9 @@ def unpack(data):
                 raise ValueError('旋翼算例包文件清单或大小无效。')
             manifest = json.loads(archive.read('workspace.json'))
             component = archive.read('module.rdlr')
-        if (set(manifest) != {'schema_version', 'kind', 'case', 'sweep', 'migration', 'module_sha256'} or
-                manifest['schema_version'] != 1 or manifest['kind'] != 'rotor_workspace' or
+        if (set(manifest) != ({'schema_version', 'kind', 'case', 'sweep', 'migration', 'module_sha256'} |
+                              ({'trial'} if manifest.get('schema_version') == 2 else set())) or
+                manifest['schema_version'] not in (1, 2) or manifest['kind'] != 'rotor_workspace' or
                 manifest['module_sha256'] != sha256(component).hexdigest()):
             raise ValueError('旋翼算例包版本或内容哈希无效。')
         module, assets = rotor_module.unpack(component)
@@ -71,6 +76,10 @@ def unpack(data):
         draft = dict(module=module, assets=assets, case=case, sweep=manifest['sweep'])
         if manifest['migration'] is not None:
             draft['migration'] = manifest['migration']
+        if manifest['schema_version'] == 2:
+            from .rotor_trial import validate
+            validate(manifest['trial'], case)
+            draft['trial'] = manifest['trial']
         digest(draft)
         return draft
     except (BadZipFile, KeyError, TypeError, UnicodeError, RuntimeError) as error:

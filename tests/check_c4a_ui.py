@@ -58,7 +58,7 @@ def main():
         field(app.radio, '求解任务').set_value('批量性能扫描').run()
         assert not any(item.label == '总距 / °' for item in app.number_input)
         field(app.selectbox, '扫描参数1').set_value('flow_x').run()
-        assert not any(item.label == '盘面内 x速度 / (m/s)' for item in app.number_input)
+        assert not any(item.label == '桨盘X来流 / (m/s)' for item in app.number_input)
         field(app.button, '保存').click().run()
         check(app)
         saved = deepcopy(app.session_state['module-draft'])

@@ -196,8 +196,40 @@ def details():
     module = current()['module']
     rotor = module['rotor']
     st.subheader('旋翼设置')
+    from .rotor_trial import effective_flap
+    mode, precone_owner, precone_prefix = effective_flap(current())
+    widget = key('blade-motion')
+    def motion_changed():
+        module['flapping']['mode'] = st.session_state[widget]
+        current()['case']['flapping_model'] = 'module'
+        st.session_state['module-epoch'] += 1
+    st.selectbox('桨叶运动方式', ['hinged', 'fixed'], index=0 if mode == 'hinged' else 1,
+                 format_func=lambda value: '铰接挥舞' if value == 'hinged' else '刚性桨叶',
+                 key=widget, on_change=motion_changed,
+                 help='刚性桨叶按给定预锥保持固定，不求解挥舞平衡；铰接挥舞求受载锥度及一阶挥舞。切换不删除已录入的质量矩与弹簧资料。')
+    field(precone_owner, 'precone_deg', '预锥角 / °', default=0., prefix=precone_prefix,
+          help='刚性桨叶为给定几何角；铰接模型为弹簧零力矩参考角。受载锥度β₀是结果。自由铰刚度为0时本角不产生弹簧力矩。')
+    if current()['case'].get('flapping_model') == 'fixed':
+        st.caption('此历史方案沿用固定对照分支的预锥；另存或明确切换运动方式才改变模块定义。')
+    if mode == 'hinged':
+        missing = [title for group, name, title in (
+            ('blade_mass', 'first_mass_moment_kg_m', '桨叶一阶质量矩'),
+            ('blade_mass', 'inertia_kg_m2', '挥舞惯量'),
+            ('flapping', 'spring_nm_rad', '挥舞刚度'),
+            ('flapping', 'damper_nms_rad', '挥舞阻尼')) if name not in module[group]]
+        if missing:
+            st.warning('铰接挥舞缺少：' + '、'.join(missing) + '。请在详细设置补齐；未知值保持缺项，不自动填零。')
+    show_mass = mode == 'hinged' or st.checkbox('编辑装配用质量资料', key=key('mass-data'),
+                                               help='质量矩和桨毂属性归旋翼本体；刚性孤立气动不使用这些资料，装配时可继续填写。')
+    groups = ['总体参数', '操纵与载荷限制', '桨叶几何形状', '翼型气动数据']
+    if show_mass:
+        groups[1:1] = ['桨叶质量矩', '桨毂质量属性']
+    if mode == 'hinged':
+        groups.insert(3, '挥舞特性')
+    if st.session_state.get(key('detail-group')) not in groups:
+        st.session_state.pop(key('detail-group'), None)
     with st.expander('详细设置'):
-        group = st.selectbox('旋翼参数分组', ['总体参数', '桨叶质量矩', '桨毂质量属性', '挥舞特性', '操纵与载荷限制', '桨叶几何形状', '翼型气动数据'],
+        group = st.selectbox('旋翼参数分组', groups,
                              key=key('detail-group'), help='这些都是旋翼本体参数。安装位置、整机质量和动力在整机装配中设置。')
         if group == '总体参数':
             field(rotor, 'blade_count', '桨叶数', prefix='rotor', options=list(range(2, 13)))
@@ -206,8 +238,6 @@ def details():
             field(rotor, 'rotation_sign', '旋向', prefix='rotor', options=[1, -1],
                   format_func=lambda v: '+1：从+x向+y转动' if v == 1 else '−1：从+x向−y转动',
                   help='局部右手系z沿正推力轴，x为零方位。+1从正z端看向桨毂为逆时针；−1为顺时针。')
-            optional(rotor, 'precone_deg', '固定对照预锥 / °', 0., 'rotor',
-                     '仅选择固定桨叶对照时使用；采用模块挥舞特性时使用挥舞组预锥。旧文件两项保持原语义。')
             st.caption('半径改变时保持几何表中的实际弦长与扭转；质量矩不会自动缩放。')
         elif group == '桨叶质量矩':
             mass = module['blade_mass']
@@ -239,9 +269,7 @@ def details():
                 field(hub, 'provenance', '桨毂资料来源', prefix='hub')
         elif group == '挥舞特性':
             flap = module['flapping']
-            field(flap, 'mode', '模块挥舞类型', options=['fixed', 'hinged'], prefix='flap',
-                  format_func=lambda v: {'fixed': '固定桨叶', 'hinged': '铰接稳态挥舞'}[v])
-            for name in ('hinge_offset_m', 'precone_deg', 'max_flap_deg'):
+            for name in ('hinge_offset_m', 'max_flap_deg'):
                 field(flap, name, prefix='flap')
             for name, title in [('spring_nm_rad', '挥舞刚度 / (N·m/rad)'), ('damper_nms_rad', '挥舞阻尼 / (N·m·s/rad)'),
                                 ('delta3_deg', '变距—挥舞耦合角 δ₃ / °')]:
@@ -268,38 +296,11 @@ def details():
 def physical_conditions(hidden):
     case = current()['case']
     st.subheader('旋翼工况设置')
-    st.caption('局部右手系：z沿正推力轴，x为零方位，y由右手系确定。这里不涉及机头/机尾或整机安装。')
-    field(case, 'method', '计算方法', default='spatial', options=['spatial', 'axial'], prefix='case',
-          format_func=lambda v: {'spatial': '三方向方位角叶素', 'axial': '纯轴流性能'}[v],
-          help='三方向法支持盘面内来流、周期变距和稳态挥舞；纯轴流法只支持固定桨叶、零周期变距。不会随来流静默换核。')
-    field(case, 'flapping_model', '挥舞处理', default='module', options=['module', 'fixed'], prefix='case',
-          format_func=lambda v: '采用模块挥舞特性' if v == 'module' else '固定桨叶对照',
-          help='对照选项不修改模块本体。固定对照采用模块rotor中的历史固定预锥；若未给定则为0°。')
-    if case.get('flapping_model', 'module') == 'fixed':
-        st.caption(f"固定对照预锥：{current()['module']['rotor'].get('precone_deg', 0.):g}°（历史固定桨叶口径）。")
-    motion = st.radio('速度填写方式', ['旋翼相对空气运动速度', '空气相对桨毂速度'], horizontal=True,
-                      key=key('motion-view'), help='静止空气中，运动速度与空气相对桨毂速度互为相反数，入口只转换一次；均在旋翼局部系表达。')
-    sign = -1 if motion.startswith('旋翼') else 1
-    flow = case['flow_rotor_m_s']
-    for i, col in enumerate(st.columns(3)):
-        with col:
-            if 'flow_'+'xyz'[i] in hidden:
-                st.caption('该方向速度由扫描点列给定。')
-                continue
-            widget = key('velocity-' + str(sign) + str(i))
-            def changed(i=i, widget=widget):
-                case['flow_rotor_m_s'][i] = sign * st.session_state[widget]
-                # Drop the other view so toggling always reflects the physical draft.
-                st.session_state.pop(key('velocity-' + str(-sign) + str(i)), None)
-            st.number_input(('盘面内 ' if i < 2 else '沿正推力轴 ') + 'xyz'[i] + '速度 / (m/s)',
-                            value=float(sign*flow[i]), key=widget, on_change=changed,
-                            help='正值沿局部轴正向。当前支持正贯流：运动z≥0，或空气相对速度z≤0；盘面内速度可正可负。')
-    st.caption('实际空气相对桨毂速度 [x, y, z] = ' + str(case['flow_rotor_m_s']) + ' m/s')
-    with st.expander('周期变距与试验姿态'):
+    from .rotor_trial_ui import render
+    render(hidden)
+    with st.expander('周期变距'):
         for name in ('cyclic_cos_deg', 'cyclic_sin_deg'):
             field(case, name, '余弦周期变距系数 θc / °' if name == 'cyclic_cos_deg' else '正弦周期变距系数 θs / °', default=0., prefix='case', help='θ(ψ)=总距+几何扭转差+θc cosψ+θs sinψ；ψ从局部+x朝+y几何增大；旋向决定桨叶经过的时间次序。单位°。')
-        vector(case, 'gravity_rotor_m_s2', '局部重力 / (m/s²)', [0., 0., -9.80665], 'case',
-               '水平向上旋翼填写[0,0,−9.80665]；竖直试验台按姿态投影，例如[0,−9.80665,0]。零向量仅用于无重力数值对照。')
     with st.expander('空气环境'):
         env = case.setdefault('environment', {'mode': 'isa', 'isa_temperature_offset_k': 0.})
         choice = st.selectbox('空气环境来源', ['isa', 'custom'], index=0 if env['mode'] == 'isa' else 1,
@@ -402,14 +403,23 @@ def conditions():
             field(case, name, title, prefix='case', help='该任务的给定量；总距为参考站桨距角，转速为每分钟转数。')
     with st.expander('求解器参数设置'):
         rotor = current()['module']['rotor']
-        field(rotor, 'inflow_model', '轴流性能入流模型', default='uniform', options=['uniform', 'annular'], prefix='rotor',
-              format_func=lambda v: {'uniform': '均匀入流', 'annular': '径向环带入流'}[v],
-              help='仅轴流性能法使用；三方向方位角叶素法使用Pitt–Peters三状态入流。')
-        field(rotor, 'tip_loss', '轴流性能桨尖损失', default='none', options=['none', 'prandtl'], prefix='rotor',
-              format_func=lambda v: {'none': '不附加', 'prandtl': 'Prandtl桨尖损失'}[v],
-              help='只作用于轴流性能法；更换假设时分别记录比较。')
-        field(rotor, 'polar_interpolation', '翼型攻角插值', default='linear_v1',
-              options=['linear_v1', 'pchip_alpha_v1'], prefix='rotor',
+        with st.expander('方法对照（专业设置）'):
+            field(case, 'method', '计算方法', default='spatial', options=['spatial', 'axial'], prefix='case',
+                  format_func=lambda value: '三方向方位角叶素' if value == 'spatial' else '纯轴流性能',
+                  help='显式选择并保存；横向速度为0时不自动换核。旧轴流工况仍按原方法运行。')
+        if case.get('method', 'spatial') == 'axial':
+            field(rotor, 'inflow_model', '入流模型', default='uniform', options=['uniform', 'annular'], prefix='rotor',
+                  format_func=lambda v: {'uniform': '均匀入流', 'annular': '径向环带入流'}[v],
+                  help='仅轴流性能法使用；三方向方位角叶素法使用Pitt–Peters三状态入流。')
+            field(rotor, 'tip_loss', '桨尖损失', default='none', options=['none', 'prandtl'], prefix='rotor',
+                  format_func=lambda v: {'none': '不附加', 'prandtl': 'Prandtl桨尖损失'}[v],
+                  help='只作用于轴流性能法；更换假设时分别记录比较。')
+            st.caption('轴流方法只支持刚性桨叶、纯轴向来流与零周期；不兼容时明确拒算。')
+        else:
+            st.caption('入流模型：Pitt–Peters三状态入流的稳态解。当前方位角核不附加Prandtl桨尖损失。')
+            st.caption('动态入流仍用于整机时程；此处求稳态平衡，不提供孤立旋翼瞬态开关。')
+        field(rotor, 'polar_interpolation', '翼型插值', default='linear_v1',
+              options=(['linear_v1'] if 'polar_json' in rotor and rotor.get('polar_interpolation', 'linear_v1') == 'linear_v1' else ['linear_v1', 'pchip_alpha_v1']), prefix='rotor',
               format_func=lambda v: {'linear_v1': '分段线性（旧方案）',
                                      'pchip_alpha_v1': '连续斜率 PCHIP（显式候选）'}[v],
               help='PCHIP目前仅支持CSV翼型表，保留CL/CD节点并使内部斜率连续。'
@@ -417,6 +427,8 @@ def conditions():
         if 'polar_json' in rotor:
             st.caption('当前为Re/Mach多维翼型表，请使用分段线性；不兼容的PCHIP选项会明确拒算，可在上方改回。')
         for name, title, value in [('radial_stations', '径向叶素数', 80), ('azimuth_stations', '方位离散数', 36)]:
+            if name == 'azimuth_stations' and case.get('method') == 'axial':
+                continue
             widget = key(name)
             def changed(name=name, widget=widget):
                 case[name] = st.session_state[widget]
@@ -435,6 +447,19 @@ def results(record):
     same = record['fingerprint'] == fingerprint()
     st.subheader('计算结果' if same else '上次结果（当前草稿已修改，请重新计算）')
     st.caption('结果旋翼：' + record['draft']['module']['name'])
+    with st.expander('结果的坐标与桨叶定义'):
+        from .rotor_trial import effective_flap, basis
+        mode, owner, _ = effective_flap(record['draft'])
+        st.write('桨叶运动方式：' + ('铰接挥舞' if mode == 'hinged' else '刚性桨叶'))
+        st.write(f"输入预锥：{owner.get('precone_deg', 0.):g}°；受载锥度β₀见计算结果。")
+        st.caption('力和力矩在桨毂局部系表达：X零方位、Y右手系、Z正推力轴。下列资料来自实际运行快照。')
+        pose = record['draft'].get('trial')
+        if pose:
+            st.write('试验滚转/俯仰/偏航 / °：', pose['angles_deg'])
+            st.dataframe(pd.DataFrame(basis(pose['angles_deg']), index=['参考X前', '参考Y右', '参考Z下'],
+                                      columns=['桨盘X', '桨盘Y', '桨盘Z']))
+        else:
+            st.caption('历史方案没有机头参考姿态资料，保持原局部向量定义。')
     if answer['status'] != 'converged':
         st.error('求解失败：' + answer.get('error', '部分扫描点失败，请查看逐点诊断。'))
     else:

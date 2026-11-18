@@ -1,0 +1,158 @@
+{
+  "version": "0.4.6.dev17",
+  "baseline": "3550fd542700a19ad4adfc8ad1e7685fb32ccd24",
+  "unit_tests": 151,
+  "unit_seconds": 251.151,
+  "unit_exit_code": 0,
+  "ui_checks": [
+    "check_c4b_ui",
+    "check_c4a_ui",
+    "check_module_ui",
+    "check_c2_ui",
+    "check_polar_ui",
+    "check_assembly_ui"
+  ],
+  "ui_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "frozen_replay": [
+    {
+      "case": "hinged",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "305cc31b5d1bd10fa206932681d760c30dfa8d16d1b18356e52b3b153f4b1b3c"
+    },
+    {
+      "case": "fixed",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "18ea41517d721eddaabb247f7b84ff1689e00efc88203c1063fc89338e2488e9"
+    },
+    {
+      "case": "axial",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "832545beff6c615256fcd59c34253170ad0c9f6581299f88c3e698e5d0ad9535"
+    },
+    {
+      "case": "inverse",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "9b5941637d91aa18ade8b699b0ce84454eb64cd7e986d66c1fed9e4d642d3a18"
+    },
+    {
+      "case": "scan",
+      "status": "converged",
+      "numerical_values": "identical",
+      "package_sha256": "279bbc83be677e3819961d81c397c99785466509bf3ce76e8be05b78e29e013f"
+    },
+    {
+      "case": "failure",
+      "status": "failed",
+      "numerical_values": "identical",
+      "package_sha256": "439dbb6cb11d5669177988fbe54eec85a14ba536eeb8fdb854670b0b228604a2"
+    }
+  ],
+  "continuity": [
+    {
+      "mode": "fixed",
+      "method": "spatial",
+      "x_speeds_m_s": [
+        -1e-05,
+        0,
+        1e-05
+      ],
+      "summaries": [
+        {
+          "thrust_n": 2011.3796229689842,
+          "torque_nm": 206.02137835837163,
+          "power_w": 36676.664094875865,
+          "rpm": 1699.9999999999998,
+          "collective_deg": 13,
+          "flap_coning_deg": 8.44190829958683e-25,
+          "flap_cos_deg": -1.930920161195161e-24,
+          "flap_sin_deg": 5.720812963457256e-23
+        },
+        {
+          "thrust_n": 2011.37962296887,
+          "torque_nm": 206.0213783583728,
+          "power_w": 36676.66409487607,
+          "rpm": 1699.9999999999998,
+          "collective_deg": 13,
+          "flap_coning_deg": 2.532429567590118e-24,
+          "flap_cos_deg": 1.7062318902002265e-24,
+          "flap_sin_deg": 8.51460599840166e-25
+        },
+        {
+          "thrust_n": 2011.3796229689842,
+          "torque_nm": 206.02137835837158,
+          "power_w": 36676.66409487585,
+          "rpm": 1699.9999999999998,
+          "collective_deg": 13,
+          "flap_coning_deg": 2.5325721367635453e-24,
+          "flap_cos_deg": 2.3785428735805197e-24,
+          "flap_sin_deg": -5.834327333842982e-23
+        }
+      ],
+      "relative_limit": 1e-06,
+      "passed": true
+    },
+    {
+      "mode": "hinged",
+      "method": "spatial",
+      "x_speeds_m_s": [
+        -1e-05,
+        0,
+        1e-05
+      ],
+      "summaries": [
+        {
+          "thrust_n": 2011.1019505611512,
+          "torque_nm": 205.98196026399006,
+          "power_w": 36669.6467444513,
+          "rpm": 1699.9999999999998,
+          "collective_deg": 13,
+          "flap_coning_deg": 0.6592003762946926,
+          "flap_cos_deg": 1.6111232468724564e-06,
+          "flap_sin_deg": -1.0710462889209466e-07
+        },
+        {
+          "thrust_n": 2011.1019505610288,
+          "torque_nm": 205.98196026399398,
+          "power_w": 36669.646744451995,
+          "rpm": 1699.9999999999998,
+          "collective_deg": 13,
+          "flap_coning_deg": 0.6592003762946539,
+          "flap_cos_deg": 7.583582600502767e-14,
+          "flap_sin_deg": 1.639715466639243e-14
+        },
+        {
+          "thrust_n": 2011.1019505611512,
+          "torque_nm": 205.98196026399006,
+          "power_w": 36669.6467444513,
+          "rpm": 1699.9999999999998,
+          "collective_deg": 13,
+          "flap_coning_deg": 0.6592003762946926,
+          "flap_cos_deg": -1.6111233540128433e-06,
+          "flap_sin_deg": 1.0710475510065233e-07
+        }
+      ],
+      "relative_limit": 1e-06,
+      "passed": true
+    }
+  ],
+  "thresholds": {
+    "loads_relative": 1e-06,
+    "loads_absolute_si": 1e-07,
+    "flap_deg_absolute": 1e-08
+  },
+  "manual_acceptance": "pending",
+  "C4-C": "pending",
+  "R19": "unchanged",
+  "solver_equations": "unchanged"
+}
