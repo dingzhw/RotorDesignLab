@@ -26,7 +26,8 @@ elif page == '整机装配':
     render_assembly()
 else:
     from rotordesignlab.assembly_ui import analysis_header
-    analysis_header()
+    if not analysis_header():
+        st.stop()
     hover = False
     if page == '悬停求解':
         kind = st.radio('悬停分析方法', ['功率与载荷预算', '六分量悬停配平'], horizontal=True,

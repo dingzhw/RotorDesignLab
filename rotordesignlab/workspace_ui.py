@@ -183,7 +183,12 @@ def case_controls(task, hover=False):
         st.caption(f"本次附加下载比例：{download['effective_fraction']:.1%}。" + download['note'])
     st.caption(download['comparison_note'])
     a,b,c=st.columns(3)
-    with a:case['altitude_m']=task_setting(task,'altitude_m','飞行高度 / m',0.,min_value=0.,max_value=11000.)
+    with a:
+        if mode == '质量—高度图':
+            case['altitude_m'] = current()['settings'].get(task, {}).get('altitude_m', 0.)
+            st.caption('高度由扫描点列给定；环境按各点高度计算。')
+        else:
+            case['altitude_m'] = task_setting(task, 'altitude_m', '飞行高度 / m', 0., min_value=0., max_value=11000.)
     with b:case['requested_duration_s']=task_setting(task,'requested_duration_s','需维持时间 / s',600.,min_value=.001,max_value=1e9,help='用于连续或短时功率余量检查，不是响应积分时长。')
     from .environment_ui import render_environment
     case.update(render_environment(current(), task, task_setting, altitude=case['altitude_m']))
@@ -193,7 +198,11 @@ def case_controls(task, hover=False):
             st.caption('悬停六分量配平：水平速度=0、爬升率=0；与前飞配平使用同一方程，工况独立保存。')
         else:
             with c:
-                case['speed_m_s'] = task_setting(task,'speed_m_s','水平速度 / (m/s)',0.,min_value=0.,max_value=150.)
+                if task == 'trim' and mode in ('速度曲线', '速度—质量比较', '速度—重心比较'):
+                    case['speed_m_s'] = current()['settings'].get(task, {}).get('speed_m_s', 0.)
+                    st.caption('水平速度由扫描点列给定。')
+                else:
+                    case['speed_m_s'] = task_setting(task, 'speed_m_s', '水平速度 / (m/s)', 0., min_value=0., max_value=150.)
             case['climb_m_s'] = task_setting(task,'climb_m_s','爬升率 / (m/s)',0.,min_value=0.,max_value=15.,help='正值向上爬升；下降涡环态尚未覆盖。')
     with st.expander('分析网格与扫描设置'):
         case['radial_stations']=task_setting(task,'radial_stations','每桨径向叶素数',80,min_value=8,max_value=2000)
@@ -419,7 +428,7 @@ def show_result(record,is_current):
     archive=BytesIO()
     with ZipFile(archive,'w',ZIP_DEFLATED) as z:
         for name,data in files.items():z.writestr(name,data)
-    st.download_button('下载本次结果、方案与复算工况',archive.getvalue(),'rotordesignlab-result.zip',key='download-result')
+    st.download_button('下载结果与可搬移复算包',archive.getvalue(),'rotordesignlab-result.zip',key='download-result')
 
 
 def show_power_accounting(accounting, title):

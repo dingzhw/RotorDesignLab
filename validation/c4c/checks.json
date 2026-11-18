@@ -1,0 +1,16 @@
+{
+  "version": "0.4.6.dev18",
+  "baseline": "b99b9651952a8c578c5a0ae5ee2fce7d7b8bcea6",
+  "unit_tests": 151,
+  "unit_seconds": 165.456,
+  "unit_exit_code": 0,
+  "ui_checks": ["check_c4c_ui", "check_assembly_ui", "check_c4a_ui", "check_a2_ui"],
+  "ui_exit_codes": [0, 0, 0, 0],
+  "model_equations_changed": false,
+  "legacy_format_read_save": "passed; no implicit conversion",
+  "conflicting_delete": "rejected; original file retained",
+  "recovery": "history to draft; trash to new copy",
+  "open_loop_R19": "diagnostic only; restriction retained",
+  "human_acceptance": "pending",
+  "offline_evidence": "Delivered beside final ZIP with archive and manifest hashes; checked after build"
+}

@@ -82,14 +82,14 @@ def main():
         field(app.radio, '工作区').set_value('整机装配').run()
         before = deepcopy(app.session_state['design'])
         def upload(title, *args, **kwargs):
-            if title == '从文件加载旋翼模块或算例':
+            if title == '旋翼方案文件':
                 stream = BytesIO(package)
                 stream.name = 'rotor-scheme.rdlc'
                 return stream
             return None
         with patch('streamlit.file_uploader', side_effect=upload):
             app.run()
-            field(app.button, '将文件中模块装入此安装位').click().run()
+            field(app.button, '装入所选旋翼文件').click().run()
             check(app)
         after = app.session_state['design']
         module, assets = assembly.module_data(after['assembly']['instances'][0])

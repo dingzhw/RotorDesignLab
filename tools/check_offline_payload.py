@@ -54,11 +54,13 @@ def main(destination):
         suite = unittest.defaultTestLoader.discover(str(ROOT/'tests'), pattern='test_offline_delivery.py')
         result = unittest.TextTestRunner(verbosity=2).run(suite)
         assert result.wasSuccessful()
+        runpy.run_path(str(ROOT/'tests/check_c4c_ui.py'), run_name='__main__')
         runpy.run_path(str(ROOT/'tests/check_offline_ui.py'), run_name='__main__')
         runpy.run_path(str(ROOT/'tests/check_launcher.py'), run_name='__main__')
     record = dict(version=__version__, platform=platform.platform(), python=sys.version,
                   isolated_import_paths=packages, manifest_sha256=sha256((ROOT/'distribution-manifest.json').read_bytes()).hexdigest(),
                   focused_tests=result.testsRun, webpage_exports_and_replay='passed', native_windows='passed',
+                  unified_scheme_operations='passed',
                   verify_cmd_exit_code=command.returncode,
                   elapsed_s=time.perf_counter()-started, external_connection_attempts=blocked,
                   network_scope='Test process blocks external socket connects; server subprocess uses localhost config. OS network unchanged.',

@@ -51,7 +51,10 @@ def render():
                     if identifier == st.session_state.get('module-id'):
                         version = st.session_state.get('module-version')
                         if choice == '保存后继续':
-                            baseline = store.digest(current())
+                            if baseline is None:
+                                draft, version = store.load(identifier)
+                            else:
+                                baseline = store.digest(current())
                     replace(draft, identifier, version)
                     if baseline is not None:
                         st.session_state['module-saved-digest'] = baseline

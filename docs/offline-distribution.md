@@ -32,22 +32,20 @@
 在已批准并按 `requirements-win64-py314.txt` 锁定的本地项目环境中，先审阅并暂存本包源码及文档。构建器只选Git索引列出的允许目录文件；未跟踪文件即使在相同目录也不进入包。构建输出目录必须不存在：
 
 ```powershell
-.\.venv\Scripts\python.exe -X utf8 tools/build_offline.py --out runs/c3-20261118/distribution/RotorDesignLab-win64-c3
+.\.venv\Scripts\python.exe -X utf8 tools/build_offline.py --out runs/c4c/distribution/RotorDesignLab-0.4.6.dev18-win64
 ```
 
 构建器复制实际 CPython 标准库、DLL、Tcl/Tk和依赖，生成隔离路径文件，再计算哈希和ZIP；不会将原venv的绝对路径配置作为可搬移环境。构建后在不同的中文含空格目录解压，使用包内解释器检查：
 
 ```powershell
 .\runtime\python.exe -X utf8 offline_check.py
-.\runtime\python.exe -X utf8 -m unittest discover -s tests -p test_offline_delivery.py -v
-.\runtime\python.exe -X utf8 -c "import runpy,sys; sys.path.insert(0,'tests'); runpy.run_path('tests/check_offline_ui.py',run_name='__main__')"
-.\runtime\python.exe -X utf8 tests/check_launcher.py
+.\runtime\python.exe -X utf8 tools/check_offline_payload.py --out runs/offline-checks.json
 ```
 
 记录原始命令、退出码、运行时/硬件、包哈希及可公开检查摘要。脚本中的原生窗口操作与网页AppTest属于自动软件检查，浏览器打开回调可被替代捕获；同事实际双击、看图、填写和故障恢复另行签收。隔离网络验证仅阻止测试进程访问非本机地址，不修改Windows网络或安全设置。
 
 常见问题：缺 `runtime` 表示包未完整解压；哈希不符先保留该包和报告并重新核对交付副本；无写权限则换到用户可写目录。服务问题保留 `runs/launcher/server.log`，复算问题保留相应 `error.txt` 与输入ZIP。不要通过关闭安全软件或覆盖用户库来排查。
 
-本轮自动检查摘要见[公开记录](../validation/offline/checks.json)。最终分发ZIP旁提供本次提取、运行检查与整包SHA-256；公开记录中的probe哈希标识初轮检查包，不能用于校验最终交付ZIP。
+C4-C交付与检查入口见[本轮记录](c4c-delivery.md)；离线检查覆盖统一方案操作、实际网页导出复算、原生窗口和真实CMD校验。C3历史摘要仍见[原公开记录](../validation/offline/checks.json)，不用于核验本轮ZIP。每个交付ZIP旁提供对应整包SHA-256，软件验证与同事验收分别记录。
 
 批处理脚本按Git属性和构建器双重保证UTF-8/CRLF。dev14初次实际CMD检查暴露了新文件LF换行导致中文行误读；dev15增加真实CMD启动脚本分派和校验入口检查。先前失败包与日志保留，不对外交付。

@@ -40,7 +40,7 @@ def main():
         module_draft = deepcopy(app.session_state['module-draft'])
         page(app, '整机装配')
         assert app.session_state['design']['format_version'] == 2
-        field(app.button, '将库中模块装入此安装位').click().run()
+        field(app.button, '装入所选旋翼方案').click().run()
         ok(app)
         instance = deepcopy(app.session_state['design']['assembly']['instances'][0])
         assert instance['source']['identifier'] == module_id
@@ -63,14 +63,14 @@ def main():
         assert app.session_state['design']['assembly']['instances'][0] == instance
         assert app.session_state['design']['aircraft']['rotors'][1]['position_m'][0] == -2.
         field(app.number_input, '桨毂位置 x / m').set_value(-1.7)
-        field(app.selectbox, '尾桨转速定义').set_value('main_ratio')
+        field(app.selectbox, '尾桨转速定义').set_value('main_ratio').run()
         field(app.button, '应用位置与传动设置').click().run()
         ok(app)
         assert app.session_state['design']['assembly']['instances'][1]['drive']['rpm_mode'] == 'main_ratio'
         field(app.button, '检查整机装配').click().run()
         ok(app)
         assert not app.error, [e.value for e in app.error]
-        field(app.button, '保存方案').click().run()
+        field(app.button, '保存').click().run()
         ok(app)
         design_id = app.session_state['design_id']
         saved = deepcopy(app.session_state['design'])
@@ -112,7 +112,7 @@ def main():
         page(app, '整机装配')
         assert app.session_state['design']['assembly']['instances'][0]['snapshot'] == instance['snapshot']
         field(app.selectbox, '选择安装位与角色').set_value(0).run()
-        field(app.button, '将库中模块装入此安装位').click().run()
+        field(app.button, '装入所选旋翼方案').click().run()
         assert app.session_state['design']['aircraft']['rotors'][0]['radius_m'] == 1.12
         page(app, '全机配平')
         assert any('上次运行结果' in w.value for w in app.warning)
@@ -121,9 +121,10 @@ def main():
         # A fresh session reopens the saved assembly and immutable history.
         reopened = AppTest.from_file(str(ROOT/'app.py'), default_timeout=180).run()
         page(reopened, '全机配平')
-        field(reopened.selectbox, '读取整机方案').set_value(design_id).run()
-        field(reopened.checkbox, '允许替换当前整机草稿').check().run()
-        field(reopened.button, '读取所选整机').click().run()
+        field(reopened.selectbox, '本机整机方案').set_value(design_id).run()
+        field(reopened.button, '打开所选方案').click().run()
+        field(reopened.radio, '处理未保存修改').set_value('放弃修改并继续').run()
+        field(reopened.button, '确认选择').click().run()
         ok(reopened)
         assert reopened.session_state['design']['assembly'] == saved['assembly']
         field(reopened.button, '查看历史结果').click().run()

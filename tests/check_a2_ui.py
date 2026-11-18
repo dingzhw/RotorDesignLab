@@ -20,15 +20,16 @@ with TemporaryDirectory() as temporary, patch.object(designs,'LIBRARY',Path(temp
     assert any('填写来源' in item.value for item in app.error)
     assert 'dynamics' not in app.session_state['design']['aircraft']
     # Template supplies explicit synthetic mass distribution, not inferred data.
-    selectors=[item for item in app.selectbox if item.label == '新建所用模板']
+    selectors=[item for item in app.selectbox if item.label == '整机起始模板']
     assert len(selectors)==1
     selectors[0].set_value('千机-200轻型无人直升机（A2质量分账，试验性）')
-    field(app.checkbox,'确认替换当前草稿（新建、重开、导入或恢复模板时使用）').check()
-    field(app.button,'从模板新建').click().run()
+    field(app.button,'创建整机方案').click().run()
+    field(app.radio,'处理未保存修改').set_value('放弃修改并继续')
+    field(app.button,'确认选择').click().run()
     ok(app)
     assert not app.error,[item.value for item in app.error]
     good=deepcopy(app.session_state['design'])
-    field(app.button,'保存方案').click().run()
+    field(app.button,'保存').click().run()
     ok(app)
     identifier=app.session_state['design_id']
     restored,_=designs.load_design(identifier)
